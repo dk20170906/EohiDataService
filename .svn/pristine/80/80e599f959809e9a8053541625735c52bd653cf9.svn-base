@@ -1,0 +1,462 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/layui.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/global.css")">
+
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/bootstrap.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/font-awesome.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/screen.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/design.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/select.css")">
+    <title>优海可视化平台</title>
+    <style type="text/css" mod="it">
+        .itembase {
+            cursor: move;
+            position: absolute;
+        }
+
+        .datav-edit .edit-body {
+            display: flex;
+        }
+
+        .datav-edit .edit-body #defaultNotification {
+            width: 100%;
+        }
+
+        .datav-edit #datav-ruler {
+            position: absolute;
+            transform-origin: 0 0;
+            overflow: auto;
+        }
+
+        .datav-edit .rul_wrapper {
+            top: 60px;
+            position: fixed;
+        }
+
+        .datav-edit .rul_wrapper .rul_align_top {
+            background: #fff;
+        }
+
+        .datav-edit .rul_wrapper .rul_align_left {
+            background: #fff;
+        }
+
+        .datav-edit .rul_tracker {
+            top: 0;
+            z-index: 99999;
+        }
+        #mydiv .resize-item:hover{
+            border:none;
+            display: block;
+            background:transparent;
+        }
+    </style>
+    <style type="text/css" mod="jg">
+        .slidebar {
+            position: absolute;
+            right: 360px;
+            height: 30px;
+            user-select: none;
+        }
+
+        .slidebar:after {
+            content: ' ';
+            display: block;
+            clear: both;
+        }
+
+    .slidebar .handler, .slidebar a {
+        float: left;
+    }
+
+    .slidebar > a {
+        margin: 0 5px;
+        font-size: 16px;
+        color: #00c1de;
+        line-height: 30px;
+    }
+
+    .slidebar .handler {
+        position: relative;
+        margin: 0 10px;
+        height: 100%;
+        width: 180px;
+    }
+
+        .slidebar .handler .bar {
+            position: absolute;
+            width: 180px;
+            height: 3px;
+            background: #c4c6cf;
+            border-radius: 1.5px;
+            top: calc(50% - 2px);
+        }
+
+            .slidebar .handler .bar .identifier {
+                height: 3px;
+                background: #00c1de;
+                border-radius: 1.5px;
+            }
+
+        .slidebar .handler .slider {
+            position: absolute;
+            font-size: 24px;
+            width: 24px;
+            top: 3px;
+            margin-left: -12px;
+            color: #dcdee3;
+            background: #fff;
+            display: block;
+            cursor: pointer;
+        }
+
+        .slidebar .handler .slider-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #dcdee3;
+            background-color: #fff;
+            display: block;
+        }
+
+        #preview {
+            width: 1920px;
+            height: 1080px;
+        }
+        /*.CodeMirror {
+            border: 1px solid #eee;
+            height: 200px;
+        }*/
+        #total {
+            width: 500px;
+            height: 40px;
+            line-height: 40px;
+            margin: 80px auto 20px auto;
+            font-size: 20px;
+        }
+
+        #total .t_num {
+            display: inline-block;
+            line-height: 13px;
+            margin: 2px 4px 0 4px;
+        }
+
+        #total .t_num i {
+            width: 15px;
+            height: 23px;
+            display: inline-block;
+            background: url(number.png) no-repeat;
+            background-position: 0 0;
+            text-indent: -999em;
+        }
+    </style>
+    <style type="text/css" mod="go">
+        .button-tip {
+            position: absolute;
+            top: -30px;
+            background: #00c1de;
+            padding: 0;
+            height: 30px;
+            margin-top: 0;
+            width: 60px;
+        }
+
+        .button-tip a {
+            display: inline-block;
+            text-align: center;
+            width: 30px;
+            line-height: 30px;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .button-tip a:hover {
+            background: #419bf9;
+        }
+    </style>
+</head>
+<body id="main" style="background:#03032D">
+    <div id="app">
+        <div class="datav-edit">
+            <div class="edit-body" style="position: relative;">
+                <div id="defaultNotification"></div>
+                <div id="leftPanel" class="" style="width: 1920px; height: 1080px;">
+                    <div id="datav-ruler">
+                        <div id="previewContainer" style="padding: 0;">
+                            <div id="screenshot" style="width: 100%; height: 100%;">
+                                <div id="preview" style="visibility: visible; background: url('../../databoard/image/bg.png') 0% 0% / 100% 100%;">
+                                    <div class="preview-coms datavLayout" id="mydiv">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery-2.1.1.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/selectFilter.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/ddsort.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/circleChart.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/rolnum.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery.lineProgressbar.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/vitemdefoption/vitemsdefoption.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/echarts.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/theme/chalk.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/echarts-liquidfill.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery.liMarquee.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VChart.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VText.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VTextnumber.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VTable.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VClock.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VMarquee.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImage.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImageborder.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VPercentPie.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VPercentBar.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VKeyvaluetabel.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VHashDiagram.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/map/VBaiDuMap.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/map/VMapForNum.js")"></script>
+
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VChartlines.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/map/VMapbaidu.js")"></script>
+
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VButton.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VUrl.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VMarqueed.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VScrollingTable.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VFlopNum.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VIndexdiagram.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VTextExtend.js")"></script>
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/ZResize.js")"></script>
+
+    <script type="text/javascript">
+
+        var pubno = "@ViewBag.pubno";
+        if (pubno == "" || pubno == undefined) {
+            alert("无效的发布编号!");
+        }
+
+        //当浏览器窗口大小改变时，设置显示内容的高度
+        window.onresize = function () {
+            suofang();
+        }
+        function suofang() {
+            //
+            var d,
+           e = $(window),
+           j = e.width(),//浏览器宽度
+           k = e.height();//高度
+            var p = 1;//默认缩放系数
+
+            /*
+           j=window.screen.width;// 返回当前屏幕宽度(分辨率值)
+           k = window.screen.height;// 返回当前屏幕高度(分辨率值)
+           j = document.body.clientWidth;
+           k = document.body.clientHeight;
+            */
+            //$("#preview").css({
+            //    width: _mainoption.width,
+            //    height: _mainoption.height
+            //});
+            var pmwidth = _mainoption.width;
+            var pmheight = _mainoption.height;
+
+            p = Math.min(j / pmwidth, k / pmheight); //取小值计算缩放系数（'#leftPanel'左侧可见宽度-120/#preview可见宽度）
+            if (p > 1)
+                return;
+
+            var f = $("#preview");
+            f.css({
+                transform: "scale(" + p + ")"   //设置#preview的缩放比例为p值
+            })
+        }
+
+        //
+        var _mainoption = {
+            width: 1920,
+            height: 1080,
+            background: "#03032D",
+            image: '@Url.Content("~/databoard/image/bg.png")'
+        };
+        try {
+            load();
+        } catch (e) {
+
+        }
+        try {
+            suofang();
+        } catch (e) {
+
+        }
+        function loadmian() {
+            //读取
+            $.ajax({
+                url: "@Url.Content("~/DataView/boardGet")",
+                type: "post",
+                async: false,
+                data: {
+                    pubno: pubno
+                },
+                success: function (data) {
+                    if (data.access) {
+
+                        var data = data.result;
+
+                        if (data.mainoption != undefined && data.mainoption.length > 0) {
+                            //itemname = defoption.viewname;
+                            _mainoption = JSON.parse(data.mainoption);
+
+                            $("#preview").css({
+                                width: _mainoption.width,
+                                height: _mainoption.height
+                            });
+
+                            //
+                            if (_mainoption.background != undefined) {
+                                $("#main").css(
+                                    {
+                                        background: _mainoption.background,
+                                    });
+                            }
+
+                            $("#preview").css({
+                                background: "url('" + _mainoption.image + "')  0% 0% / 100% 100%"
+                            })
+
+                        }
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+        function load() {
+            loadmian();
+            //读取
+            $.ajax({
+                url: "@Url.Content("~/DataView/itemList")",
+                type: "post",
+                async: false,
+                data: {
+                    pubno: pubno
+                },
+                success: function (data) {
+                    if (data.access) {
+                        //delaccess = true;
+                        for (a = 0; a < data.data.length; a++) {
+                            //
+                            var id = data.data[a].itemno;
+                            var vtype = data.data[a].itemtype;
+                            var defoption = findvtype(vtype);
+                            if (defoption == undefined) {
+                                //
+                                alert('未支持的类型:' + vtype)
+                                return;
+                            }
+                            var itemname = "";
+                            if (defoption.viewname != undefined)
+                                itemname = defoption.viewname;
+
+
+                            var left = data.data[a].itemx;
+                            var top = data.data[a].itemy;
+                            var width = data.data[a].itemw;
+                            var height = data.data[a].itemh;
+                            var itemindex = data.data[a].itemindex;
+
+
+                            var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+                            $("#mydiv").append(divhtml);
+                            var div = $("#" + id);
+                            div.css({
+                                width: width,
+                                height: height,
+                                left: left,
+                                top: top,
+                                "z-index": itemindex
+                            });
+
+
+                            var option = JSON.parse(data.data[a].itemoption);
+                            var viewdata = JSON.parse(data.data[a].itemdata);
+
+                            var item = new ZResize({
+                                stage: "#mydiv", //
+                                designmode: false,
+                                item: '#' + id,  //
+                                itemno: id,
+                                itemname: itemname,
+                                itemindex: itemindex,
+                                viewtype: defoption.viewtype, //类型;
+                                viewoption: option,
+                                viewdata: viewdata
+                            });
+                            //zResizeArray.push({ id: id, item: item });
+                        }
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+        function findvtype(vtype, seriestype) {
+            for (i = 0; i < vitemstype.length; i++) {
+                if (vitemstype[i].vtype == vtype) {
+                    //
+                    return vitemstype[i].defoption;
+                }
+            }
+            return undefined;
+        }
+
+        var currEditItem = undefined;
+        function selectitem(item) {
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+﻿<table id="dg"></table>
+
+
+
+<script>
+    $('#dg').iDatagrid({
+        url: _ctx + '../../Data/ThreeDUploadFiles/GetModelsBySelectIds' ,
+        columns: [[
+            { field: 'id', title: '文件ID', checkbox: true },
+            { field: 'modelName', title: '模型名称' },
+            { field: 'fileName', title: '文件名称', sortable: true },
+            { field: 'fileSize', title: '文件大小', sortable: true },
+            { field: 'fileSuffix', title: '文件后缀', sortable: true },
+            { field: 'uploadTime', title: '上传时间', sortable: true, formatter: dateConversion },
+            { field: 'uploadUser', title: '上传人', sortable: true },
+            { field: 'fileUrl', title: '文件路径', sortable: true, width: 150 },
+            { field: 'editTime', title: '修改时间', sortable: true, formatter: dateConversion },
+            { field: 'editUser', title: '修改人', sortable: true },
+            { field: 'modelId', title: '模型ID', sortable: true },
+            { field: 'modelIdentity', title: '模型标识唯一编码', sortable: true },
+            { field: 'operate', title: '操作', sortable: true, formatter: operateFormatterFile, width: 100 }
+        ]]
+    });
+
+
+    function operateFormatterFile(value, row, index) {
+        var htmlstr = '<a class="layui-btn layui-btn-xs layui-btn-danger" href=" ' + _ctx + '../../' + row.fileUrl + '">下载</a>';
+         htmlstr += '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteRowFiles(\'' + row.id + '\')">删除</button>';
+        return htmlstr;
+    }
+
+    function deleteRowFiles(uuid) {
+        var bm = confirm("确定要删除此文件吗？？？");
+        if (bm) {
+            $.ajax({
+                type: 'get',
+                url: _ctx + '../../Data/ThreeDUploadFiles/DeleteFileByID',
+                data: { id: uuid },
+                success: function (data) {
+                    if (data.statusCode == 200) {
+                        $.iMessager.alert("提示信息", data.message);
+                        $('#dg').iDatagrid('reload');
+                    } else {
+                        $.iMessager.alert(data.message);
+                    }
+                },
+                error: function (data) {
+                    $.iMessager.alert(data.message);
+                }
+            })
+        } else {
+            return;
+        }
+
+        // $.iMessager.alert('操作提示', '请根据具体情况编写代码，如ajax删除请求，请求失败提示，请求成功提示，请求成功后刷新表格等！', 'messager-info');
+    }
+
+    //日期转换
+    function dateConversionFiles(value, row, index) {
+        var data = value;
+        if (data != null && data != "") {
+            //取字符串中的数字
+            var regexp = /[0-9]*/g;
+            var time = data.match(regexp)
+            //实现将时间戳转换为日期 （东8区）
+            var date = new Date(parseInt(time[6]));
+            Y = date.getFullYear() + '-';
+            M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+            D = date.getDate() + ' ';
+            h = date.getHours() + ':';
+            m = date.getMinutes() + ':';
+            s = date.getSeconds();
+            return Y + M + D + h + m + s;
+        }
+        else {
+            return "无";
+        }
+    }
+
+</script>

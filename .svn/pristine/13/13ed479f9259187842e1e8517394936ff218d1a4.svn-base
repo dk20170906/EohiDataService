@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Collections;
+namespace WFServerWeb
+{
+    public static class CGoNextNode
+    {        
+        /// <summary>
+        /// 获取分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="SwitchNodeID">分支节点ID</param>
+        /// <returns></returns>
+        public static void GoNextNodesFromSwitchNode(string InstanceID, string SwitchNodeID)
+        {
+            string[] SwitchNames = CCommonFunc.GetSwitchName(InstanceID, SwitchNodeID);
+            for (int i = 0; i < SwitchNames.Length; i++)
+            {
+                string SwitchID = CCommonFunc.GetSwitchID(SwitchNodeID, SwitchNames[i]);
+                string NextNodeID = CCommonFunc.GetNextNodeIDBySwitchID(SwitchID);
+                NodeTransfer( InstanceID, SwitchNodeID, NextNodeID);
+            }
+        }
+        
+        /// <summary>
+        /// 运行流程节点处理脚本
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="ProcessNodeID"></param>
+        private static void RunProcessScript(string InstanceID, string ProcessNodeID)
+        {
+            string ProcessScript = CCommonFunc.GetProcessScript(ProcessNodeID);
+            CCommonFunc.ScriptExec(ProcessScript, InstanceID);
+        }
+        
+        /// <summary>
+        /// 获取非分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static void GoNextNodesFromOtherNode(string InstanceID, string NodeID)
+        {
+            string NextNodeID = CCommonFunc.GetNextNodeIDByCurrentNodeID(NodeID);
+            NodeTransfer(InstanceID, NodeID, NextNodeID);
+        }
+
+        /// <summary>
+        /// 节点转移，从当前节点进入下一节点
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="NextNodeID"></param>
+        public static void NodeTransfer(string InstanceID,string NodeID,string NextNodeID)
+        {
+            if (CCommonFunc.IsThroughEnable(InstanceID, NextNodeID))
+            {
+                CCommonFunc.PutDownFlowHistory(InstanceID, NodeID, NextNodeID);
+
+                string NodeType = CCommonFunc.GetNodeType(NextNodeID);
+                if (NodeType == CNodeType.SwitchType)
+                {
+                    GoNextNodesFromSwitchNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ProcessType)
+                {
+                    RunProcessScript(InstanceID, NextNodeID);
+                    GoNextNodesFromOtherNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ApproveType || NodeType == CNodeType.StartType)
+                {
+                    CPutDownReceiver.PutDownReceiver(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.EndType)
+                {
+                    CCommonFunc.SetInstanceComplete(InstanceID);
+                }
+            }
+        }
+    }
+}

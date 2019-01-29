@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <!-- TopJUI框架样式 -->
+    <link type="text/css" href="../../topjui/css/topjui.core.min.css" rel="stylesheet">
+    <link type="text/css" href="../../topjui/themes/default/topjui.blue.css" rel="stylesheet" id="dynamicTheme" />
+    <!-- FontAwesome字体图标 -->
+    <link type="text/css" href="../../static/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- layui框架样式 -->
+    <link type="text/css" href="../../static/plugins/layui/css/layui.css" rel="stylesheet" />
+    <!-- jQuery相关引用 -->
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.cookie.js"></script>
+    <!-- TopJUI框架配置 -->
+    <script type="text/javascript" src="../../static/public/js/topjui.config.js"></script>
+    <!-- TopJUI框架核心-->
+    <script type="text/javascript" src="../../topjui/js/topjui.core.min.js"></script>
+    <!-- TopJUI中文支持 -->
+    <script type="text/javascript" src="../../topjui/js/locale/topjui.lang.zh_CN.js"></script>
+    <!-- layui框架js -->
+    <script type="text/javascript" src="../../static/plugins/layui/layui.js" charset="utf-8"></script>
+
+
+</head>
+
+<body>
+    <table id="productDg"></table>
+
+    <!-- 表格工具栏开始 -->
+    <div id="productDg-toolbar" class="topjui-toolbar"
+         data-options="grid:{
+           type:'datagrid',
+           id:'productDg'
+       }">
+        <a id="myFun" href="javascript:void(0)">刷新</a>
+        <form id="queryForm" class="search-box">
+            <input type="text" name="user_name" data-toggle="topjui-textbox"
+                   data-options="id:'user_name',prompt:'当前用户名',width:100">
+            <input type="text" name="instance_status" data-toggle="topjui-textbox"
+                   data-options="id:'instance_status',prompt:'流程状态',width:100">
+            <a id="queryBtn" href="javascript:void(0)">查询</a>
+        </form>
+    </div>
+    <!-- 表格工具栏结束 -->
+
+    <script>
+
+        //最后一列操作按键
+        function operateFormatter(value, row, index) {
+            var htmlstr = '<button class="layui-btn layui-btn-xs" id="test" onclick="stopinstanceByInstanceId(\'' + row.instance_id + '\')">终止</button>';
+            return htmlstr;
+        }
+
+        function stopinstanceByInstanceId(instance_id) {
+            $.ajax({
+                type: 'get',
+                url: _ctx + '../WF/WorkflowTracking/TerminateInstance',
+                data: { InstanceID: instance_id },
+                success: function (result) {
+                    if (result.success) {
+                        //加载表单数据
+                        reloadtable("productDg", _ctx + '../../WF/WorkflowTracking/GetInstanceActiveDt');
+                        slide("温馨提示", "终止成功", 3000);
+                    }
+                },
+                error: function (result) {
+                    slide("温馨提示", "终止失败", 3000);
+                }
+            })
+        }
+
+        //跳转到工作流设计页面
+        function disApiRow(boardno) {
+            window.open(_ctx + "/html/workflow/floweditor.html?flowchart_id=" + boardno);
+        }
+        //数据修改
+        function openEditDiag(id) {
+
+            var $editDialog = $('<form></form>');
+            $editDialog.iDialog({
+                id: 'editwindowd',
+                title: '编辑数据',
+                width: 950,
+                height: 500,
+                closed: false,
+                cache: false,
+                href: _ctx + '/html/workflow/flowlist_add.html?id=' + id,
+                modal: true,
+                buttons: [{
+                    text: '保存',
+                    iconCls: 'fa fa-save',
+                    btnCls: 'topjui-btn-blue',
+                    handler: function () {
+                        // 提示信息
+                        //$.iMessager.alert('操作提示', '请根据具体情况编写代码，如ajax更新请求，请求失败提示，请求成功提示，请求成功后关闭窗口并刷新表格等！', 'messager-info');
+                        $("#editwindowd").form("submit", {
+                            url: _ctx + '../WF/Data/AddFlowEdit',
+                            onSubmit: function () {
+                                return true;
+                            },
+                            success: function (result) {
+                                //服务器端会烦字符串转为json对象
+                                var data = JSON.parse(result);
+                                if (data.success) {
+                                    //关闭当前窗体
+                                    $('#editwindowd').iDialog('close');
+                                    reloadtable("productDg", _ctx + '../../WF/Data/GetList');
+                                    slide("温馨提示", "修改成功", 3000);
+                                } else {
+                                    slide("温馨提示", "修改失败", 3000);
+                                }
+                            }
+                        });
+                    }
+                }, {
+                    text: '关闭',
+                    iconCls: 'fa fa-close',
+                    btnCls: 'topjui-btn-red',
+                    handler: function () {
+                        $editDialog.iDialog('close');
+                    }
+                }],
+                onLoad: function () {
+                    //加载表单数据
+                    $.getJSON(_ctx + '../WF/Data/GetFlowById?id=' + id, function (data) {
+
+                        $('#editwindowd').form('load', data.data);
+                    });
+                }
+            });
+        }
+        //日期转换
+        function dateConversion(value, row, index) {
+            var data = value;
+            if (data != null && data != "") {
+                //取字符串中的数字
+                var regexp = /[0-9]*/g;
+                var time = data.match(regexp)
+                //实现将时间戳转换为日期 （东8区）
+                var date = new Date(parseInt(time[6]));
+                Y = date.getFullYear() + '-';
+                M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                D = date.getDate() + ' ';
+                h = date.getHours() + ':';
+                m = date.getMinutes() + ':';
+                s = date.getSeconds();
+                return Y + M + D + h + m + s;
+            }
+            else {
+                return "无";
+            }
+        }
+        //删除
+        function deleteRow(id) {
+            $.messager.confirm('提示框', '你确定要删除吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        type: 'get',
+                        url: _ctx + '../WF/Data/DeleteFlowById',
+                        data: {
+                            id: id
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                //加载表单数据
+                                reloadtable("productDg", _ctx + '../../WF/Data/GetList');
+                                slide("温馨提示", "删除成功", 3000);
+                            } else {
+                                slide("温馨提示", "删除失败", 3000);
+                            }
+                        },
+                        error: function (data) {
+                            slide("温馨提示", "删除失败", 3000);
+                        }
+
+                    });
+                }
+            });
+        }
+
+
+        //打开设计页面
+        function openTestWin(data) {
+            var url = _ctx + 'html/workflow/floweditor.html';
+            window.open(url);
+        }
+        $(function () {
+            var productDg = {
+                type: 'datagrid',
+                id: 'productDg'
+            };
+
+            $("#productDg").iDatagrid({
+                // method:'get',
+                url: _ctx + '../WF/WorkflowTracking/GetInstanceActiveDt',
+                // url: '../../json/product/list.json',
+                columns: [[
+                    { field: 'flowchart_id', title: '工作流ID' },
+                    { field: 'flowchart_name', title: '工作流名称', sortable: true },
+                    { field: 'flowchart_version', title: '版本', sortable: true },
+                    { field: 'instance_id', title: '流程实例ID', sortable: true },
+                    { field: 'cre_date', title: '创建时间', sortable: true, formatter: dateConversion },
+                    { field: 'user_name', title: '当前用户名', sortable: true },
+                    { field: 'cre_man', title: '创建人', sortable: true },
+                    { field: 'instance_status', title: '流程状态', sortable: true },
+                    { field: 'instance_message', title: '备注说明', sortable: true },
+                    { field: 'operate', title: '操作', sortable: true, formatter: operateFormatter }
+                ]]
+            });
+
+            $('#myFun').iMenubutton({
+                btnCls: 'topjui-btn-black',
+                onClick: myQuery
+            });
+
+
+
+            $('#queryBtn').iMenubutton({
+                method: 'query',
+                iconCls: 'fa fa-search',
+                btnCls: 'topjui-btn-blue',
+                form: { id: 'queryForm' },
+                grid: { type: 'datagrid', 'id': 'productDg' }
+            });
+        });
+        // 自定义方法
+        function myQuery() {
+            //加载表单数据
+            reloadtable("productDg", _ctx + '../../WF/Data/GetList');
+        }
+
+
+
+        //局部刷新数据
+        function reloadtable(el, url) {
+            //加载表单数据
+            $.ajax({
+                type: 'get',
+                url: url,
+                success: function (result) {
+                    $("#" + el).datagrid('reload', result);
+                }
+            });
+        }
+
+        //右下脚弹出框
+        function slide(title, msg, time) {
+            $.iMessager.show({
+                title: title,
+                msg: msg,
+                timeout: time,
+                showType: 'slide'
+            });
+        }
+
+    </script>
+
+</body>
+</html>

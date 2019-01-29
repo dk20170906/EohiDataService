@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WFServerWeb
+{
+    public class CGoEnd
+    {
+        /// <summary>
+        /// 将工作流流转到结束节点
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        public static void GoEnd(string InstanceID, string NodeID, string EndNodeID)
+        {
+            CGoNextNode.NodeTransfer(InstanceID, NodeID, EndNodeID);
+        }
+    }
+}

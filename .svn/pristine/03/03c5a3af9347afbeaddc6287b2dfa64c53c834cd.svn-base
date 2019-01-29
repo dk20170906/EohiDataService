@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+
+namespace WFServerWeb
+{
+    public class CWFManager
+    {
+        /// <summary>
+        /// 获取工作流名称对应的最后一版工作流的ID号
+        /// </summary>
+        /// <param name="WFName"></param>
+        /// <returns></returns>
+        public static string GetLastVersionWFID(string WFName)
+        {
+            return CDataHelper.GetData("select top 1 flowchart_id from " + CTableName.FlowChart + " where flowchart_name='" + WFName + "' order by flowchart_version desc");
+        }
+
+        /// <summary>
+        /// 获取最后一个版本号
+        /// </summary>
+        /// <param name="WFName"></param>
+        /// <returns></returns>
+        public static string GetLastVersion(string WFName)
+        {
+            return CDataHelper.GetData("select top 1 isnull(flowchart_version,'') as flowchart_version from " + CTableName.FlowChart + " where flowchart_name='" + WFName + "' order by id desc");
+        }
+
+        public static string GetWFIDByNodeID(string NodeID) 
+        {
+            return CDataHelper.GetData("select flowchart_id from " + CTableName.FlowChartNode + " where node_id='" + NodeID + "'"); 
+        }
+    }
+}

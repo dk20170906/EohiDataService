@@ -1,0 +1,65 @@
+﻿<header>
+    <div class="content-wrapper">
+        <div class="float-left">
+            <p class="site-title">
+                <a href="~/">ASP.NET Web API</a></p>
+        </div>
+    </div>
+</header>
+<div id="body">
+    <section class="featured">
+        <div class="content-wrapper">
+            <div class="label-row">
+                   <label>方法名：</label>
+                   <input id="method" value="" type="text" />
+            </div>
+            <div class="label-row">
+                   <label>返回结果：</label>
+                   <textarea id="result" value=""></textarea>
+            </div>
+            <a href="javascript:void(0);" onclick="testapi();">测试</a>
+        </div>
+    </section>
+    <section class="content-wrapper main-content clear-fix">
+        
+    </section>
+</div>
+
+
+
+
+
+@section scripts{
+
+   
+
+   
+<script type="text/javascript">
+
+    
+
+    function testapi() {
+        
+        var method=$("#method").val();
+
+        $.ajax({
+            cache: true, type: "Get",
+            async: false,
+            datatype: "json",
+            data: { method: method,returntype:"json" },
+            url: "@Url.Content("~/api/do/get")",
+            error: function (request, a, b) {
+                //Notify('内部错误！' + request.message, 'top-right', '5000', 'maroon', 'fa-home', true);
+            },
+            success: function (result) {
+               var ss= JSON.stringify(result);
+               //alert(ss);
+               $("#result").val(ss);
+
+            }
+        });
+       
+    }
+</script>
+
+}

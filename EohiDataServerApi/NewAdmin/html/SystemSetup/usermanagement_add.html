@@ -1,0 +1,82 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="用户新增/编辑" data-options="iconCls:'fa fa-th'">
+
+                <div class="topjui-fluid">
+                    <div class="topjui-row">
+                    </div>
+                    <form id="apisubmitformuser" action="/" method="post">
+
+                        <input type="hidden" id="id" name="id" value="" />
+                        <input type="hidden" id="userguidacc" name="user_id" value="" />
+                        <input type="hidden" id="userrolesguids" name="user_roles" value="" />
+
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm8">
+                                <label class="topjui-form-label">用户名称</label>
+                                <div class="topjui-input-block">
+                                    <input type="text" id="user_nameid" name="user_name" data-toggle="topjui-textbox"
+                                           data-options="required:true,prompt:'用户名称'">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm8">
+                                <label class="topjui-form-label">密码</label>
+                                <div class="topjui-input-block">
+                                    <input type="text" id="user_passwordid" name="user_password" data-toggle="topjui-textbox"
+                                           data-options="required:true,prompt:'密码'">
+                                </div>
+                            </div>
+                            <div class="topjui-col-sm4">
+                                <label class="topjui-form-label">是否可用</label>
+                                <div class="topjui-input-block">
+                                    <div data-toggle="topjui-radio">
+                                        <input type="radio" name="user_allow" label="启用" value="1" checked="checked">
+                                        <input type="radio" name="user_allow" label="未启用" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <label class="topjui-form-label">备注说明</label>
+                                <div class="topjui-input-block">
+                                    <input type="text" name="remark" data-toggle="topjui-textarea">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </form>
+
+                </div>
+                <div title="角色配置" data-options="iconCls:'fa fa-th'">
+                    <div class="topjui-fluid">
+                        <fieldset>
+                            <legend>配置角色</legend>
+                        </fieldset>
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <div id="userroleslist"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        $("#roleadmid").css("display", "none");
+        $("#roleadmguid").css("display", "none");
+        $("#rolecreatetime").css("display", "none");
+</script>
+
+
+

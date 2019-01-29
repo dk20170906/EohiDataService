@@ -1,0 +1,263 @@
+﻿
+
+@{
+    ViewBag.Title = "ApiLink定义编辑";
+   Layout = "~/Areas/Admin/Views/Shared/_LayoutSimple.cshtml";
+}
+
+ <div class="layui-fluid">
+
+
+<form id="popupForm"  class="layui-form" action="@Url.Content("~/Admin/Article/dataSave")" method="POST" enctype="multipart/form-data" >
+
+
+   <input type="hidden" class="form-control" name="id" value= "@ViewBag.entity.id">
+    
+   <input type="hidden" class="form-control" id="istop" name="istop" value= "@ViewBag.entity.istop">
+    
+     
+
+
+  <div class="layui-form-item">
+   <div class="layui-inline">
+       <label class="layui-form-label">类型</label>
+        <div class="layui-input-block">
+            <input type="text" name="articletype"  id="articletype"  lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.articletype" />
+        </div>
+    </div>
+    <div class="layui-inline">
+     <label class="layui-form-label">置顶</label>
+    <div class="layui-input-block">
+        @if (ViewBag.entity.istop == 1)
+        { 
+         <input type="checkbox" checked="" lay-skin="switch" lay-filter="switchTest" lay-text="Y|N">
+        }
+        else
+        {
+            <input type="checkbox"  lay-skin="switch" lay-filter="switchTest" lay-text="Y|N">
+        }
+                  
+    </div>
+    </div>
+  </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title"  id="title"  lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.title" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">副标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="subtitle" id="subtitle"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.subtitle" />
+        </div>
+    </div>
+   
+
+
+     <div class="layui-form-item">
+        <label class="layui-form-label">标题图</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="perviewimage" id="perviewimage"  value="@ViewBag.entity.perviewimage" />
+            <div class="layui-upload">
+              <button type="button" class="layui-btn" id="test1">上传图片</button>
+              <button type="button" class="layui-btn layui-btn-warm" id="test2">清除图片</button>
+               <input class="layui-upload-file" type="file" name="file">
+              <div class="layui-upload-list">
+                <img class="layui-upload-img" id="demo1" style="max-height:100px;">
+                <p id="demoText"></p>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+       <label class="layui-form-label">作者</label>
+        <div class="layui-input-block">
+            <input type="text" name="author" id="author" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.author" />
+        </div>
+    </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">来源</label>
+        <div class="layui-input-block">
+            <input type="text" name="source" id="source"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.source" />
+        </div>
+</div>
+        
+    </div>
+  
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">内容：</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea layui-hide" name="articlecontent" lay-verify="content" id="LAY_demo_editor" placeholder>@ViewBag.entity.articlecontent</textarea>
+        </div>
+    </div>
+
+     <div class="layui-form-item layui-form-text" style="display:none;">
+        <button type="submit" id="btn_datasave" class="btn baocun" >保存</button>
+    </div>
+
+    </form>
+</div>
+
+
+@section scripts{
+
+
+ <script type="text/javascript">
+
+     layui.use(['form', 'layedit', 'jquery', 'upload'], function () {
+         //var form = layui.form;
+         var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+        var layer = layui.layer;
+        var layedit = layui.layedit;
+        var upload = layui.upload;
+        $ = layui.jquery;
+
+
+        form.render('checkbox'); //刷新select选择框渲染
+
+        form.on('switch', function (data) {
+            console.log(data.elem); //得到checkbox原始DOM对象
+            console.log(data.elem.checked); //开关是否开启，true或者false
+            console.log(data.value); //开关value值，也可以通过data.elem.value得到
+            console.log(data.othis); //得到美化后的DOM对象
+
+            if (data.value) {
+                $('#istop').val(1);
+            }
+            else {
+                $('#istop').val(0);
+            }
+        });
+     
+         //
+        //form.render();
+  
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: "@Url.Content("~/FileUpLoad.ashx")"  //接口url
+          ,before: function(obj){
+              //预读本地文件示例，不支持ie8
+              obj.preview(function(index, file, result){
+                  $('#demo1').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              debugger;
+              //如果上传失败
+              if(res.code > 0){
+                  return layer.msg('上传失败');
+              }
+              //上传成功 
+              if (res.Result =="true") {
+                  //return layer.msg('上传失败');
+                  $('#perviewimage').val(res.files[0].url);
+              }
+          }
+          ,error: function(){
+              //演示失败状态，并实现重传
+              var demoText = $('#demoText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+              demoText.find('.demo-reload').on('click', function(){
+                  uploadInst.upload();
+              });
+          }
+        });
+
+         $("#test2").on("click", function () {
+             //
+             $('#demo1').attr('src', "");
+             $('#perviewimage').val( "");
+         });
+
+
+        layedit.set({
+            uploadImage: {
+                url: "@Url.Content("~/FileUpLoadLayuiEditor.ashx")"  //接口url
+              , type: 'post' //默认post
+            }
+        });
+         
+         //建立编辑器
+         layedit.build('LAY_demo_editor', {
+             height: 180 //设置编辑器高度
+         });
+
+
+         //
+         if ($("#perviewimage").val() != "")
+             $('#demo1').attr('src', "/" + $("#perviewimage").val());
+
+
+        //表单提交;
+        $("#popupForm").on("submit", function () {
+
+            $(this).ajaxSubmit({
+                success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                    if (data.access) {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.$("#iframe_handle_status").val('1');
+                        parent.layer.close(index);
+                    }
+                    else {
+                        //提示错误信息;
+                        //modalConfirm(data.access, "");
+                        //layerAlert(data.msg);
+                        layer.msg("错误！[" + data.msg + "]", {
+                            icon: 1,
+                            time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () { });
+                    }
+                },
+                error: function (xhr, status, err) {
+                    //alert("操作失败");
+                    layer.msg("错误！[" + status + "][" + err + "]", {
+                        icon: 1,
+                        time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () { });
+                }
+            });
+            return false;
+        });
+
+
+        window.DataSave = function () {
+
+            //检验form对象;
+            var result = Verification("#popupForm");
+            if (result == false) {
+                return;
+            }
+
+            if (!doCheck())
+                return;
+
+            //触发保存;
+            $("#btn_datasave").trigger("click");
+
+        }
+
+        //检查
+        window.doCheck = function () {
+            //var linkname = $("#linkname").val();
+            //if (linkname == undefined || linkname == "") {
+            //    layerAlert("请填写连接名称");
+            //    return false;
+            //}
+            return true;
+        }
+
+
+
+      
+
+    });
+    </script>
+}

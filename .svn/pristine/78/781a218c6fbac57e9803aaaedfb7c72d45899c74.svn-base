@@ -1,0 +1,354 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+using System.Data;
+namespace WFServerWeb
+{
+    public class CNodeManager
+    {
+        /// <summary>
+        /// 获取审批人最后一次审批意见
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="ApproverID"></param>
+        /// <returns></returns>
+        public static string GetNodeApprovalOpinion(string InstanceID, string NodeID,string ApproverID)
+        {
+            return CDataHelper.GetData("select top 1 approval_opinion from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' and user_id='"+ApproverID+"' order by approval_num desc");
+        }
+
+        /// <summary>
+        /// 获取分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="SwitchNodeID">分支节点ID</param>
+        /// <returns></returns>
+        public static void GoNextNodesFromSwitchNode(string InstanceID, string SwitchNodeID)
+        {
+            string[] SwitchNames = CNodeManager.GetSwitchName(InstanceID, SwitchNodeID);
+            for (int i = 0; i < SwitchNames.Length; i++)
+            {
+                string SwitchID = CNodeManager.GetSwitchIDBySwitchName(SwitchNodeID, SwitchNames[i]);
+                //根据switchid获取下一级节点ID
+                string NextNodeID = CNodeManager.GetNextNodeIDBySwitchID(SwitchID);
+                NodeTransfer(InstanceID, SwitchNodeID, NextNodeID);
+            }
+        }
+
+
+        /// <summary>
+        /// 运行流程节点处理脚本
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="ProcessNodeID"></param>
+        private static void RunProcessScript(string InstanceID, string ProcessNodeID)
+        {
+            string ProcessScript = CNodeManager.GetNodeScript(ProcessNodeID, EScriptType.ProcessScript);
+            CScriptOpe.ScriptExec(ProcessScript, InstanceID);
+        }
+
+        /// <summary>
+        /// 节点转移，从当前节点进入下一节点
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="NextNodeID"></param>
+        public static void NodeTransfer(string InstanceID, string NodeID, string NextNodeID)
+        {
+            if (CNodeManager.IsNodeThroughEnable(InstanceID, NextNodeID))
+            {
+                //记录流转历史
+                CDataHelper.ExecuteNonQuery("insert into " + CTableName.FlowChartHistory + "(instance_id,node_id,next_node_id) values('" + InstanceID + "','" + NodeID + "','" + NextNodeID + "')");
+
+                string NodeType = CNodeManager.GetNodeType(NextNodeID);
+                if (NodeType == CNodeType.SwitchType)
+                {
+                    GoNextNodesFromSwitchNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ProcessType)
+                {
+                    RunProcessScript(InstanceID, NextNodeID);
+                    CNodeManager.GoNextNodesFromOtherNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ApproveType || NodeType == CNodeType.StartType)
+                {
+                    CNodeManager.PutDownNodeApprover(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.EndType)
+                {
+                    CInstanceManager.SetInstanceComplete(InstanceID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 通过SwitchID获取下一个节点ID
+        /// </summary>
+        /// <param name="SwitchID"></param>
+        /// <returns></returns>
+        public static string GetNextNodeIDBySwitchID(string SwitchID)
+        {
+            return CDataHelper.GetData("select next_node_id from " + CTableName.FlowChartLine + " where [sourcepoint]='" + SwitchID + "-out'"); ;
+        }
+
+        /// <summary>
+        /// 获取非分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static void GoNextNodesFromOtherNode(string InstanceID, string NodeID)
+        {
+            string NextNodeID = CDataHelper.GetData("select next_node_id from " + CTableName.FlowChartLine + " where node_id='" + NodeID + "'");
+            NodeTransfer(InstanceID, NodeID, NextNodeID);
+        }
+
+        /// <summary>
+        /// 通过工作流实例ID和分支节点ID，获取当前分支节点所选的分支的名称
+        /// </summary>
+        /// <param name="InstanceID">工作流实例ID</param>
+        /// <param name="NodeID">节点ID</param>
+        /// <returns></returns>
+        public static string[] GetSwitchName(string InstanceID, string NodeID)
+        {
+            string[] SwitchNames = null;
+            string SwitchScript = CDataHelper.GetData("select switchscript from " + CTableName.FlowChartNode + " where [node_id]='" + NodeID + "'");
+            object SwitchNameObj = CScriptOpe.ScriptExec(SwitchScript, InstanceID);
+            SwitchNames = SwitchNameDecode(SwitchNameObj);
+            return SwitchNames;
+        }
+
+        /// <summary>
+        /// 从返回值中分解得到具体的SwitchName
+        /// </summary>
+        /// <param name="SwitchNameObj"></param>
+        /// <returns></returns>
+        public static string[] SwitchNameDecode(object SwitchNameObj)
+        {
+            string[] SwitchNames = null;
+            SwitchNames = ((string)(SwitchNameObj)).Split(';');
+            return SwitchNames;
+        }
+
+        /// <summary>
+        /// 通过Switch名称获取SwitchID
+        /// </summary>
+        /// <param name="SwitchNodeID"></param>
+        /// <param name="SwitchName"></param>
+        /// <returns></returns>
+        public static string GetSwitchIDBySwitchName(string SwitchNodeID, string SwitchName) 
+        { 
+            return CDataHelper.GetData("select [switchid] from " + CTableName.FlowChartSwitchitem + " where [node_id]='" + SwitchNodeID + "' and [switchname]='" + SwitchName + "'"); 
+        }
+        /// <summary>
+        /// 获取节点类型
+        /// </summary>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static string GetNodeType(string NodeID)
+        {
+            return CDataHelper.GetData("select [nodetype] from " + CTableName.FlowChartNode + " where [node_id]='" + NodeID + "'");
+        }
+
+        public static string GetNodeScript(string NodeID, EScriptType ScriptType)
+        {
+            return CDataHelper.GetData("select " + ScriptType.ToString() + " from " + CTableName.FlowChartNode + " where  node_id='" + NodeID + "'");
+        }
+
+        /// <summary>
+        /// 获取各个审批意见对应的处理脚本
+        /// </summary>
+        /// <param name="NodeID"></param>
+        /// <param name="ApprovalOpinion"></param>
+        /// <returns></returns>
+        public static string GetApprovalScript(string NodeID, EApprovalOpinion ApprovalOpinion)
+        {
+            return CDataHelper.GetData("select [approvescript] from " + CTableName.FlowChartNodeApproveItem + " where node_id='" + NodeID + "' and [approvename]='" + ApprovalOpinion.ToString() + "'"); 
+        }
+
+        /// <summary>
+        /// 判断是否可以向下个节点流转
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static bool IsNodeThroughEnable(string InstanceID, string NextNodeID)
+        {
+            string FlowScript = GetNodeScript(NextNodeID, EScriptType.FlowScript);
+            string ScriptResult = null;
+            if (FlowScript != "")
+            {
+                ScriptResult = CScriptOpe.ScriptExec(FlowScript, InstanceID).ToString();
+            }
+
+            if (FlowScript == "" || ScriptResult == "True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 判断该节点的所有审批人员是否都已完成审批
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static bool IsNodeApprovalComplete(string InstanceID, string NodeID)
+        {
+            string ReceiverCount = CDataHelper.GetData("select count(*) from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+            string CompleteCount = CDataHelper.GetData("select count(*) from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' and approval_status='" + EApprovalStatus.Complete.ToString() + "'");
+            if (ReceiverCount == CompleteCount)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 根据不同的审批意见获取不同的下一级节点
+        /// </summary>
+        /// <param name="CurrentNodeID"></param>
+        /// <param name="Apo"></param>
+        /// <returns></returns>
+        public static string GetNextNodeIDByCurrentNodeID(string CurrentNodeID, EApprovalOpinion Apo)
+        {
+            string WFID = CWFManager.GetWFIDByNodeID(CurrentNodeID);
+            if (Apo == EApprovalOpinion.同意)
+            {
+                return CDataHelper.GetData("select next_node_id from " + CTableName.FlowChartLine + " where node_id='" + CurrentNodeID + "'");
+            }
+            else if (Apo == EApprovalOpinion.不同意)
+            {
+                return CDataHelper.GetData("select [node_id] from " + CTableName.FlowChartNode + " where [flowchart_id]='" + WFID + "' and [nodetype]='" + CNodeType.EndType + "'");
+            }
+            else if (Apo == EApprovalOpinion.驳回上级)
+            {
+                return GetUpApprovalNodeID(CurrentNodeID);
+            }
+            else
+            {
+                return GetStartNodeID(WFID);
+            }
+        }
+
+        /// <summary>
+        /// 获取上一级审批节点
+        /// </summary>
+        /// <param name="CurrentNodeID"></param>
+        /// <returns></returns>
+        public static string GetUpApprovalNodeID(string CurrentNodeID)
+        {
+            string UpNodeID = null;
+            while (true)
+            {
+                UpNodeID = GetUpNodeID(CurrentNodeID);
+                string NodeType = CNodeManager.GetNodeType(UpNodeID);
+                if (NodeType != CNodeType.SwitchType && NodeType != CNodeType.ProcessType)
+                {
+                    break;
+                }
+                CurrentNodeID = UpNodeID;
+            }
+            return UpNodeID;
+        }
+        
+        /// <summary>
+        /// 获取上一级节点
+        /// </summary>
+        /// <param name="CurrentNodeID"></param>
+        /// <returns></returns>
+        public static string GetUpNodeID(string CurrentNodeID)
+        {
+            return CDataHelper.GetData("select node_id from " + CTableName.FlowChartLine + " where next_node_id='" + CurrentNodeID + "'");
+        }
+
+        /// <summary>
+        /// 获取开始节点
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <returns></returns>
+        public static string GetStartNodeID(string WFID)
+        {
+            return CDataHelper.GetData("select [node_id] from " + CTableName.FlowChartNode + " where [flowchart_id]='" + WFID + "' and [nodetype]='" + CNodeType.StartType + "'");
+        }
+
+        /// <summary>
+        /// 获取活动未完成审批的活动节点
+        /// </summary>
+        /// <returns></returns>
+        public static string GetActiveNode(string InstanceID)
+        {
+            string ActiveNodeStr = "";
+            DataTable dtActiveNode = CDataHelper.GetDataTable("select distinct node_id from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and approval_status='" + EApprovalStatus.Active.ToString() + "'");
+            if (dtActiveNode != null)
+            {
+                for (int i = 0; i < dtActiveNode.Rows.Count; i++)
+                {
+                    ActiveNodeStr += dtActiveNode.Rows[i][0].ToString() + ";";
+                }
+                if (ActiveNodeStr.Length > 0)
+                {
+                    ActiveNodeStr = ActiveNodeStr.Substring(0, ActiveNodeStr.Length - 1);
+                }
+            }
+            return ActiveNodeStr;
+        }
+
+        /// <summary>
+        /// 记录节点的审批人
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        public static void PutDownNodeApprover(string InstanceID, string NodeID)
+        {
+            string nodetype = CNodeManager.GetNodeType(NodeID);
+            if (nodetype == null)
+            {
+                CInstanceManager.SetInstanceError(InstanceID, "获取节点" + NodeID + "的节点类型失败");
+                return;
+            }
+
+            int ApprovalNum = CApprovalManager.GetLastApprovalNum(InstanceID, NodeID);
+            //判断是否开始流程
+            if (nodetype == CNodeType.StartType)
+            {
+                string StartManID = CInstanceManager.GetInstanceStartManID(InstanceID);
+                if (StartManID == null)
+                {
+                    CInstanceManager.SetInstanceError(InstanceID, "获取流程实例的发起人失败");
+                    return;
+                }
+                CApprovalManager.PutDownApprover(InstanceID, NodeID, StartManID, ApprovalNum + 1);
+            }
+            //判断流程是否结束
+            else if (nodetype != CNodeType.EndType)
+            {
+                DataTable dtReceiver = CApprovalManager.GetApprover(InstanceID, NodeID);
+                if (dtReceiver != null)
+                {
+                    if (dtReceiver.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dtReceiver.Rows.Count; i++)
+                        {
+                            string ReceiverID = dtReceiver.Rows[i][WFGlobal.UserID].ToString();
+                            CApprovalManager.PutDownApprover(InstanceID, NodeID, ReceiverID, ApprovalNum + 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

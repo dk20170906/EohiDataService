@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+
+
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="css/context.standalone.css">
+
+    <!-- jQuery相关引用 -->
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/node-uuid/1.4.8/uuid.min.js"></script>
+    <script src="https://cdn.bootcss.com/mustache.js/2.3.0/mustache.min.js"></script>
+    <!--<script src="https://cdn.bootcss.com/jquery/1.12.1/jquery.min.js"></script>-->
+    <script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.bootcss.com/jsPlumb/1.7.6/jquery.jsPlumb.min.js"></script>
+
+    <!--<script src="js/jsplumb.js"></script>-->
+    <style>
+        .mymask {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index:1000;
+            display:none;
+        } 
+        .mymasktxt {
+            position: absolute;
+            font-size: 14px;
+            left: 50%;
+            top: 50%;
+            width: 200px;
+            height: 80px;
+            margin-top: -100px;
+            margin-left: -40px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 3px;
+            text-align: center;
+            line-height: 80px;
+            z-index:1001;
+             display:none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="datagrid-mask mymask"></div>
+<div class="datagrid-mask-msg mymasktxt">正在保存,请稍等</div>
+       
+<div id="app">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="side-buttons" class="col-md-1 bg-info min-height">
+                <div>
+                    <h5>节点类型列表</h5>
+                      
+                    <a class="btn btn-success btn-controler" href="#" data-template="tpl-start" data-defualtlable="开始" role="button">
+                        <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                        开始</a>
+                      <a class="btn btn-success btn-controler" href="#" data-template="tpl-end"  data-defualtlable="结束" role="button">
+                        <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                        结束</a>
+
+
+                    <a class="btn btn-success btn-controler" href="#" data-template="tpl-approve" data-defualtlable="审批节点" role="button">
+                        <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                        审批节点</a>
+                    <a class="btn btn-success btn-controler" href="#" data-template="tpl-process" data-defualtlable="流程节点" role="button">
+                        <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                        流程节点</a>
+                    <a class="btn btn-success btn-controler" href="#" data-template="tpl-switch" data-defualtlable="分支节点" role="button">
+                        <i class="fa fa-question" aria-hidden="true"></i>
+                        分支节点</a>
+
+
+                    <!-- -->
+                    <a class="btn btn-success btn-controler" href="#" onclick="window.IVR.New()" role="button">
+                        <i class="fa fa-share" aria-hidden="true"></i>
+                        新建</a>
+                    <!--保存 -->
+                    <a class="btn btn-success btn-controler" href="#" onclick="flowchartsave()" role="button">
+                        <i class="fa fa-share" aria-hidden="true"></i>
+                        保存</a><!-- -->
+                </div>
+            </div>
+            <div class="col-md-11 bg-success min-height" id="drop-bg">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    <script id="tpl-audio" type="text/html">
+        <div class='pa' id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-default' href='#' role='button'>放音
+        <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+            </a>
+        </div>
+    </script>
+    <!--开始 -->
+    <script id="tpl-start" type="text/html">
+        <div class='pa' data-type="start" data-label="{{name}}"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-success' href='#' role='button'>{{name}}
+            </a>
+        </div>
+    </script>
+    <!--结束 -->
+    <script id="tpl-end" type="text/html">
+        <div class='pa' data-type="end" data-label="{{name}}"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-danger' href='#' role='button'>{{name}}
+            </a>
+        </div>
+    </script>
+    <!--审批节点 -->
+    <script id="tpl-approve" type="text/html">
+        <div class='pa' data-type="approve" data-label="{{name}}" id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-default' href='#' role='button'>{{name}}
+            </a>
+        </div>
+    </script>
+    <!--流程节点 -->
+    <script id="tpl-process" type="text/html">
+        <div class='pa' data-type="process" data-label="{{name}}" id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-default' href='#' role='button'>流程节点
+            </a>
+        </div>
+    </script>
+    <!--路由节点 -->
+    <script id="tpl-switch" type="text/html">
+        <div class="pa"  data-type="switch"  data-label="{{name}}" id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <div class="panel panel-default panel-node panel-info">
+                <div id='{{id}}-heading' data-id="{{id}}" class="panel-heading">
+                    <i class="fa fa-navicon" aria-hidden="true"></i><span class="switch-i">{{name}}</span>
+                </div>
+                <ul class="list-group">
+                    {{#switchitems}}
+                      <li id="{{switchid}}" data-pid="{{id}}" class="list-group-item panel-node-list">{{switchname}}
+                      </li>
+                    {{/switchitems}}
+                </ul>
+            </div>
+        </div>
+    </script>
+
+    <script id="tpl-demo" type="text/html">
+        <div class='pa' id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-default' href='#' role='button'>{{name}}
+        <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+            </a>
+        </div>
+    </script>
+
+    <script id="tpl-Announce" type="text/html">
+        <div class='pa' id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+
+            <a class='btn btn-default' href='#' role='button'>
+                <i class="fa fa-play-circle-o" aria-hidden="true"></i>
+                {{name}}
+        <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+            </a>
+        </div>
+    </script>
+
+    <script id="tpl-menu" type="text/html">
+        <div class="pa" data-type="menu" id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <div class="panel panel-default panel-node panel-info">
+                <div id='{{id}}-heading' data-id="{{id}}" class="panel-heading">
+                    菜单
+          <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+                </div>
+                <ul class="list-group">
+                    <li id="{{generateId}}" data-pid="{{id}}" class="list-group-item panel-node-list">按1
+                    </li>
+                    <li id="{{generateId}}" data-pid="{{id}}" class="list-group-item panel-node-list">按2
+                    </li>
+                    <li id="{{generateId}}" data-pid="{{id}}" class="list-group-item panel-node-list">按3
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </script>
+
+    <script id="tpl-Root" type="text/html">
+        <div class='pa' data-type="root"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-success' href='#' role='button'>{{name}}
+        <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+            </a>
+        </div>
+    </script>
+
+    <script id="tpl-Exit" type="text/html">
+        <div class='pa' data-type="exit"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <a class='btn btn-danger' href='#' role='button'>{{name}}
+        <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+            </a>
+        </div>
+    </script>
+
+    <script id="tpl-WorkTime" type="text/html">
+        <div class="pa" data-type="worktime"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <div class="panel panel-default panel-node panel-info">
+                <div id='{{id}}-heading' data-id="{{id}}" class="panel-heading">
+                    <i class="fa fa-calendar-times-o" aria-hidden="true"></i>{{name}}
+          <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+                </div>
+                <ul class="list-group">
+                    <li id="{{id}}-onWorkTime" data-pid="{{id}}" class="list-group-item panel-node-list">工作时间
+                    </li>
+                    <li id="{{id}}-offWorkTime" data-pid="{{id}}" class="list-group-item panel-node-list">非工作时间
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </script>
+
+    <script id="tpl-Menu" type="text/html">
+        <div class="pa" data-type="menu"  id='{{id}}' style='top: {{top}}px; left: {{left}}px'>
+            <div class="panel panel-default panel-node panel-info">
+                <div id='{{id}}-heading' data-id="{{id}}" class="panel-heading">
+                    <i class="fa fa-navicon" aria-hidden="true"></i>{{name}}
+          <span class="delete-node pull-right" data-type="deleteNode" data-id="{{id}}">X</span>
+                </div>
+                <ul class="list-group">
+                    <li id="{{id}}-noinput" data-pid="{{id}}" class="list-group-item panel-node-list">输入超时
+                    </li>
+                    <li id="{{id}}-nomatch" data-pid="{{id}}" class="list-group-item panel-node-list">输入错误
+                    </li>
+                    {{#choices}}
+                        <li id="{{id}}-key-{{key}}" data-pid="{{id}}" class="list-group-item panel-node-list">按{{key}}
+                        </li>
+                    {{/choices}}
+                </ul>
+            </div>
+        </div>
+    </script>
+    
+
+
+
+
+
+    <!-- 表格行编辑窗口 -->
+    <div id="editDialog" >
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" id="iframe"  scrolling="no"  width="100%" height="100%"></iframe>
+    </div>
+
+
+
+
+
+
+    <!--右键菜单-->
+    <script src="js/rightmenu/menu.js"></script>
+    <script src="js/rightmenu/context.js"></script>
+
+    <!---->
+    <script src="js/graphlib.min.js"></script>
+    <!--<script src="js/data.js"></script>-->
+
+    <script src="js/config.js"></script>
+
+  
+   
+    <script src="js/flowchartindex.js"></script>
+
+
+    <script type="text/javascript">
+        //right menu init
+        context.init({ preventDoubleContext: false, compress: true });
+        //context.attach('#drop-bg', test_menu);
+        //context.attach('#NO_OPTIONS', test_menu);
+        //context.attach('#side-buttons', test_menu2);
+    </script>
+
+
+
+    <script type="text/javascript">
+
+        function flowchartsave() {
+
+            $(".datagrid-mask.mymask").show();
+            $(".datagrid-mask-msg.mymasktxt").show();
+
+            setTimeout(function () {
+                //MaskUtil.mask("正在保存，请稍等...");
+                //return;
+
+                //
+                window.IVR.DataSave();
+
+                //保存完毕，关闭等待提示框;
+                //MaskUtil.unmask()
+                $(".datagrid-mask.mymask").hide();
+                $(".datagrid-mask-msg.mymasktxt").hide();
+               
+            }, 50);
+            
+            //$.iMessager.progress('close');
+        }
+
+        function openEditDialog(id) {
+
+            //获取类型;
+            //判断节点类型;
+            debugger;
+            var nodetype = $("#" + id).attr("data-type");
+            //var nodetype = $("#" + id).attr("data-");
+            //alert(nodetype);
+            //设置IFRAME的SRC;
+            var nodetypetxt = '开始/结束';
+            if (nodetype == "approve") {
+                nodetypetxt = "审批节点";
+                $("#iframe").attr("src", "approve_edit.html?nodeid=" + id);
+            }
+            else if (nodetype == "process") {
+                nodetypetxt = "流程节点";
+                $("#iframe").attr("src", "process_edit.html?nodeid=" + id);
+            }
+            else if (nodetype == "switch") {
+                nodetypetxt = "分支节点";
+                $("#iframe").attr("src", "switch_edit.html?nodeid=" + id);
+            }
+            else {
+                nodetypetxt = "其他";
+                $("#iframe").attr("src", "common_edit.html?nodeid=" + id); 
+            }
+
+            $("#editDialog").dialog({
+                title: '属性编辑-' + nodetypetxt+" (" + id+")",
+                height: 650, //高度
+                width: 960, //宽度
+                modal: true,
+                buttons: {
+                    "保存": function () {
+                        //debugger;
+                        //执行
+                        var iframe = document.getElementById("iframe");
+                        var iwindow = iframe.contentWindow;
+                        if (iwindow.dataSave()) {
+                            //关闭窗口;
+                            $(this).dialog("close");
+                        }
+
+                    },
+                    "关闭": function () {
+
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+
+    
+
+</body>
+</html>

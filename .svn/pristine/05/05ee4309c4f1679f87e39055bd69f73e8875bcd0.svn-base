@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "Quartz定义编辑";
+   Layout = "~/Areas/Admin/Views/Shared/_LayoutSimple.cshtml";
+}
+
+ <div class="layui-fluid">
+
+
+<form id="popupForm" action="@Url.Content("~/Admin/QuartzNet/dataSave")" method="POST" enctype="multipart/form-data" >
+
+   <input type="hidden" class="form-control" name="id" value= "@ViewBag.entity.id">
+    <div class="layui-form-item">
+        <label class="layui-form-label">调度名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="quartzname"  id="quartzname"  lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.quartzname" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">调度规则</label>
+        <div class="layui-input-block">
+            <input type="text" name="crontrigger" id="crontrigger" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.crontrigger" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">任务状态</label>
+        <div class="layui-input-block">
+            <input type="text" name="quartzstatus" id="quartzstatus"  readonly="readonly" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.quartzstatus" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">任务描述</label>
+        <div class="layui-input-block">
+            <textarea id="apiscript" name="quartznote">@ViewBag.entity.quartznote</textarea>
+            
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">Job类型</label>
+        <div class="layui-input-block">
+            <input type="text" name="jobtype" id="jobtype"  readonly="readonly" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.jobtype" />
+        </div>
+    </div>
+<div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">Job参数</label>
+        <div class="layui-input-block">
+            <input type="text" name="jobpars" id="jobpars"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.jobpars" />
+        </div>
+    </div>
+
+    </form>
+
+
+</div>
+
+
+@*  <script type="text/javascript">
+        Dropzone.options.dropzoneForm = {
+            init: function () {
+                this.on("complete", function (data) {
+                    //var res = eval('(' + data.xhr.responseText + ')');
+                    var res = JSON.parse(data.xhr.responseText);
+                });
+            }
+        };
+
+    </script>
+          *@
+
+
+
+
+
+@section scripts{
+
+
+ <script type="text/javascript">
+     layui.use(['form', 'layedit', 'jquery'], function () {
+         var form = layui.form;
+         var layer = layui.layer;
+         var layedit = layui.layedit;
+         $ = layui.jquery;
+
+         //
+         window.DataSave = function () {
+
+             //检验form对象;
+             var result = Verification("#popupForm");
+             if (result == false) {
+                 return;
+             }
+
+             if (!doCheck())
+                 return;
+
+             var test = $('#popupForm').serialize();
+             $.ajax({
+                 url: $("#popupForm").attr("Action") + "?",// + "?id=0&pubdate=&cre_date=&usetype=9999&fromtype=&title=&subtitle=&previewimg=&txt=&author=&cre_man=&mod_man=",
+                 type: "POST",
+
+                 data: $('#popupForm').serialize(),// $("#popupForm"),
+                 processData: false,
+                 //contentType: "application/json",
+                 success: function (data) {
+                     //
+                     if (data.access) {
+                         var index = parent.layer.getFrameIndex(window.name);
+                         parent.$("#iframe_handle_status").val('1');
+                         parent.layer.close(index);
+                     }
+                     else {
+                         //提示错误信息;
+                         //modalConfirm(data.access, "");
+                         layerAlert(data.msg);
+                     }
+                 },
+                 error: function (e) {
+                     parent.$("#iframe_handle_status").val('0');
+                     //
+                     layerAlert(e);
+                 }
+             });
+         }
+
+         //检查
+         function doCheck() {
+             var quartzname = $("#quartzname").val();
+             if (quartzname == undefined || quartzname == "") {
+                 layerAlert("请填写调度任务名称");
+                 return false;
+             }
+
+             var crontrigger = $("#crontrigger").val();
+             if (crontrigger == undefined || crontrigger == "") {
+                 layerAlert("请填写调度规则");
+                 return false;
+             }
+
+
+             return true;
+         }
+
+     });
+     </script>
+}

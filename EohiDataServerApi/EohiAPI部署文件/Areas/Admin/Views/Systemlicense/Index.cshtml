@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "许可证";
+}
+
+<blockquote class="layui-elem-quote layui-text" style="margin-top: 20px;">
+    许可证
+</blockquote>
+<form id="popupForm" action="@Url.Content("~/Admin/Systeminfo/Save")" method="POST" enctype="multipart/form-data" >
+
+   <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文件</label>
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn layui-btn-danger" id="test3"><i class="layui-icon"></i>请上传授权文件</button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">授权硬码</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_hardwarecode" id="system_hardwarecode"  autocomplete="off" readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.system_hardwarecode" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">授权序列号</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_licenseno" id="system_licenseno"  autocomplete="off" readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_licenseno" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">授权开始</label>
+        <div class="layui-input-block">
+             <input type="text" name="system_effdate_s" id="system_effdate_s"  autocomplete="off"  readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_effdate_s" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">授权截止</label>
+        <div class="layui-input-block">
+             <input type="text" name="system_effdate_e" id="system_effdate_e"  autocomplete="off" readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_effdate_e" />
+        </div>
+    </div>
+   
+</form>
+
+
+
+
+@section scripts{
+
+
+ <script type="text/javascript">
+     var layer;
+     //检查
+     function doCheck() {
+         var filename = $("#filename").val();
+         if (filename == undefined || filename == "") {
+             layerAlert("请填写文件");
+             return false;
+         }
+         var fileurl = $("#fileurl").val();
+         if (fileurl == undefined || fileurl == "") {
+             layerAlert("请选择文件");
+             return false;
+         }
+
+         return true;
+     }
+
+
+     layui.use(['upload', 'jquery'], function () {
+         var form = layui.form;
+         var upload = layui.upload;
+         $ = layui.jquery;
+
+
+         //指定允许上传的文件类型
+         upload.render({
+             elem: '#test3'
+           , url: "@Url.Content("~/FileUploadLicense.ashx")"
+           , accept: 'file' //普通文件
+           , done: function (res) {
+              
+               if (res.access == "false") {
+                   //res.msg;
+                   layer.msg(res.msg, {
+                       icon: 1,
+                       time: 5000 //2秒关闭（如果不配置，默认是3秒）
+                   }, function () {
+                       //history.go(0);
+                   });
+
+               }
+               else {
+                   $("#licenseno").val(res.licenseno);
+                   $("#licensedatestart").val(reslicensedatestart);
+                   $("#licensedateend").val(res.licensedateend);
+               }
+               // console.log(res)
+           }
+         });
+     });
+     </script>
+}

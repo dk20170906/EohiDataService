@@ -1,0 +1,659 @@
+﻿using MySql.Data.MySqlClient;
+using Oracle.ManagedDataAccess.Client;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace EohiDataServerApi
+{
+    public class ApiHost
+    {
+        public string _funId = "";
+
+        public ApiHost()
+        {
+        }
+
+        public void printout(string msg)
+        {
+            //Common.Base.NFConsoleHelper.printout(msg);
+            //NFConsoleHelper.printout(msg);
+        }
+
+        public Hashtable requestParas;
+
+        public ApiResult apiResult;
+
+        //脚本集合
+        public Dictionary<string, string> _scriptDictionary = new Dictionary<string, string>();
+
+        //页面参数;
+        public ParameterManager _pageParamterManager = new ParameterManager();
+
+        //多线程
+        private Dictionary<string, System.Threading.Thread> _threadDictionary = new Dictionary<string, System.Threading.Thread>();
+        private Dictionary<string, bool> _threadStopFlagDictionary = new Dictionary<string, bool>();
+
+        //串口;
+        private Dictionary<string, System.IO.Ports.SerialPort> _comDictionary = new Dictionary<string, System.IO.Ports.SerialPort>();
+        //串口脚本;
+        private Dictionary<string, string> _comScriptsDictionary = new Dictionary<string, string>();
+        //串口收到的数据;
+        private Dictionary<string, StringBuilder> _comValuesDictionary = new Dictionary<string, StringBuilder>();
+
+
+        #region 数据转换
+        public int ConvertToInt(object obj)
+        {
+            return ConvertToInt(obj, 0);
+        }
+        public int ConvertToInt(object obj, int defaultValue)
+        {
+            try
+            {
+                return Convert.ToInt32(obj);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public double ConvertToDouble(object obj)
+        {
+            return ConvertToDouble(obj, 0);
+        }
+        public double ConvertToDouble(object obj, double defaultValue)
+        {
+            try
+            {
+                return Convert.ToDouble(obj);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public Decimal ConvertToDecimal(object obj)
+        {
+
+            return ConvertToDecimal(obj, 0);
+           
+        }
+        public Decimal ConvertToDecimal(object obj, Decimal defaultValue)
+        {
+            try
+            {
+                return Convert.ToDecimal(obj);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public DateTime ConvertToDateTime(string v)
+        {
+            try
+            {
+                return Convert.ToDateTime(v.ToString());
+            }
+            catch (Exception)
+            {
+                return new DateTime(1901, 1, 1);
+            }
+        }
+
+        public string ConvertToString(object obj)
+        {
+            return Convert.ToString(obj);
+        }
+
+        /// <summary>  
+        /// 获得字符串中开始和结束字符串之间的值  
+        /// </summary>  
+        /// <param name="portname">字符串</param>  
+        /// <param name="s">开始</param>  
+        /// <param name="e">结束</param>  
+        /// <returns></returns>   
+        public string MatchString(string str, string s, string e)
+        {
+            //string str= ReadComValue(portname);
+            Regex rg = new Regex("(?<=(" + s + "))[.\\s\\S]*?(?=(" + e + "))", RegexOptions.Multiline | RegexOptions.Singleline);
+            return rg.Match(str).Value;
+        }
+
+        public Color ConvertToColor(int argb)
+        {
+            return Color.FromArgb(argb);
+        }
+        public Color ConvertToColor(int red, int green, int blue)
+        {
+            return Color.FromArgb(red, green, blue);
+        }
+        public Color ConvertToColorFromHex(string sColor)
+        {
+            return System.Drawing.ColorTranslator.FromHtml(sColor);
+        }
+
+        private Random ran = new Random();
+
+        /// <summary>
+        /// 获取随机数字
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public int RandomInt(int min, int max)
+        {
+            //int.Parse(DateTime.Now.ToString("HHmmssfff")));
+            int RandKey = ran.Next(min, max);
+            return RandKey;
+        }
+
+
+
+        public string ConverDateToString(DateTime dt, string format)
+        {
+            return dt.ToString(format);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 获取来自api请求的参数
+        /// </summary>
+        /// <param name="paraname"></param>
+        /// <returns></returns>
+        public string GetRequestPara(string paraname)
+        {
+            if (this.requestParas == null || this.requestParas.Count <= 0)
+                return "";
+
+            if (this.requestParas.ContainsKey(paraname))
+                return this.requestParas[paraname].ToString();
+
+            return "";
+        }
+
+
+        #region 页面参数
+        public ParameterManager NewPars()
+        {
+            ParameterManager pm = new ParameterManager();
+            return pm;
+        }
+
+        public string GetParameterValue(string key)
+        {
+            if (this._pageParamterManager != null)
+            {
+                if (this._pageParamterManager._dic.ContainsKey(key))
+                    return _pageParamterManager._dic[key].value.ToString();
+            }
+            return "";
+        }
+
+        public void SetParameterValue(string key, object value)
+        {
+            if (this._pageParamterManager == null)
+                this._pageParamterManager = new ParameterManager();
+
+
+            if (this._pageParamterManager._dic.ContainsKey(key))
+            {
+                Parameter p = _pageParamterManager._dic[key];
+                //= value.ToString();
+                p.value = value;
+            }
+            else
+            {
+                //
+                this._pageParamterManager.Add(key, value);
+            }
+        }
+        #endregion
+
+
+        #region 脚本执行
+        //执行脚本;
+        public object ExecScript(string scriptnames)
+        {
+            if (scriptnames.Length <= 0)
+                return null;
+
+
+            string[] eventList = scriptnames.Split(';');
+
+            for (int i = 0; i < eventList.Count(); i++)
+            {
+                try
+                {
+
+                    string scrpitName = eventList[i];
+                    if (scrpitName.Length <= 0)
+                        continue;
+                    string scrpitTxt = "";
+                    if (this._scriptDictionary.ContainsKey(scrpitName))
+                        scrpitTxt = this._scriptDictionary[scrpitName];
+                    if (scrpitTxt.Length <= 0)
+                        continue;
+
+                    var actual = IronPythonManager.ScriptExec(this, scrpitTxt);
+                    if (actual == null)
+                    {
+                        //memoEdit_Print.Text = "> 无返回结果";
+                    }
+                    else
+                    {
+                        if (eventList.Count() <= 1)
+                            return actual;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Common.Util.NocsMessageBox.Error(ex.Message);
+                    //MessageBox.Show(ex.Message);
+                    //this.memoEdit_Print.ForeColor = Color.Red;
+                    //memoEdit_Print.Text = "> Error:" + ex.ToString();
+                }
+            }
+
+            return null;
+        }
+        #endregion
+
+        #region 数据库操作;
+
+        public DataTable SQLGetDataTable(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<SqlParameter> sqlPars = new List<SqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    sqlPars.Add(new SqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                }
+
+                return DBHelper.getDataTable(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                //throw exp;
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// 执行语句，返回受影响的行数；
+        /// select 行数不返回;
+        /// </summary>
+        /// <param name="sqltxt"></param>
+        /// <param name="pars"></param>
+        /// <returns></returns>
+        public int SQLExecuteNonQuery(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<SqlParameter> sqlPars = new List<SqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    sqlPars.Add(new SqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                }
+
+                return DBHelper.ExecuteNonQuery(
+              connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// 返回第一行第一列的值，如果无返回值，则返回-1;
+        /// </summary>
+        /// <param name="sqltxt"></param>
+        /// <param name="pars"></param>
+        /// <returns></returns>
+        public object SQLExecuteScalar(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<SqlParameter> sqlPars = new List<SqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    sqlPars.Add(new SqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                }
+
+                object obj = DBHelper.ExecuteScalar(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+
+                return obj;
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+            return null;
+        }
+
+
+        public DataTable OracleGetDataTable(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<OracleParameter> sqlPars = new List<OracleParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith(":"))
+                    {
+                        sqlPars.Add(new OracleParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new OracleParameter(":" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                return OracleHelper.ExecuteDataTable(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+
+            return null;
+        }
+
+
+        public int OracleExecuteNonQuery(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<OracleParameter> sqlPars = new List<OracleParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith(":"))
+                    {
+                        sqlPars.Add(new OracleParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new OracleParameter(":" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                return OracleHelper.ExecuteNonQuery(
+              connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+
+            return -1;
+        }
+
+
+
+        public object OracleExecuteScalar(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<OracleParameter> sqlPars = new List<OracleParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith(":"))
+                    {
+                        sqlPars.Add(new OracleParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new OracleParameter(":" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                object obj = OracleHelper.ExecuteScalar(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+
+                return obj;
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+            return null;
+        }
+
+
+
+        public DataTable MysqlGetDataTable(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<MySqlParameter> sqlPars = new List<MySqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith("@"))
+                    {
+                        sqlPars.Add(new MySqlParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new MySqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                return MySQLHelper.ExecuteDataTable(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+
+            return null;
+        }
+
+
+        public int MysqlExecuteNonQuery(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<MySqlParameter> sqlPars = new List<MySqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith("@"))
+                    {
+                        sqlPars.Add(new MySqlParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new MySqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                return MySQLHelper.ExecuteNonQuery(
+              connstring,
+               sqltxt,
+               sqlPars.ToArray());
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+
+            return -1;
+        }
+
+
+
+        public object MysqlExecuteScalar(string connstring, string sqltxt, ParameterManager pars)
+        {
+            try
+            {
+
+                List<MySqlParameter> sqlPars = new List<MySqlParameter>();
+                foreach (KeyValuePair<string, Parameter> kv in pars._dic)
+                {
+                    if (kv.Value.parname.Trim().StartsWith("@"))
+                    {
+                        sqlPars.Add(new MySqlParameter("" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                    else
+                    {
+                        sqlPars.Add(new MySqlParameter("@" + kv.Value.parname, kv.Value.value.ToString()));
+                    }
+                }
+
+                object obj = MySqlHelper.ExecuteScalar(
+               connstring,
+               sqltxt,
+               sqlPars.ToArray());
+
+                return obj;
+            }
+            catch (SqlException exp)
+            {
+                //Common.Util.NocsMessageBox.Message(exp.Message);
+                throw exp;
+            }
+            return null;
+        }
+
+
+        #endregion
+
+
+        #region HTTP POST/GET
+        public string HttpPost(string url, ParameterManager pm)
+        {
+            return WebHttpHelper.HttpPost(url, pm);
+        }
+
+        public string HttpPostXml(string url, string strPost)
+        {
+            return WebHttpHelper.HttpPostXml(url, strPost);
+        }
+
+        public string HttpGet(string url)
+        {
+            return WebHttpHelper.HttpGet(url);
+        }
+        #endregion
+
+        #region WebService
+
+        public object  WebServiceCall(string url, string method,ParameterManager pm)
+        {
+             //*   string url = "http://www.webservicex.net/globalweather.asmx" ;   
+             //*   string[] args = new string[2] ;   
+             //*   args[0] = "Hangzhou";   
+             //*   args[1] = "China" ;   
+             //*   object result = WebServiceHelper.InvokeWebService(url ,"GetWeather" ,args) ;   
+             //*   Response.Write(result.ToString());  
+
+            object[] args = new object[pm._dic.Count];
+            int i = 0;
+            foreach (var item in pm._dic)
+            {
+                args[i] = item.Value.value;
+                i++;
+            }
+            object result = WebServiceHelper.InvokeWebService(url, method, args);
+
+            return result;// retString;
+        }
+        #endregion
+
+
+        public string GetDataLinkString(string linkname)
+        {
+            try
+            {
+                string strSql = @"select top 1  * from api_links where linkname =@linkname ";
+                //构建一个哈希表，把参数依次压入
+                SqlParameter[] parames = new SqlParameter[]
+                {
+                    new SqlParameter("@linkname", linkname)
+                };
+                DataTable dt = DBHelper.getDataTable(strSql, parames);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    return dt.Rows[0]["linkstring"].ToString();
+                }
+                else
+                    return "";
+
+            }
+            catch (Exception exp)
+            {
+                return "";
+            }
+            return "";
+        }
+
+        #region influxdb 
+
+        public string InfluxDBQuery(string url,string database,string sql)
+        {
+            //var username = "admin";
+            //var password = "admin";
+            //InfluxDBHelper influxDBHelper = new InfluxDBHelper(url, username, password, "modbusdata");
+            var str = InfluxDBHelper.Query(url, database, sql);
+           
+           
+            return str;
+        }
+        #endregion
+    }
+}

@@ -1,0 +1,19 @@
+﻿<table data-toggle="topjui-treegrid"
+       data-options="id:'menuTgset',
+        idField:'guid',
+        treeField:'text',
+          url: _ctx + '../Data/Menu/MenuJsonDataByUserGuid?pguid=',
+          expandUrl: _ctx + '../Data/Menu/MenuJsonDataByUserGuid?pguid={guid}',
+           ">
+    <thead>
+        <tr>
+            <th data-options="field:'id',title:'id',checkbox:true"></th>
+            <th data-options="field:'text',title:'菜单名称',width:200"></th>
+            <th data-options="field:'state',title:'默认状态',width:80"></th>
+            <th data-options="field:'iconCls',title:'菜单样式',width:80"></th>
+            <th data-options="field:'url',title:'URL',width:200"></th>
+            <th data-options="field:'guid',title:'GUID',width:130"></th>
+            <th data-options="field:'pguid',title:'PGUID',width:130"></th>
+        </tr>
+    </thead>
+</table>

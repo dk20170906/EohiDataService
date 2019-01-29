@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WFServerWeb
+{
+    public class CReturnToStart
+    {
+        /// <summary>
+        /// 将工作流流转到开始节点
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="CurrentNodeID">当前节点ID</param>
+        public static void ReturnToStart(string InstanceID, string CurrentNodeID, string StartNodeID)
+        {
+            //将当前所有节点的审批状态设置为完成状态
+            CCommonFunc.SetInstanceApprovalComplete(InstanceID);
+
+            CGoNextNode.NodeTransfer(InstanceID, CurrentNodeID, StartNodeID);
+        }
+    }
+}

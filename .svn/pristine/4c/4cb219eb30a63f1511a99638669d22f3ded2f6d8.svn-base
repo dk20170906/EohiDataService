@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<repositories>
+  <repository path="..\EohiDataServer.Web\packages.config" />
+  <repository path="..\EohiDataServerApi\packages.config" />
+</repositories>

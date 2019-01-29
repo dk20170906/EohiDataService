@@ -1,0 +1,290 @@
+﻿/**
+ * Created by 郭广平 2018.05.16
+ */
+
+(function ($) {
+
+    /**
+     * 默认参数
+     */
+    var defaultOpts = {
+        item: '',
+        html: '显示文本',
+        color: '#FFFFFF',
+        fontsize: "32px"
+    };
+
+    /**
+     * 定义类
+     */
+    var VPercentBar = function (options) {
+        this.options = $.extend({}, defaultOpts, options);
+
+        //记录item值;
+        defaultOpts.item = this.options.item;
+
+        div = undefined;
+        
+        this.init();
+    }
+
+    VPercentBar.prototype = {
+        init: function () {
+            var self = this;
+           
+            //console.log('test');
+            var pdiv = this.options.item;
+            var itemno = this.options.itemno;
+            var dataPanel2 = $('<div class="data-item-percent-bar"  ><div class="percentage-bar"> <div  class="percentage-bar-scroll" id="data-item-percent-bar-' + itemno + '"></div>  </div></div>');
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+            dataPanel2.css({
+                width: width,
+                height: height,
+                top: 0,
+                left: 0,
+                position: 'absolute',
+                //color: this.options.viewoption.color,
+                //"font-size": this.options.viewoption.fontsize,
+            });
+            self.appendHandler(dataPanel2, pdiv);
+            self.div = dataPanel2;
+
+
+            var parentHeight = 60;
+            if (this.options.viewdata.parentHeight != undefined)
+                parentHeight = this.options.viewdata.parentHeight;
+            //                                      'linear-gradient(to right, #009cff 0%,#fffc00 100%)',
+            $('#data-item-percent-bar-' + itemno).LineProgressbar({
+                //$('.percentage-bar-scroll').LineProgressbar({
+                percentage: 0,
+                backgroundColor: 'transparent',
+                fillBackgroundColor: 'linear-gradient(to right,' + this.options.viewoption.bargradientbeforecolorandmark + ',' + this.options.viewoption.bargradientendcolorandmark  + ')',
+                height: '100%',
+                parentHeight: parentHeight + 'px'
+            });
+          
+           
+            //加载数据
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+                    //检查定时器
+                    self.setData_apidata();
+                }
+            }
+           
+            /* */
+        }
+        ,
+        /**
+         * 插入容器
+         */
+        appendHandler: function (handlers, target) {
+            for (var i = 0; i < handlers.length; i++) {
+                el = handlers[i];
+                $(target).append(el);
+            }
+        }
+        ,
+        /*
+        * 更改大小
+        */
+        resize: function () {
+           
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+
+            //self.resizeDiv = undefined;//拖拽面板
+            //更改数据面板大小
+
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+
+            //更改div
+            $(pdiv).children('div.data-item-percent-bar').css({
+                width: width,
+                height: height
+            });
+
+            //self.resizeDiv.css({
+            //    display: 'none'
+            //});
+
+        }
+
+         ,
+        bind: function (object, func) {
+            return function () {
+                return func.apply(object, arguments);
+            }
+        }
+        ,
+
+        /*
+      * 设置数据
+      */
+        setViewdata: function (viewdata) {
+            var self = this;
+            self.options.viewdata = $.extend({}, self.options.viewdata, viewdata);
+            //加载数据
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+                    //检查定时器
+                    self.setData_apidata();
+                }
+            }
+        }
+        ,
+        setViewoption: function (option) {
+            this.options = $.extend({}, defaultOpts, option);
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+            //更改div
+            var dataview = $(pdiv).children('div.data-item-percent-bar');
+
+            //更改文本内容
+            //dataview.html(this.options.html);
+            dataview.css({
+                color: this.options.color,
+                "font-size": this.options.fontsize,
+            });
+
+            //加载数据
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+                    //检查定时器
+                    self.setData_apidata();
+                }
+            }
+            //else
+            //    dataview.html(this.options.viewoption.html)
+            
+        }
+        ,
+        setData_jsondata: function () {
+            var self = this;
+            var viewdata = self.options.viewdata;
+            //x y s
+            var datamapping = viewdata.datamapping;
+            //从
+            var data = viewdata.datajson;
+            self.DealData(data);
+        }
+        ,
+        setData_apidata: function () {
+            var self = this;
+            var viewdata = self.options.viewdata;
+            var url = viewdata.dataapi.url;
+            //从api获取数据
+            $.ajax({
+                url: url,
+                type: "post",
+                async: true,
+                data: {
+                },
+                success: function (data) {
+                    self.DealData(data);
+
+                    //自动请求状态; intervalloading 
+                    //自动请求间隔秒数;  intervalsecond
+                    if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                        var times = viewdata.dataapi.intervalsecond * 1000;
+
+                        setTimeout(self.bind(self, self.setData_apidata), times);
+                    }
+                },
+                error: function (e) {
+                    //自动请求状态; intervalloading 
+                    //自动请求间隔秒数;  intervalsecond
+                    if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                        var times = viewdata.dataapi.intervalsecond * 1000;
+
+                        setTimeout(self.bind(self, self.setData_apidata), times);
+                    }
+                }
+            });
+        }
+        ,
+        DealData: function (data) {
+            var self = this;
+            //x y s
+            var datamapping = self.options.viewdata.datamapping;
+            //data=d;
+            var dx = [];
+            for (var b = 0; b < data.length; b++) {
+                var di = data[b];
+                dx.push(di[datamapping.value]);
+            }
+
+            if (dx.length <= 0)
+                dx.push(0);
+            var p = dx[0];
+            //var processvalue = Math.round(p);
+            var processvalue = parseFloat(parseFloat(p).toFixed(2));
+           // p = processvalue.toFixed(1);
+            if (processvalue > 100)
+                processvalue = 100;
+            ////更改进度值;
+            //$('#data-item-percent-bar-' + itemno+' .proggress').css({
+            //    width: p,
+            //    backgroundColor: 'transparent',
+            //    fillBackgroundColor: 'linear-gradient(to right, #009cff 0%,#fffc00 100%)',
+            //    height: '100%',
+            //    parentHeight: '60px'
+            //});
+            var itemno = self.options.itemno;
+            var el = $('#data-item-percent-bar-' + itemno);
+            //var progressFill = $('#data-item-percent-bar-' + itemno + ' .proggress');
+            //var percentCount = $('#data-item-percent-bar-' + itemno + ' .proggress');
+
+
+            var percentCount = $(el).find('.percentCount');
+            var progressFill = $(el).find('.proggress');
+            var progressBar = $(el).find('.progressbar');
+           
+            // Progressing
+            percentCount.animate({
+                left: processvalue + "%"
+            },
+            {
+                duration: 1000
+            })
+            progressFill.animate(
+				{
+				    width: processvalue + "%"
+				},
+				{
+				    step: function (x) {
+				        //if (options.ShowProgressCount) {
+                        $(el).find(".percentCount").text(processvalue + "%");
+				        //}
+				    },
+				    duration: 1000
+				}
+			);
+
+        }
+    }
+    window.VPercentBar = VPercentBar;
+
+})(jQuery);

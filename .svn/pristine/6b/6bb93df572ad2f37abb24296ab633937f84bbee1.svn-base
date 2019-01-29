@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <!-- TopJUI框架样式 -->
+    <link type="text/css" href="../../topjui/css/topjui.core.min.css" rel="stylesheet">
+    <link type="text/css" href="../../topjui/themes/default/topjui.blue.css" rel="stylesheet" id="dynamicTheme" />
+    <!-- FontAwesome字体图标 -->
+    <link type="text/css" href="../../static/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- layui框架样式 -->
+    <link type="text/css" href="../../static/plugins/layui/css/layui.css" rel="stylesheet" />
+    <!-- jQuery相关引用 -->
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.cookie.js"></script>
+    <!-- TopJUI框架配置 -->
+    <script type="text/javascript" src="../../static/public/js/topjui.config.js"></script>
+    <!-- TopJUI框架核心-->
+    <script type="text/javascript" src="../../topjui/js/topjui.core.min.js"></script>
+    <!-- TopJUI中文支持 -->
+    <script type="text/javascript" src="../../topjui/js/locale/topjui.lang.zh_CN.js"></script>
+    <!-- layui框架js -->
+    <script type="text/javascript" src="../../static/plugins/layui/layui.js" charset="utf-8"></script>
+
+
+</head>
+
+<body>
+
+    <div data-toggle="topjui-layout" data-options="fit:true">
+        <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+            <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+                <div title="基本信息" data-options="iconCls:'fa fa-th'">
+                    <div class="topjui-fluid">
+                        <fieldset>
+                            <legend>基本信息</legend>
+                        </fieldset>
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <label class="topjui-form-label">节点文本</label>
+                                <div class="topjui-input-block">
+                                    <input type="text" name="label" id="label" data-toggle="topjui-textbox"
+                                           data-options="required:true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <label class="topjui-form-label">节点备注</label>
+                                <div class="topjui-input-block">
+                                    <input type="text" name="remark" id="remark" data-toggle="topjui-textarea">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div title="路由计算" data-options="iconCls:'fa fa-th'">
+                    <div class="topjui-fluid">
+                        <fieldset>
+                            <legend>路由结果计算脚本</legend>
+                        </fieldset>
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md12">
+                                <blockquote class="layui-elem-quote explain">
+                                    <p>
+                                        定义审批操作人
+                                        格式{userid,username}
+                                    </p>
+                                    <p>
+                                        wfhost.getuser("001,002,....") 用户userid
+                                    </p>
+                                    <p>
+                                        wfhost.getroleuser("角色1,角色2") 权限角色名称
+                                    </p>
+                                    <p>
+                                        wfhost.getdepartmentuser("部门1,部门2") 部门名称
+                                    </p>
+                                    <p>
+                                        通过sql语句查询
+                                    </p>
+                                    <p>
+                                        wfhost.getDataTable("select userid,username from xxxxxxx")
+                                    </p>
+                                    <p>
+
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
+
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <label class="topjui-form-label">脚本</label>
+                                <div class="topjui-input-block">
+                                    <textarea id="switchscript"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div title="路由定义" data-options="iconCls:'fa fa-th'">
+                    <table id="switchItemsGrid"></table>
+                </div>
+                <div title="启动条件" data-options="iconCls:'fa fa-th'">
+                    <div class="topjui-fluid">
+                        <fieldset>
+                            <legend>启动条件</legend>
+                        </fieldset>
+                        <div class="topjui-row">
+                            <div class="topjui-col-sm12">
+                                <label class="topjui-form-label">脚本</label>
+                                <div class="topjui-input-block">
+                                    <textarea id="flowscriptswitchitem"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 可编辑表格工具栏 -->
+    <div id="switchItemsGrid-toolbar" data-options="grid:{
+           type:'edatagrid',
+           id:'switchItemsGrid'
+       }" class="topjui-toolbar">
+        <a href="javascript:void(0)" id="add">新增</a>
+
+    </div>
+
+
+</body>
+
+
+<!-- Ueditor编辑器插件 -->
+<script type="text/javascript" src="../../../static/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="../../../static/plugins/ueditor/ueditor.all.min.js"></script>
+
+<link rel="stylesheet" href="../../../../Scripts/doc/docs.css" />
+<link rel="stylesheet" href="../../../../Scripts/lib/codemirror.css" />
+<link rel="stylesheet" href="../../../../Scripts/addon/fold/foldgutter.css" />
+<link rel="stylesheet" href="../../../../Scripts/theme/night.css" />
+<script src="../../../../Scripts/lib/codemirror.js"></script>
+<script src="../../../../Scripts/addon/fold/foldcode.js"></script>
+<script src="../../../../Scripts/addon/fold/foldgutter.js"></script>
+<script src="../../../../Scripts/addon/fold/brace-fold.js"></script>
+<script src="../../../../Scripts/addon/fold/xml-fold.js"></script>
+<script src="../../../../Scripts/addon/fold/indent-fold.js"></script>
+<script src="../../../../Scripts/addon/fold/markdown-fold.js"></script>
+<script src="../../../../Scripts/addon/fold/comment-fold.js"></script>
+<script src="../../../../Scripts/mode/javascript/javascript.js"></script>
+<script src="../../../../Scripts/mode/xml/xml.js"></script>
+<script src="../../../../Scripts/mode/css/css.js"></script>
+<script src="../../../../Scripts/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../../../../Scripts/mode/python/python.js"></script>
+<script src="../../../../Scripts/mode/markdown/markdown.js"></script>
+
+<style>
+    .some-css {
+        color: red;
+        line-height: 2;
+    }
+</style>
+
+<style type="text/css">
+    .CodeMirror {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+</style>
+<!--//启动条件-->
+<script type="text/javascript">
+    var tejs = document.getElementById("flowscriptswitchitem");
+    window.editorjs_process_flowscriptswitchitem = CodeMirror.fromTextArea(tejs, {
+        mode: "python",
+        theme: "night",
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    });
+</script>
+
+<script type="text/javascript">
+    var tejs = document.getElementById("switchscript");
+    window.editorjs_process_switchscript  = CodeMirror.fromTextArea(tejs, {
+        mode: "python",
+        theme: "night",
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    });
+
+</script>
+
+<script type="text/javascript">
+    var nodeid = "";
+    var nodedata = undefined;
+    $(function () {
+        //获取nodeid 对应的数据信息;
+        nodeid = getNodeid();
+        //var temp = $("#" + nodeid, parent);
+        //$('#label').textbox('setValue', parent.$("#" + nodeid).attr("data-label"));
+
+        //if (parent.node_attr_data != undefined) {
+        //    nodedata = parent.node_attr_data[nodeid];
+        //}
+
+
+        //判断是否存在节点数据;
+        if (parent.node_attr_data[nodeid] == undefined) {
+            parent.node_attr_data[nodeid] = {};
+            parent.node_attr_data[nodeid].nodeid = nodeid;
+            parent.node_attr_data[nodeid].label = parent.$("#" + nodeid).attr("data-label");
+            parent.node_attr_data[nodeid].remark = "";
+
+        }
+
+        //
+        nodedata = parent.node_attr_data[nodeid];
+
+        //
+        $('#label').textbox('setValue', nodedata.label);
+        $('#remark').textbox('setValue', nodedata.remark);
+
+        if (nodedata.switchscript == undefined)
+            nodedata.switchscript = "";
+        if (nodedata.flowscript == undefined)
+            nodedata.flowscript = "";
+
+        window.editorjs_process_switchscript.setValue(nodedata.switchscript);
+
+        window.editorjs_process_flowscriptswitchitem.setValue(nodedata.flowscript);
+
+        initGrid();
+    });
+    function getNodeid() {
+        //
+        return GetRequest()["nodeid"];
+    }
+
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
+
+    function initGrid() {
+        if (nodedata.switchitems == undefined)
+            nodedata.switchitems = [];
+
+        $("#switchItemsGrid").iDatagrid({
+            id: 'switchItemsGrid',
+            //idField : 'itemid',
+            columns: [[
+                { field: 'switchid', title: 'ID', sortable: true },
+                { field: 'switchname', title: '操作名称', sortable: true },
+                { field: 'switchnote', title: '描述', sortable: true },
+                { field: 'operate', title: '操作', sortable: true, formatter: operateFormatter, width: 230 }
+            ]],
+            data: nodedata.switchitems
+        });
+    }
+    function operateFormatter(value, row, index) {
+        htmlstr = '<button class="layui-btn layui-btn-xs" id="test" onclick="openEditDiag_item(' + index + ')">编辑</button>';
+        htmlstr += '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="delete_item(' + index + ')">删除</button>';
+
+        return htmlstr;
+    }
+
+
+    function dataSave() {
+
+        var bsaved = false;
+
+        //保存节点标示
+        nodedata.label = $('#label').textbox('getValue');
+        nodedata.remark = $('#remark').textbox('getValue');
+        // 路由计算脚本
+        nodedata.switchscript = window.editorjs_process_switchscript.getValue();
+
+        nodedata.flowscript = window.editorjs_process_flowscriptswitchitem.getValue();
+           
+
+        //元素显示更改；
+        parent.$("#" + nodeid).attr("data-label", nodedata.label);
+        parent.$("#" + nodeid + " .switch-i").html(nodedata.label);
+
+
+        return true;
+    }
+
+
+    //删除
+    function delete_item(rowIndex) {
+        $.messager.confirm('提示框', '是否确定删除当前数据?', function (data) {
+            if (data) {
+                $('#switchItemsGrid').iDatagrid('deleteRow', rowIndex);
+            }
+        });
+    }
+
+    //打开修改对话框
+    function openEditDiag_item(rowIndex) {
+        var opts = {
+            id: 'editDialog',
+            title: '编辑数据',
+            width: 800,
+            height: 500,
+            closed: false,
+            cache: false,
+            href: _ctx + '/html/workflow/switchitem_edit.html',
+            modal: true,
+            buttons: [{
+                text: '保存',
+                iconCls: 'fa fa-save',
+                btnCls: 'topjui-btn-blue',
+                handler: function (data) {
+                    //加入表格;
+                    $('#switchItemsGrid').iDatagrid('updateRow', {
+                        index: rowIndex,
+                        row: {
+                            switchname: $("#switchname").val(),
+                            switchnote: $("#switchnote").val()
+                        }
+                    });
+
+                    $('#editDialog').iDialog('close');
+
+                }
+            }, {
+                text: '关闭',
+                iconCls: 'fa fa-close',
+                btnCls: 'topjui-btn-red',
+                handler: function () {
+                    $('#editDialog').iDialog('close');
+                    //window.location.reload();
+                }
+            }],
+            onLoad: function () {
+                //itemid
+                var row = $('#switchItemsGrid').datagrid('getData').rows[rowIndex];
+                //读取;
+                $('#switchname').iTextbox('setValue', row.switchname);
+                $('#switchnote').iTextbox('setValue', row.switchnote);
+
+            }
+        };
+        $('#editDialog').iDialog('openDialog', opts);
+    }
+
+
+    //新建;
+    $("#add").iMenubutton({
+        method: 'openDialog',
+        extend: '#switchItemsGrid-toolbar',
+        iconCls: 'fa fa-plus',
+        btnCls: 'topjui-btn-green',
+        dialog: {
+            id: 'addDialog',
+            title: '新增',
+            width: 800,
+            height: 500,
+            href: _ctx + '/html/workflow/switchitem_edit.html',
+            buttonsGroup: [
+                {
+                    text: '保存',
+                    btnCls: 'topjui-btn-brown',
+                    iconCls: 'fa fa-plus',
+                    handler: function () {
+                        //加入表格;
+                        $('#switchItemsGrid').iDatagrid('appendRow', {
+                            switchid: NewGuid(),
+                            switchname: $("#switchname").val(),
+                            switchnote: $("#switchnote").val()
+
+                        });
+
+                        $('#addDialog').iDialog('close');
+                    }
+                }
+            ],
+            onLoad: function () {
+            }
+        }
+    });
+
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    function NewGuid() {
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+</script>
+
+</html>
+
+
+

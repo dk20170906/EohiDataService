@@ -1,0 +1,44 @@
+@charset"utf-8";
+
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+
+}
+/*html5新增标签样式初始化*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block;}
+
+/*reset css*/
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,pre,a,code,del,em,img,strong,sub,sup,b,u,i,dl,dt,dd,ol,ul,li,fieldset,form,label,table,tbody,tfoot,thead,tr,th,td,article,
+aside, details,figcaption,figure,footer,header,hgroup, menu,nav,section{margin: 0;padding: 0;word-wrap: break-word;word-break: break-all;border: 0;outline: 0;font-size: 100%;vertical-align: baseline;}
+table{border-collapse: collapse;border-spacing: 0}
+input[type="checkbox"],input[type="radio"]{margin: 0; vertical-align: middle;}
+input[type="submit"], input[type="reset"], input[type="button"]{-webkit-appearance:none; resize: none;}
+input,select,button{
+    background: white;
+    outline: none;
+    border:none;
+}
+ol,ul{list-style: none}
+th,td{vertical-align: middle}
+em,i{font-style: normal;}
+strong{font-weight: normal;}
+a{text-decoration:none; color:#666; font-family: Microsoft YaHei,Tahoma,Arial,sans-serif;}
+a:hover{ text-decoration:none;}
+h1, h2, h3, h4, h5, h6{ font-size:100%; font-family: Microsoft YaHei;}
+img{border: none;}
+
+body{width:100%;font-family: Microsoft YaHei,Tahoma,Arial,sans-serif;font-size:12px; color:#555; background-color:#FFFFFF;}
+/*清除浮动*/
+.clearfix:after{content:""; display:block; visibility:hidden; height:0; clear:both;}
+.clearfix{zoom:1;}
+.clearfix:before,.clearfix:after,.cf:before,.cf:after{ display: block; content: " ";}
+.clearfix:after,.cf:after{ clear: both;}
+.clearfix,.cf{ zoom: 1;}
+
+.fl{float:left}
+.fr{float:right;}
+
+
+/*容器*/
+.wrapper{width:1200px; margin:0 auto;}

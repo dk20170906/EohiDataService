@@ -1,0 +1,211 @@
+﻿using EohiDataServerApi.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace EohiDataServerApi.Areas.ThreeD.Controllers
+{
+    public class MenuController : Controller
+    {
+        EFDBHelper<api_menu> dbhelper = new EFDBHelper<api_menu>();
+        private static List<api_menu> allListMenu = new List<api_menu>();
+        public JsonResult MenuJsonDataRoot(string pguid)
+        {
+            var listMenu = dbhelper.GetAll(u => u.pguid == pguid, u => u.id);
+
+            return Json(listMenu, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 菜单样式
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public string GetMenuPatter()
+        {
+            allListMenu = dbhelper.GetAll<api_menu>();
+            List<MenuIconCls> list = new List<MenuIconCls>();
+            List<string> listKey = new List<string>();
+            if (allListMenu.Count > 0)
+            {
+                allListMenu.ForEach(u =>
+                {
+                    MenuIconCls menuIconCls = new MenuIconCls();
+                    menuIconCls.Key = u.iconCls;
+                    menuIconCls.LconCls = u.iconCls;
+                    if (!listKey.Contains(u.iconCls))
+                    {
+                        listKey.Add(u.iconCls);
+                        list.Add(menuIconCls);
+                    }
+                });
+            }
+            return JsonConvert.SerializeObject(list);
+        }
+
+        public JsonResult GetApiMenuById(int id)
+        {
+            var apimenu = dbhelper.FindById(id);
+            return Json(apimenu, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult SaveMenu(string text, string state, string iconCls, string url, string guid, string pguid)
+        {
+            if (guid != null && guid != "" && guid.Length > 0)
+            {
+                api_menu api_Menu = dbhelper.GetAll(u => u.guid == guid, u => u.id).FirstOrDefault();
+
+                if (api_Menu != null)
+                {
+                    api_Menu.text = text;
+                    api_Menu.state = state;
+                    api_Menu.iconCls = iconCls;
+                    api_Menu.url = url;
+                    api_Menu.guid = guid;
+                    api_Menu.pguid = pguid;
+                    dbhelper.Update(api_Menu);
+                }
+            }
+            else
+            {
+                var menu = new api_menu()
+                {
+                    text = text,
+                    state = state,
+                    iconCls = iconCls,
+                    url = url,
+                    guid = Guid.NewGuid().ToString().ToUpper(),
+                    pguid = ""
+                };
+                dbhelper.Insert(menu);
+
+            }
+            int m = dbhelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，保存成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(m, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult DeleteApiMenu(int id)
+        {
+            int m = GetDeleteIds(id);
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，删除成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                statusCode = 300,
+                title = "操作提示",
+                message = "删除失败！"
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public int GetDeleteIds(int id)
+        {
+            try
+            {
+                int m = 0;
+                if (id > 0)
+                {
+                    api_menu api_Menu = dbhelper.FindById(id);
+
+                    if (api_Menu != null && api_Menu.pguid != "")
+                    {
+                        dbhelper.Delete(api_Menu);
+                        m += dbhelper.SaveChanges();
+                        var api_Menum = dbhelper.FirstOrDefault(u => u.pguid == api_Menu.guid);
+                        if (api_Menum != null)
+                        {
+                            dbhelper.Delete(api_Menum);
+                            m += dbhelper.SaveChanges();
+                            GetDeleteIds(api_Menum.id);
+                        }
+                    }
+                    List<api_menu> api_Menu1 = dbhelper.GetAll(u => u.pguid == api_Menu.pguid, u => u.id);
+                    if (api_Menu1 != null && api_Menu1.Count > 0)
+                    {
+
+                    }
+                    else
+                    {
+                        api_menu api_Menu11 = dbhelper.FirstOrDefault(u => u.guid == api_Menu.pguid);
+                        if (api_Menu11 != null && api_Menu11.id > 0)
+                        {
+                            api_Menu11.state = "open";
+                            dbhelper.Update(api_Menu11);
+                            dbhelper.SaveChanges();
+                        }
+                    }
+                }
+                return m;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+                //   throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult SaveMenuAddNew(string text, string state, string iconCls, string url, string guid, string pguid)
+        {
+            api_menu api_Menu = new api_menu();
+            api_Menu.text = text;
+            api_Menu.state = state;
+            api_Menu.iconCls = iconCls;
+            api_Menu.url = url;
+            api_Menu.guid = pguid;
+            api_Menu.pguid = guid;
+
+            api_menu api_Menu1 = dbhelper.FirstOrDefault(u => u.guid == pguid);
+            if (api_Menu1 != null && api_Menu1.state != "closed")
+            {
+                api_Menu1.state = "closed";
+                dbhelper.Update(api_Menu1);
+            }
+
+            bool b = dbhelper.Any(u => u.text == text || u.guid == pguid);
+            if (b)
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = "已存在此节点，请指定新的菜单名称或生成新的Guid"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            dbhelper.Insert(api_Menu);
+            int m = dbhelper.SaveChanges();
+            return Json(m, JsonRequestBehavior.AllowGet);
+        }
+
+        class MenuIconCls
+        {
+            //菜单id
+            public string Key { get; set; }
+
+            //菜单对应的图标的css样式文件
+            public string LconCls { get; set; }
+
+        }
+    }
+
+}

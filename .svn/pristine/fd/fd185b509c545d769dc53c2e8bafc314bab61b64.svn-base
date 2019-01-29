@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Data;
+namespace WFServerWeb
+{
+    public static class CPutDownReceiver
+    {
+        public static void PutDownReceiver(string InstanceID,string NodeID)
+        {
+            string nodetype = CCommonFunc.GetNodeType(NodeID);
+            if(nodetype==null)
+            {
+                CCommonFunc.SetInstanceError(InstanceID, "获取节点" + NodeID + "的节点类型失败");
+                return;
+            }
+            //判断是否开始流程
+            if (nodetype == CNodeType.StartType)
+            {
+                string StartManID = CCommonFunc.GetStartMan(InstanceID);
+                if (StartManID == null)
+                {
+                    CCommonFunc.SetInstanceError(InstanceID, "获取流程实例的发起人失败");
+                    return;
+                }
+                CDataHelper.ExecuteNonQuery("insert into [a_flowchart_instance_node_receiver]([instance_id],[node_id],[user_id],[approval_status],node_status) values('" + InstanceID + "','" + NodeID + "','" + StartManID + "','" + ApprovalStatus.Active.ToString() + "','"+NodeStatus.Active.ToString()+"')");
+            }
+            //判断流程是否结束
+            else if (nodetype != CNodeType.EndType)
+            {
+                DataTable dtReceiver = CCommonFunc.GetReceiver(InstanceID, NodeID);
+                if (dtReceiver != null)
+                {
+                    if (dtReceiver.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dtReceiver.Rows.Count; i++)
+                        {
+                            string ReceiverID = dtReceiver.Rows[i][WFGlobal.UserID].ToString();
+                            CDataHelper.ExecuteNonQuery("insert into [a_flowchart_instance_node_receiver]([instance_id],[node_id],[user_id],[approval_status],node_status) values('" + InstanceID + "','" + NodeID + "','" + ReceiverID + "','"+ApprovalStatus.Active.ToString()+"','"+NodeStatus.Active.ToString()+"')");
+                        }
+                    }
+                    else
+                    {
+                        CCommonFunc.SetInstanceError(InstanceID, "获取节点" + NodeID + "的接收人失败");
+                        return;
+                    }
+                }
+                else
+                {
+                    CCommonFunc.SetInstanceError(InstanceID, "获取节点" + NodeID + "的接收人失败");
+                    return;
+                }
+            }
+        }
+    }
+}

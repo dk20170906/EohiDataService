@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div class="layui-header">
+    <a href="#" class="layui-hide-xs"><div class="layui-logo">优海信息API管理</div></a>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="">控制台@*<span class="layui-badge">9</span>*@</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="">个人中心<span class="layui-badge-dot"></span></a>
+        </li>
+        <li class="layui-nav-item">
+              @{
+                if (Session["admin"] != null)
+                {
+                    <a href=""><img src="" class="layui-nav-img">@(((EohiDataServerApi.Models.AdminAccount)Session["admin"]).User_name)</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">修改信息</a></dd>
+                        <dd><a href="javascript:;">安全管理</a></dd>
+                        <dd><a href="@Url.Content("~/Admin/Login/Logout")">退了</a></dd>
+                    </dl>
+                }
+                else
+                {
+                  <a href=""><img src="" class="layui-nav-img">未登录</a>
+                }
+             }
+        </li>
+    </ul>
+</div>

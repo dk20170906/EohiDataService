@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WFServerWeb
+{
+    public class CReturnToStart
+    {
+        public static void ReturnToStart(string InstanceID,string CurrentNodeID)
+        {
+            string WFID = CCommonFunc.GetWFIDByInstanceID(InstanceID);
+            string StartNodeID = CCommonFunc.GetStartNodeID(WFID);
+            if (StartNodeID == null)
+            {
+                CCommonFunc.SetInstanceError(InstanceID, "找不到工作流实例" + InstanceID + "的开始节点");
+                return;
+            }
+            CCommonFunc.DeleteCurrentNode(InstanceID);
+            CCommonFunc.InsertCurrentNode(InstanceID, StartNodeID);
+            CCommonFunc.PutDownFlowHistory(InstanceID, CurrentNodeID, StartNodeID);
+            CPutDownReceiver.PutDownReceiver(InstanceID,StartNodeID);
+        }
+    }
+}

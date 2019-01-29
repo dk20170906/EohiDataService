@@ -1,0 +1,2169 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="~/Scripts/doc/docs.css" />
+    <link rel="stylesheet" href="~/Scripts/lib/codemirror.css" />
+    <link rel="stylesheet" href="~/Scripts/addon/fold/foldgutter.css" />
+    <link rel="stylesheet" href="~/Scripts/theme/night.css" />
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/layui.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/global.css")">
+
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/bootstrap.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/font-awesome.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/screen.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/design.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/select.css")">
+    <title>可视化平台设计器</title>
+    <style type="text/css" mod="it">
+        .itembase {
+            cursor: move;
+            position: absolute;
+        }
+
+        .datav-edit .edit-body {
+            display: flex;
+        }
+
+            .datav-edit .edit-body #defaultNotification {
+                width: 100%;
+            }
+
+        .datav-edit #datav-ruler {
+            position: absolute;
+            transform-origin: 0 0;
+            overflow: auto;
+        }
+
+        .datav-edit .rul_wrapper {
+            top: 60px;
+            position: fixed;
+        }
+
+            .datav-edit .rul_wrapper .rul_align_top {
+                background: #fff;
+            }
+
+            .datav-edit .rul_wrapper .rul_align_left {
+                background: #fff;
+            }
+
+        .datav-edit .rul_tracker {
+            top: 0;
+            z-index: 99999;
+        }
+    </style>
+    <style type="text/css" mod="jg">
+        .slidebar {
+            position: absolute;
+            right: 360px;
+            height: 30px;
+            user-select: none;
+        }
+
+            .slidebar:after {
+                content: ' ';
+                display: block;
+                clear: both;
+            }
+
+            .slidebar .handler, .slidebar a {
+                float: left;
+            }
+
+            .slidebar > a {
+                margin: 0 5px;
+                font-size: 16px;
+                color: #00c1de;
+                line-height: 30px;
+            }
+
+            .slidebar .handler {
+                position: relative;
+                margin: 0 10px;
+                height: 100%;
+                width: 180px;
+            }
+
+                .slidebar .handler .bar {
+                    position: absolute;
+                    width: 180px;
+                    height: 3px;
+                    background: #c4c6cf;
+                    border-radius: 1.5px;
+                    top: calc(50% - 2px);
+                }
+
+                    .slidebar .handler .bar .identifier {
+                        height: 3px;
+                        background: #00c1de;
+                        border-radius: 1.5px;
+                    }
+
+                .slidebar .handler .slider {
+                    position: absolute;
+                    font-size: 24px;
+                    width: 24px;
+                    top: 3px;
+                    margin-left: -12px;
+                    color: #dcdee3;
+                    background: #fff;
+                    display: block;
+                    cursor: pointer;
+                }
+
+                .slidebar .handler .slider-circle {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    border: 1px solid #dcdee3;
+                    background-color: #fff;
+                    display: block;
+                }
+
+        #preview {
+            width: 1920px;
+            height: 1080px;
+        }
+        /*.CodeMirror {
+            border: 1px solid #eee;
+            height: 200px;
+        }*/
+        #total {
+            width: 500px;
+            height: 40px;
+            line-height: 40px;
+            margin: 80px auto 20px auto;
+            font-size: 20px;
+        }
+
+            #total .t_num {
+                display: inline-block;
+                line-height: 13px;
+                margin: 2px 4px 0 4px;
+            }
+
+                #total .t_num i {
+                    width: 15px;
+                    height: 23px;
+                    display: inline-block;
+                    background: url(number.png) no-repeat;
+                    background-position: 0 0;
+                    text-indent: -999em;
+                }
+    </style>
+    <style type="text/css" mod="go">
+        .button-tip {
+            position: absolute;
+            top: -30px;
+            background: #00c1de;
+            padding: 0;
+            height: 30px;
+            margin-top: 0;
+            width: 60px;
+        }
+
+            .button-tip a {
+                display: inline-block;
+                text-align: center;
+                width: 30px;
+                line-height: 30px;
+                font-size: 14px;
+                color: #000;
+            }
+
+                .button-tip a:hover {
+                    background: #419bf9;
+                }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="datav-edit">
+            <header>
+                <div id="screenNav" class="navigator clearfix">
+                    <div class="left-wrap">
+                        <div class="left">
+                            @*<a class="go-back" href="/screen"><i class="datavfont icon-back"></i></a>*@
+                            <ul class="clearfix chart-menu">
+                                <li class="chart-group">
+                                    <div class="chart-group-flex">
+                                        <a class="icon-text-button" icon="map">
+                                            <p class="icon"><i class="icon-font icon-regular"></i></p>
+                                            <p class="text"></p>
+                                        </a>
+                                        <div class="icon-text-tip">
+                                            <div class="icon-text-tip-hide"></div>
+                                            <div class="icon-text-hide">基础图表</div>
+                                        </div>
+                                    </div>
+                                    <div class="chart-single-menu">
+                                        <ul class="chart-single-menu-list">
+                                            <li class="chart-item" title="折线图">
+                                                <a href="javascript:void(0);" onclick="add('chart.line')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/折线图.png")">
+                                                    <p>基础折线图</p>
+                                                </a>
+                                                @*<a href="javascript:void(0);" onclick="apishow(1)">(API) </a>*@
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=1")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="饼图">
+                                                <a href="javascript:void(0);" onclick="add('chart.pie')">
+
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/饼图.png")">
+                                                    <p>基础饼图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=2")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="柱状图">
+                                                <a href="javascript:void(0);" onclick="add('chart.bar')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/柱状图.png")">
+                                                    <p>基础柱状图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=3")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="雷达图">
+                                                <a href="javascript:void(0);" onclick="add('chart.radar')">
+
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/雷达图.png")">
+                                                    <p>雷达图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=4")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="水滴图">
+                                                <a href="javascript:void(0);" onclick="add('chart.liquidfill')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/水滴图.png")">
+                                                    <p>水滴图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=5")" target="_blank">API</a>
+                                            </li>
+
+                                            <li class="chart-item" title="进度环">
+                                                <a href="javascript:void(0);" onclick="add('percentpie')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/进度环.png")">
+                                                    <p>进度环</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=6")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="进度条">
+                                                <a href="javascript:void(0);" onclick="add('percentbar')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/itempreviewimg/进度条.png")">
+                                                    <p>进度条</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=7")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="全国数据分布图">
+                                                <a href="javascript:void(0);" onclick="add('percentchinamapfornum')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/全国数据分布图.png")">
+                                                    <p>全国数据分布图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=8")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="散列图">
+                                                <a href="javascript:void(0);" onclick="add('hashdiagram')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/散列图.png")">
+                                                    <p>散列图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=9")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="按键">
+                                                <a href="javascript:void(0);" onclick="add('VButton')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/按键.png")">
+                                                    <p>按键</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=10")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="超链接">
+                                                <a href="javascript:void(0);" onclick="add('VUrl')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/超链接.png")">
+                                                    <p>超链接</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=11")" target="_blank">API</a>
+                                            </li>
+                                            <li class="chart-item" title="仪表盘">
+                                                <a href="javascript:void(0);" onclick="add('chart.ybp.hgl')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/仪表盘.png")">
+                                                    <p>仪表盘</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=12")" target="_blank">API</a>
+                                            </li>
+
+                                            <li class="chart-item" title="指数图">
+                                                <a href="javascript:void(0);" onclick="add('VIndexdiagram')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/Databoard/image/itempreviewimg/指数图.png")">
+                                                    <p>指数图</p>
+                                                </a>
+                                                <a href="@Url.Content("~/Admin/API/APIShowHelp?typeid=13")" target="_blank">API</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="chart-group">
+                                    <div class="chart-group-flex">
+                                        <a class="icon-text-button" icon="map">
+                                            <p class="icon"><i class="icon-font icon-decorate"></i></p>
+                                            <p class="text"></p>
+                                        </a>
+                                        <div class="icon-text-tip">
+                                            <div class="icon-text-tip-hide"></div>
+                                            <div class="icon-text-hide">其他</div>
+                                        </div>
+                                    </div>
+                                    <div class="chart-single-menu">
+                                        <ul class="chart-single-menu-list">
+                                            <li class="chart-item" title="边框">
+                                                <a href="javascript:void(0);" onclick="add('imageborder')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bk.png")">
+                                                    <p>边框</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="单张图片">
+                                                <a href="javascript:void(0);" onclick="add('image')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/tp.png")">
+                                                    <p>单张图片</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="滚动文字">
+                                                <a href="javascript:void(0);" onclick="add('marqueed')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/gdt.png")">
+                                                    <p>滚动文字</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="标题文字">
+                                                <a href="javascript:void(0);" onclick="add('text')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bt.png")">
+                                                    <p>标题文字</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="翻牌数字">
+                                                <a href="javascript:void(0);" onclick="add('textnumber')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bt.png")">
+                                                    <p>翻牌数字</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="日期时间">
+                                                <a href="javascript:void(0);" onclick="add('clock')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bt.png")">
+                                                    <p>日期时间</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="滚动表格">
+                                                <a href="javascript:void(0);" onclick="add('table')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bt.png")">
+                                                    <p>滚动表格</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="键值表格">
+                                                <a href="javascript:void(0);" onclick="add('key_value_tabel')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/keyvaluetab.png")">
+                                                    <p>键值表格</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="滚动数字">
+                                                <a href="javascript:void(0);" onclick="add('flopnum')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/flopnum.png")">
+                                                    <p>滚动数字</p>
+                                                </a>
+                                            </li>
+
+                                            <li class="chart-item" title="文本扩展">
+                                                <a href="javascript:void(0);" onclick="add('textextend')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/bt.png")">
+                                                    <p>文本扩展</p>
+                                                </a>
+                                            </li>
+                                            <li class="chart-item" title="表格(scrollingspeed>0滚动,<=0表格)">
+                                                <a href="javascript:void(0);" onclick="add('VScrollingTable')">
+                                                    <img style="pointer-events:none;" src="@Url.Content("~/databoard/image/表格.png")">
+                                                    <p>表格(scrollingspeed>0滚动,<=0表格)</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="button-wrapper">
+                            <a class="icon-text-button" icon="preview" target="_blank" href="javascript:void(0);" onclick="previewweb();">
+                                <p class="icon"><i class="datav-icon icon-preview"></i></p>
+                                <p class="text">预览</p>
+                            </a>
+                        </div>
+                        <div class="button-wrapper">
+                            <a class="icon-text-button" href="javascript:void(0);" onclick="pub()" icon="fabu">
+                                <p class="icon"><i class="datav-icon icon-fabu"></i></p>
+                                <p class="text">发布</p>
+                            </a>
+                        </div>
+                        <div class="button-wrapper">
+                            <a class="icon-text-button" href="javascript:void(0);" onclick="save()" icon="fabu">
+                                <p class="icon"><i class="datav-icon icon-fabu"></i></p>
+                                <p class="text">保存</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="edit-body" style="position: relative;">
+                <div id="defaultNotification"></div>
+                <div>
+                    <span class="switch-item switch-for-editor switch-on">展开</span>
+                    <div id="editor" class="ReactTabs react-tabs editor switch-on">
+                        <ul class="ReactTabs__TabList" role="tablist">
+                            <li class="ReactTabs__Tab" role="tab" tabindex="0" aria-selected="true" id="tab1">样式</li>
+                            <li class="ReactTabs__Tab" role="tab" tabindex="-1" aria-selected="false" id="tab2">数据</li>
+                            <li class="ReactTabs__Tab" role="tab" tabindex="-1" aria-selected="false" id="tab3">排列顺序</li>
+                        </ul>
+                        <div>
+                            <div class="ReactTabs__TabPanel tab1">
+                                <div class="gui-scroll-container">
+                                    <div class="datav-com-info" id="image_edit_title">
+                                        <h4>
+                                            <span></span>
+                                            <span>上传图片</span>
+                                            <span></span>
+                                        </h4>
+                                    </div>
+                                    <div class="convent_choice" id="image_edit_area">
+                                        <div class="andArea">
+                                            <div class="upload-img">
+                                                <img id="demo1" src="@Url.Content("~/databoard/image/add_img.png")" alt="" />
+                                            </div>
+                                            <a class="filePicker" id="upload_img">
+                                                点击选择文件
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="datav-com-info">
+                                        <h4>
+                                            <span></span>
+                                            <span>位置</span>
+                                            <span></span>
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        <textarea id="item_location_editor" style="height: 50px;" name="item_location_editor"></textarea>
+                                    </div>
+                                    <div class="datav-com-info">
+                                        <h4>
+                                            <span></span>
+                                            <span>选项设置</span>
+                                            <span></span>
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        <textarea id="item_option_editor" name="item_option_editor"></textarea>
+                                    </div>
+                                    <div class="show-request-result">
+                                        <a class="show-request-btn" href="javascript:void(0);" onclick="applyitemoption()">应用选项</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ReactTabs__TabPanel tab2">
+                                <div id="data-center-panel">
+                                    <div class="datav-com-info">
+                                        <h4>
+                                            <span></span>
+                                            <span>数据设置</span>
+                                            <span></span>
+                                        </h4>
+                                    </div>
+                                    <div>
+                                        <div class="api-list">
+                                            <div class="current api-container">
+                                                <div class="api-field-datasource">
+                                                    <div id="fieldDesc">
+                                                        <table id="table_datamapping">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>字段</th>
+                                                                    <th width="50">映射</th>
+                                                                    <th>说明</th>
+                                                                    <th style="white-space: nowrap;">状态</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="datamapping">
+                                                                @*<tr>
+                                                                        <td>x</td>
+                                                                        <td><input placeholder="可自定义" type="text"/></td>
+                                                                        <td class="api-description"><p>类目</p> </td>
+                                                                        <td class="status success">
+                                                                            <div class="api-status success">
+                                                                                <i></i>
+                                                                                <span>匹配成功</span>
+                                                                            </div></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>y</td>
+                                                                        <td ><input placeholder="可自定义" type="text"/></td>
+                                                                        <td class="api-description"><p>值</p> </td>
+                                                                        <td class="status success">
+                                                                            <div class="api-status success">
+                                                                                <i></i>
+                                                                                <span>匹配成功</span>
+                                                                            </div></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>s</td>
+                                                                        <td><input placeholder="可自定义" type="text"/></td>
+                                                                        <td class="api-description"><p>系列(可选)</p> </td>
+                                                                        <td class="status success">
+                                                                            <div class="api-status success">
+                                                                                <i></i>
+                                                                                <span>匹配成功</span>
+                                                                            </div></td>
+                                                                    </tr>*@
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="data-source">
+                                                        <div class="data-source-container">
+                                                            <div class="data-source-selector">
+                                                                <label class="prefix-label">数据源类型</label>
+                                                                <div>
+                                                                    @*<div class="filter-box">
+                                                                            <div class="filter-text">
+                                                                                <input class="filter-title" type="text" readonly placeholder="pleace select" />
+                                                                                <i class="iconselect icon-filter-arrow"></i>
+                                                                            </div>
+                                                                            <select name="filter">
+                                                                                <option value="json" selected >静态数据</option>
+                                                                                <option value="api">API数据</option>
+                                                                            </select>
+                                                                        </div>*@
+                                                                    @*<div class="filter-box">
+                                                                        <div class="layui-input-block  layui-form" lay-filter="selFilter">
+                                                                             <select id="item_viewdata_datatype" lay-verify="required" >
+                                                                                     <option value="json">静态数据</option>
+                                                                                     <option value="api">API数据</option>
+                                                                             </select>
+                                                                           </div>
+                                                                         </div>*@
+
+                                                                    <div class="layui-input-block  layui-form filter-box" style="margin-left: 0px;">
+                                                                        <select id="item_viewdata_datatype" lay-verify="required" lay-filter="selFilter">
+                                                                            <option value="json">静态数据</option>
+                                                                            <option value="api">API数据</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="types">
+                                                                <div class="show">
+                                                                    <div class="json" style="width: 100%; font-size: 11px;">
+                                                                        <textarea id="item_data_editor" name="item_data_editor"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="auto-update-row">
+                                                                <label class="for-checkbox " id="item_viewdata_intervalloading">
+                                                                    <input type="checkbox">
+                                                                </label>
+                                                                <span>自动更新请求 </span>
+                                                                <input class="auto-update" id="item_viewdata_intervalsecond" value="1" type="number"><span> 秒一次</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="show-request-result">
+                                                            <a class="show-request-btn" onclick="showitemdata()">查看数据</a>
+                                                            <a class="show-request-btn" onclick="applyitemdata()">应用</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ReactTabs__TabPanel tab3">
+                                <div class="interaction-panle">
+                                    <div class="datav-com-info">
+                                        <h4>
+                                            <span></span>
+                                            <span>层设置</span>
+                                            <span></span>
+                                        </h4>
+                                    </div>
+                                    <div class="z-axis-manage-wrap clearfix">
+                                        <div class="brick-wrap  clearfix  able">
+                                            <ul class="bricks">
+                                                <li data-tip="上移" currentitem="false"><span class="icon-colorful-shangyiyiceng icon-shangyiyiceng iconfont"></span></li>
+                                                <li data-tip="下移" currentitem="false"><span class="icon-colorful-xiayiyiceng icon-xiayiyiceng iconfont"></span></li>
+                                                <li data-tip="置顶" currentitem="false"><span class="icon-colorful-yizhidingceng icon-yizhidingceng iconfont"></span></li>
+                                                <li data-tip="置底" currentitem="false"><span class="icon-colorful-yizhidiceng icon-yizhidiceng iconfont"></span></li>
+                                            </ul>
+                                            <div class="__react_component_tooltip place-top type-dark " data-id="tooltip"></div>
+                                        </div>
+                                    </div>
+                                    <div id="z-axis-list">
+                                        <div class="z-axis-item">
+                                            <div class="z-index-detail">
+                                                <i class="fa fa-bar-chart"></i>
+                                                <span class="com-alias-text">折线柱图</span>
+                                            </div>
+                                        </div>
+                                        <div class="z-axis-item">
+                                            <div class="z-index-detail">
+                                                <i class="fa fa-font"></i>
+                                                <span class="com-alias-text">标题文字</span>
+                                            </div>
+                                        </div>
+                                        <div class="z-axis-item">
+                                            <div class="z-index-detail">
+                                                <i class="fa fa-image"></i>
+                                                <span class="com-alias-text">图片层</span>
+                                            </div>
+                                        </div>
+                                        <div class="z-axis-item">
+                                            <div class="z-index-detail">
+                                                <i class="fa fa-outdent"></i>
+                                                <span class="com-alias-text">跑马灯层</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="leftPanel" class="">
+                    <div id="datav-ruler">
+                        <div id="previewContainer">
+                            <div id="screenshot" style="width: 100%; height: 100%;">
+                                <div id="preview" style="visibility: visible; background: url('../../databoard/image/bg.png') 0% 0% / 100% 100%;">
+                                    <div class="preview-coms datavLayout" id="mydiv">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="controlPanel">
+                <div>
+                    <div class="slidebar">
+                        <a><i class="icon-remove"></i></a>
+                        <div class="handler">
+                            <div class="bar">
+                                <div class="identifier" style="width: 0%"></div>
+                            </div>
+                            <i class="slider slider-circle" style="left: 0"></i>
+                        </div>
+                        <a><i class="icon-add"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery-2.1.1.min.js")"></script>
+
+
+    <style>
+        .some-css {
+            color: red;
+            line-height: 2;
+        }
+    </style>
+
+    <script src="~/Scripts/lib/codemirror.js"></script>
+    <script src="~/Scripts/lib/formatting.js"></script>
+    <script src="~/Scripts/addon/fold/foldcode.js"></script>
+    <script src="~/Scripts/addon/fold/foldgutter.js"></script>
+    <script src="~/Scripts/addon/fold/brace-fold.js"></script>
+    <script src="~/Scripts/addon/fold/xml-fold.js"></script>
+    <script src="~/Scripts/addon/fold/indent-fold.js"></script>
+    <script src="~/Scripts/addon/fold/markdown-fold.js"></script>
+    <script src="~/Scripts/addon/fold/comment-fold.js"></script>
+    <script src="~/Scripts/mode/javascript/javascript.js"></script>
+    <script src="~/Scripts/mode/xml/xml.js"></script>
+    <script src="~/Scripts/mode/css/css.js"></script>
+    <script src="~/Scripts/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="~/Scripts/mode/python/python.js"></script>
+    <script src="~/Scripts/mode/markdown/markdown.js"></script>
+    <style type="text/css">
+        .CodeMirror {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+    </style>
+    <script type="text/javascript">
+        var tejs = document.getElementById("item_option_editor");
+        window.item_option_editor = CodeMirror.fromTextArea(tejs, {
+            //mode: "python",
+            mode: "application/json",
+            theme: "night",
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4,
+            indentWithTabs: true,
+            extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        });
+
+
+        tejs = document.getElementById("item_location_editor");
+        window.item_location_editor = CodeMirror.fromTextArea(tejs, {
+            //mode: "python",
+            mode: "application/json",
+            theme: "night",
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4,
+            indentWithTabs: true,
+            extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        });
+
+
+        tejs = document.getElementById("item_data_editor");
+        window.item_data_editor = CodeMirror.fromTextArea(tejs, {
+            //mode: "python",
+            mode: "application/json",
+            theme: "night",
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4,
+            indentWithTabs: true,
+            extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        });
+
+
+    </script>
+
+
+
+
+    <script src="@Url.Content("~/Scripts/layui/layui.js")"></script>
+    <script src="@Url.Content("~/Scripts/pace.min.js")"></script>
+    <script type="text/javascript">
+        var layer;
+        var form;
+        layui.use(['form', 'upload'], function () {
+            form = layui.form;
+            layer = layui.layer;
+            var upload = layui.upload;
+            form.render('select', 'selFilter');
+            form.on('select(selFilter)', function (data) {
+                changeviewdatatype(data.value);
+            });
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#upload_img'
+                    , url: "@Url.Content("~/FileUpLoad.ashx")"  //接口url
+                    , before: function (obj) {
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function (index, file, result) {
+                            //$('#demo1').attr('src', result); //图片链接（base64）
+                        });
+                    }
+                  , done: function (res) {
+                      //如果上传失败
+                      if (res.code > 0) {
+                          return layer.msg('上传失败');
+                      }
+                      //上传成功
+                      if (res.Result == "true") {
+                          $('#demo1').attr('src', "@Url.Content("~/")" + res.files[0].url);
+                          //更新当前对象的图片属性;
+                          if (currEditItem == undefined || currEditItem == null)
+                              return;
+                          debugger;
+                          currEditItem.options.viewoption.image = "@Url.Content("~/")" + res.files[0].url;
+                          currEditItem.options.viewdata.datajson[0].value= "@Url.Content("~/")" + res.files[0].url;
+                          currEditItem.resetviewoption();
+                          selectitem(currEditItem);
+                      }
+                  }
+                  , error: function () {
+                      //演示失败状态，并实现重传
+                      var demoText = $('#demoText');
+                      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                      demoText.find('.demo-reload').on('click', function () {
+                          uploadInst.upload();
+                      });
+                  }
+            });
+        });
+    </script>
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/echarts.min.js")"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=t2Tnv7hdGtgqQzWakr4gUeDOR7Opz3Ia"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/selectFilter.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/ddsort.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/circleChart.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/rolnum.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery.lineProgressbar.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/vitemdefoption/vitemsdefoption.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/theme/chalk.js")"></script>
+    @*<script type="text/javascript" src="@Url.Content("~/databoard/js/echarts-liquidfill.js")"></script>*@
+    <script src="~/Databoard/js/echarts-liquidfill.min.js"></script>
+
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery.liMarquee.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VChart.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VText.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VTextnumber.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VTable.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VClock.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImage.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImageborder.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VPercentPie.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VPercentBar.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VKeyvaluetabel.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/map/VEChartsMap.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VHashDiagram.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VButton.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VUrl.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VMarqueed.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VScrollingTable.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VFlopNum.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VIndexdiagram.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Databoard/js/VTextExtend.js")"></script>
+
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/ZResize.js")"></script>
+
+    <script>
+        var d,
+            e = $(window),
+            f = $("#preview"),
+            g = $("#previewContainer"),
+            j = e.width() - ($(".react-tabs.editor").is(".switch-on") ? 360 : 0),//右侧面板显示，左侧操作区域为浏览器宽度-右侧面板宽度，不显示为浏览器宽度
+            k = e.height() - $("#screenNav").height();//除去顶部导航页面中间内容高度
+        var p = 1;//默认缩放系数
+        $(function () { //页面加载执行
+            screendefsize();
+        });
+        function screendefsize() {
+            j = e.width() - ($(".react-tabs.editor").is(".switch-on") ? 360 : 0),//右侧面板显示，左侧操作区域为浏览器宽度-右侧面板宽度，不显示为浏览器宽度
+                k = e.height() - $("#screenNav").height();//除去顶部导航页面中间内容高度
+            //console.log("j:"+j)
+            //console.log("k:"+k)
+            //设置左侧区域宽高
+            $("#leftPanel").width(j).height(k - 30);
+            //计算默认缩放比例;
+            var fh = f[0].offsetHeight; //对象的可见高度
+            var fw = f[0].offsetWidth; //对象的可见宽度
+            var lh = k;
+            var lw = j - 120;
+            p = Math.min(lw / fw, lh / fh); //取小值计算缩放系数（'#leftPanel'左侧可见宽度-120/#preview可见宽度）
+            f.css({
+                transform: "scale(" + p + ")"   //设置#preview的缩放比例为p值
+            })
+            //计算previewContainer的尺寸
+            g.css({
+                width: f[0].offsetWidth * p,
+                height: f[0].offsetHeight * p
+            })
+            $('.identifier').css({
+                width: p * 100 + '%'
+            });
+            $('.slider-circle').css({
+                left: p * 100 + '%'
+            });
+        }
+        $('.chart-group').on({
+            mouseover: function () {
+                $(this).addClass('active')
+            },
+            mouseout: function () {
+                $(this).removeClass('active')
+            }
+        })
+        //右侧面板收缩
+        $(".switch-item").click(function () {
+            if ($(this).hasClass("switch-on")) {
+                $(this).html('收起');
+                $(this).removeClass("switch-on");
+                $("#editor").removeClass("switch-on");
+                $("#leftPanel").width(e.width());
+                //  $("#previewContainer").width(e.width());
+                screendefsize();
+            }
+            else {
+                $(this).html('展开')
+                $(this).addClass("switch-on");
+                $("#editor").addClass("switch-on");
+                $("#leftPanel").width(j);
+                screendefsize();
+            }
+        });
+        //点击放大画布比例
+        $('.icon-add').click(function () {
+            var w = $('.identifier').width();
+            var zw = $('.bar').width();
+            w = w / zw * 100;
+            w += 10;
+            if (w > 100) {
+                w = 100;
+            }
+            p = w / 100;
+            $('.identifier').css({
+                width: w + '%'
+            });
+            $('.slider-circle').css({
+                left: w + '%'
+            });
+
+            //重新计算画布大小
+            f.css({
+                transform: "scale(" + p + ")"   //设置#preview的缩放比例为p值
+            })
+            //计算previewContainer的尺寸
+            g.css({
+                width: f[0].offsetWidth * p,
+                height: f[0].offsetHeight * p
+            })
+        })
+        //点击缩小画布比例
+        $('.icon-remove').click(function () {
+            var w = $('.identifier').width();
+            var zw = $('.bar').width();
+            w = w / zw * 100;
+            w -= 10;
+            if (w < 0) {
+                w = 0;
+            }
+            p = w / 100;
+            $('.identifier').css({
+                width: w + '%'
+            });
+            $('.slider-circle').css({
+                left: w + '%'
+            });
+            //重新计算画布大小
+            f.css({
+                transform: "scale(" + p + ")"   //设置#preview的缩放比例为p值
+            })
+            //计算previewContainer的尺寸
+            g.css({
+                width: f[0].offsetWidth * p,
+                height: f[0].offsetHeight * p
+            })
+        })
+
+        //右侧tab切换面板
+        $('.ReactTabs__TabList li').click(function () {
+            $(this).attr(
+                {
+                    'aria-selected': 'true',
+                    'tabindex': '0'
+                }).siblings().attr({
+                    'aria-selected': 'false',
+                    'tabindex': '-1'
+                })
+            $('.' + $(this).attr('id')).show().addClass('ReactTabs__TabPanel--selected').siblings().hide().removeClass('ReactTabs__TabPanel--selected');
+        })
+
+    </script>
+
+    <script type="text/javascript">
+
+        //设计编号
+        var boardno = "@ViewBag.boardno";
+        if (boardno == "" || boardno == undefined) {
+            alert("无效的设计编号!");
+        }
+        //主配置 舞台配置
+        var _mainoption = {
+            width: 1920,
+            height: 1080,
+            image: '@Url.Content("~/databoard/image/bg.png")'
+        };
+
+        var zResizeArray = [];
+        var currEditItem = undefined;
+
+        /*
+        * 添加新对象
+        */
+        function add(vtype) {
+            var id = newGuid();
+            var defoption = findvtype(vtype);
+            if (defoption == undefined) {
+                alert('未支持的类型:' + vtype)
+                return;
+            }
+            var itemname = "";
+            if (defoption.viewname != undefined)
+                itemname = defoption.viewname;
+
+            var left = defoption.left;
+            var top = defoption.top;
+            var width = defoption.width;
+            var height = defoption.height;
+
+            var itemindex = 0;
+            //获取默认的排序号;
+            var list = $(".z-axis-item");
+            if (list != undefined)
+                itemindex = list.length + 1;
+
+            var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+            $("#mydiv").append(divhtml);
+            var div = $("#" + id);
+            div.css({
+                width: width,
+                height: height,
+                left: left,
+                top: top,
+                "z-index": itemindex
+            });
+
+            var optionstr = JSON.stringify(defoption.viewoption);
+            var datastr = JSON.stringify(defoption.viewdata);
+            //保存到数据库l
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemSave")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno,
+                    itemno: id,
+                    itemindex: itemindex,
+                    itemx: $('#' + id).offset().left,
+                    itemy: $('#' + id).offset().top,
+                    itemw: $('#' + id).width(),
+                    itemh: $('#' + id).height(),
+                    itemtype: vtype,
+                    itemversion: '',
+                    itemoption: optionstr,
+                    itemdata: datastr,
+                    Intervalloading: 'N',
+                    intervalsecond: 1
+                },
+                success: function (data) {
+                    if (data.access) {
+                        //创建对象;
+                        var item = new ZResize({
+                            stage: "#mydiv", //
+                            item: '#' + id,  //
+                            itemno: id,
+                            itemname: itemname,
+                            viewtype: defoption.viewtype, //类型;
+                            viewoption: defoption.viewoption,
+                            viewdata: defoption.viewdata
+                        });
+                        //
+                        zResizeArray.push({ id: id, item: item });
+                        //创建对应的排序层;
+                        zlist_add(item);
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000
+                    }, function () {
+                    }
+                   );
+                }
+            });
+        }
+
+        //显示api帮助页
+        @*function apishow(vtype) {
+            $.ajax({
+                url: "@Url.Content("~/Admin/API/APIShowHelp")",
+                type: "get",
+                async: false,
+                data: {
+                    typeid: vtype
+                },
+                success: function (data) {
+
+                }
+            });
+        }   *@
+
+
+
+        //记载
+        load();
+
+        //加载主配置 舞台配置
+        function loadmian() {
+            //读取
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/boardGet")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno
+                },
+                success: function (data) {
+                    if (data.access) {
+
+                        var data = data.result;
+                        if (data.mainoption != undefined && data.mainoption.length > 0) {
+                            _mainoption = JSON.parse(data.mainoption);
+                            $("#preview").css({
+                                width: _mainoption.width,
+                                height: _mainoption.height
+                            });
+
+                            $("#preview").css({
+                                background: "url('" + _mainoption.image + "')  0% 0% / 100% 100%"
+                            })
+                        }
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+        //加载内容项
+        function load() {
+            //
+            loadmian();
+            //读取
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemList")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno
+                },
+                success: function (data) {
+                    if (data.access) {
+                        for (a = 0; a < data.data.length; a++) {
+                            //
+                            var id = data.data[a].itemno;
+                            var vtype = data.data[a].itemtype;
+                            var defoption = findvtype(vtype);
+                            if (defoption == undefined) {
+                                alert('未支持的类型:' + vtype)
+                                return;
+                            }
+                            var itemname = "";
+                            if (defoption.viewname != undefined)
+                                itemname = defoption.viewname;
+
+                            var left = data.data[a].itemx;
+                            var top = data.data[a].itemy;
+                            var width = data.data[a].itemw;
+                            var height = data.data[a].itemh;
+                            var itemindex = data.data[a].itemindex;
+
+                            var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+                            $("#mydiv").append(divhtml);
+                            var div = $("#" + id);
+                            div.css({
+                                width: width,
+                                height: height,
+                                left: left,
+                                top: top,
+                                "z-index": itemindex
+                            });
+                            var option = JSON.parse(data.data[a].itemoption);
+                            var viewdata = JSON.parse(data.data[a].itemdata);
+                            var item = new ZResize({
+                                stage: "#mydiv", //
+                                item: '#' + id,  //
+                                itemno: id,
+                                itemname: itemname,
+                                itemindex: itemindex,
+                                viewtype: defoption.viewtype, //类型;
+                                viewoption: option,
+                                viewdata: viewdata
+                            });
+                            zResizeArray.push({ id: id, item: item });
+                        }
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+
+            //
+            zlist_init();
+        }
+        var pubnoforpreviewweb = "";
+        //预览
+        function previewweb() {
+            if (pubnoforpreviewweb != "" && pubnoforpreviewweb.length > 4) {
+                var previewurl = "../../DataView/Index?pn=" + pubnoforpreviewweb;
+                window.open(previewurl);
+            } else {
+                layer.msg("此看板尚未发布，请发布后再预览", {
+                    icon: 1,
+                    time: 5000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    //history.go(0);
+                });
+            }
+        }
+
+
+
+        //保存
+        function save() {
+            debugger;
+            for (a = 0; a < zResizeArray.length; a++) {
+                //更新位置信息;
+                var id = zResizeArray[a].id;
+                var itemx = $('#' + id)[0].offsetLeft;
+                var itemy = $('#' + id)[0].offsetTop;
+                var width = $('#' + id).width();
+                var height = $('#' + id).height();
+
+                var itemindex = $('#' + id).css("z-index");
+                //
+                $.ajax({
+                    url: "@Url.Content("~/Admin/DataBoardDesigner/itemLocationSave")",
+                    type: "post",
+                    async: false,
+                    data: {
+                        itemno: id,
+                        left: itemx,
+                        top: itemy,
+                        width: width,
+                        height: height,
+                        itemindex: itemindex
+                    },
+                    success: function (data) {
+                        if (data.access) {
+                            //delaccess = true;
+                        }
+                        else {
+                            alert(data.msg);
+                            layer.msg(data.msg, {
+                                icon: 1,
+                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                            }, function () {
+                                //history.go(0);
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+            }
+
+            alert("保存完成");
+        }
+        //发布
+        function pub() {
+            //
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/boardpub")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno,
+                },
+                success: function (data) {
+                    if (data.access) {
+                        pubnoforpreviewweb = data.result.pubno;
+                        layer.msg("发布编号:" + data.result.pubno, {
+                            icon: 1,
+                            time: 5000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+
+        }
+        //复制某个对象
+        function copyitem(itemno) {
+            var copyfromitem = undefined;
+            for (var k = 0; k < zResizeArray.length; k++) {
+                if (zResizeArray[k].id == itemno) {
+                    copyfromitem = zResizeArray[k];
+                    break;
+                }
+            }
+            if (copyfromitem == undefined) {
+                alert("未找到复制来源对象。")
+                return;
+            }
+            //复制;
+            var id = newGuid();
+            //var vtype = "chart.line";
+            var vtype = copyfromitem.item.options.viewtype
+            var defoption = findvtype(vtype);
+            if (defoption == undefined) {
+                //
+                alert('未支持的类型:' + vtype)
+                return;
+            }
+            var itemname = "";
+            if (defoption.viewname != undefined)
+                itemname = defoption.viewname;
+
+            //复制对象位置,然后 平移 5，下移5
+            //copyfromitem.item.dataDiv.offset().top
+            var left = copyfromitem.item.dataDiv.offset().left + 5;//defoption.left;
+            var top = copyfromitem.item.dataDiv.offset().top + 5;// defoption.top;
+            var width = copyfromitem.item.dataDiv.width();//defoption.width;
+            var height = copyfromitem.item.dataDiv.height();// defoption.height;
+
+            var itemindex = 0;
+            //获取默认的排序号;
+            var list = $(".z-axis-item");
+            if (list != undefined)
+                itemindex = list.length + 1;
+
+            var viewoption = defoption.viewoption;
+            if (copyfromitem.item.options.viewoption != undefined)
+                viewoption = copyfromitem.item.options.viewoption;
+
+            var viewdata = defoption.viewdata;
+            if (copyfromitem.item.options.viewdata != undefined)
+                viewdata = copyfromitem.item.options.viewdata;
+
+            var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+            $("#mydiv").append(divhtml);
+            var div = $("#" + id);
+            div.css({
+                width: width,
+                height: height,
+                left: left,
+                top: top,
+                "z-index": itemindex
+            });
+
+            //保存到数据库l
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemSave")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno,
+                    itemno: id,
+                    itemindex: itemindex,
+                    itemx: $('#' + id).offset().left,
+                    itemy: $('#' + id).offset().top,
+                    itemw: $('#' + id).width(),
+                    itemh: $('#' + id).height(),
+                    itemtype: vtype,
+                    itemversion: '',
+                    itemoption: JSON.stringify(viewoption),
+                    itemdata: JSON.stringify(viewdata),
+                    Intervalloading: 'N',
+                    intervalsecond: 1
+                },
+                success: function (data) {
+                    if (data.access) {
+
+                        //delaccess = true;
+                        //创建对象;
+                        var item = new ZResize({
+                            stage: "#mydiv", //
+                            item: '#' + id,  //
+                            itemno: id,
+                            itemname: itemname,
+                            viewtype: defoption.viewtype, //类型;
+                            viewoption: viewoption,
+                            viewdata: viewdata
+                        });
+                        //
+                        zResizeArray.push({ id: id, item: item });
+                        //创建对应的排序层;
+                        zlist_add(item);
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+        //删除某个对象
+        function delitem(itemno) {
+            var msg = "您真的确定要删除吗？\n\n请确认！";
+            if (confirm(msg) != true) {
+                return;
+            }
+
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemDelete")",
+                type: "post",
+                async: false,
+                data: {
+                    itemno: itemno
+                },
+                success: function (data) {
+                    if (data.access) {
+                        //删除元素对象;
+                        $('#' + itemno).remove();
+                    }
+                    else {
+                        alert(data.msg);
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+        //创建并返回一个唯一编号
+        function newGuid() {
+            var guid = "";
+            for (var i = 1; i <= 32; i++) {
+                var n = Math.floor(Math.random() * 16.0).toString(16);
+                guid += n;
+                if ((i == 8) || (i == 12) || (i == 16) || (i == 20))
+                    guid += "-";
+            }
+            return guid;
+        }
+
+        //找到类型;
+        function findvtype(vtype, seriestype) {
+            for (i = 0; i < vitemstype.length; i++) {
+                if (vitemstype[i].vtype == vtype) {
+                    //
+                    return vitemstype[i].defoption;
+                }
+            }
+            return undefined;
+        }
+
+        //选中了对象
+        function selectitem(item) {
+            //
+            debugger;
+            unselectotheritem(item);
+            //
+            currEditItem = item;
+            var id = currEditItem.options.itemno;
+            //选中排序中对应的项;
+            $("#zindex-" + id).siblings().removeClass('selected');
+            //选中指定项
+            $("#zindex-" + id).addClass("selected");
+            var itemx = $('#' + id)[0].offsetLeft;
+            var itemy = $('#' + id)[0].offsetTop;
+            var width = $('#' + id).width();
+            var height = $('#' + id).height();
+            var location = {
+                x: itemx,
+                y: itemy,
+                width: width,
+                height: height
+            }
+            //位置信息;
+            var locationtr = JSON.stringify(location);
+            window.item_location_editor.setValue(locationtr);
+            var totalLines = window.item_location_editor.lineCount();
+            window.item_location_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            //判断是否有image属性，有，则取到image值;
+            var imgurl = item.options.viewoption.image;
+            if (imgurl != null && imgurl != undefined && imgurl.length > 0) {
+                //有图片属性;
+                $("#image_edit_title").css("display", "block");
+                $("#image_edit_area").css("display", "block");
+                // $("#demo1").attr("src", imgurl);
+                if (item.options.viewtype == "imageborder") {
+                      $("#demo1").attr("src", imgurl);
+                } else {
+                    $("#demo1").attr("src", item.options.viewdata.datajson[0].value);
+                }
+        
+            }
+            else {
+                //无图片属性，隐藏;
+                $("#image_edit_title").css("display", "none");
+                $("#image_edit_area").css("display", "none");
+            }
+            //移除属性;
+            var optionstr = JSON.stringify(item.options.viewoption);
+            var viewoption2 = JSON.parse(optionstr);
+            delete viewoption2.image;
+            optionstr = JSON.stringify(viewoption2);
+
+            //设置属性;
+            window.item_option_editor.setValue(optionstr);
+            var totalLines = window.item_option_editor.lineCount();
+            window.item_option_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+
+            //数据属性;
+            var viewdata = item.options.viewdata;
+            //如果viewdata 为空，取默认的;
+            if (viewdata == undefined || viewdata == null) {
+                return;
+            }
+            //设置数据映射;
+            init_datamapping(viewdata);
+            //设置
+            var viewdatastr = "";
+            if (viewdata.datatype == 'json') {
+                $("#item_viewdata_datatype").val("json");
+                form.render();
+                viewdatastr = JSON.stringify(item.options.viewdata.datajson);
+                window.item_data_editor.setValue(viewdatastr);
+                //var totalLines = window.item_data_editor.lineCount();
+                //window.item_data_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            }
+
+            if (viewdata.datatype == 'api') {
+                //item_viewdata_datatype
+                $("#item_viewdata_datatype").val("api");
+                form.render();
+                //
+                viewdatastr = item.options.viewdata.dataapi.url;
+                window.item_data_editor.setValue(viewdatastr);
+                //不是json是，不格式化；
+                //var totalLines = window.item_data_editor.lineCount();
+                //window.item_data_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            }
+            //自动请求状态;
+            if (viewdata.dataapi.intervalloading != undefined) {
+                //
+                $("#item_viewdata_intervalloading").removeClass("checked");
+                if (viewdata.dataapi.intervalloading)
+                    $("#item_viewdata_intervalloading").addClass("checked");
+            }
+            //自动请求间隔秒数;
+            if (viewdata.dataapi.intervalsecond != undefined) {
+                $("#item_viewdata_intervalsecond").val(viewdata.dataapi.intervalsecond);
+            }
+        }
+
+        //选中了布局面板
+        function selectstage() {
+
+            currEditItem = undefined;
+
+            var location = {
+                width: _mainoption.width,
+                height: _mainoption.height
+            }
+            //位置信息;
+            var locationtr = JSON.stringify(location);
+            window.item_location_editor.setValue(locationtr);
+            var totalLines = window.item_location_editor.lineCount();
+            window.item_location_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            var config = {
+                image: _mainoption.image
+            }
+            //判断是否有image属性，有，则取到image值;
+            var imgurl = config.image;
+            if (imgurl != null && imgurl != undefined && imgurl.length > 0) {
+                //有图片属性;
+                $("#image_edit_title").css("display", "block");
+                $("#image_edit_area").css("display", "block");
+                //
+                $("#demo1").attr("src", imgurl);
+            }
+            else {
+                //无图片属性，隐藏;
+                $("#image_edit_title").css("display", "none");
+                $("#image_edit_area").css("display", "none");
+            }
+
+            //移除属性;
+            var optionstr = JSON.stringify(config);
+            var viewoption2 = JSON.parse(optionstr);
+
+            delete viewoption2.image;
+
+            optionstr = JSON.stringify(viewoption2);
+            //设置属性;
+            window.item_option_editor.setValue(optionstr);
+            var totalLines = window.item_option_editor.lineCount();
+            window.item_option_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+        }
+
+        //选中了布局面板
+        function unselectotheritem(item) {
+            // unselected
+            for (var a = 0; a < zResizeArray.length; a++) {
+                //zResizeArray.push({ id: id, item: item });
+                if (item.options.itemno == zResizeArray[a].item.options.itemno) {
+                    //
+                }
+                else {
+                    zResizeArray[a].item.unselected();
+                }
+            }
+        }
+        //根据数据映射设置，创建对照表格html;
+        function init_datamapping(viewdata) {
+            //datamappingtxt: { x: "类目", y: '值', s: '系列,可选' },
+            var html = '';
+            if (viewdata == undefined)
+                return;
+
+            if (viewdata.datamappingitem == undefined || viewdata.datamappingitem.length <= 0) {
+                html = "";
+                $("#datamapping").html(html);
+                return;
+            }
+
+            for (var a = 0; a < viewdata.datamappingitem.length; a++) {
+                var itemname = viewdata.datamappingitem[a];
+                html += '<tr>';
+                html += '<td>' + itemname + '</td>';
+                html += '<td><input placeholder="可自定义" type="text" value="' + viewdata.datamapping[itemname] + '"/></td>';
+                html += '<td class="api-description"><p>' + viewdata.datamappingtxt[itemname] + '</p> </td>';
+                html += '<td class="status success">';
+                html += '<div class="api-status success">';
+                html += '<i></i>';
+                html += ' <span>匹配成功</span>';
+                html += '</div></td>';
+                html += '</tr>';
+            }
+            $("#datamapping").html(html);
+        }
+        // 设置 数据字段对照
+        function setting_datamapping() {
+            if (currEditItem == undefined)
+                return;
+            var item = currEditItem;
+            if (item.options.viewdata.datamappingitem == undefined || item.options.viewdata.datamappingitem.length <= 0) {
+                return;
+            }
+            var trList = $("#table_datamapping tbody").children("tr")
+            for (var i = 0; i < trList.length; i++) {
+                var tdArr = trList.eq(i).find("td");
+                var name = tdArr.eq(0).html();//目标对象
+                var source = tdArr.eq(1).find('input').val();//来源字段
+                item.options.viewdata.datamapping[name] = source;
+            }
+        }
+
+        //数据类型发生变化;
+        function changeviewdatatype(datatype) {
+            if (currEditItem == undefined)
+                return;
+            var item = currEditItem;
+            //数据属性;
+            var viewdata = item.options.viewdata;
+            var viewdatastr = "";
+            if (datatype == 'json') {
+                viewdatastr = JSON.stringify(item.options.viewdata.datajson);
+                window.item_data_editor.setValue(viewdatastr);
+            }
+            if (datatype == 'api') {
+                viewdatastr = item.options.viewdata.dataapi.url;
+                window.item_data_editor.setValue(viewdatastr);
+            }
+            var totalLines = window.item_data_editor.lineCount();
+            window.item_data_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+        }
+
+        //应用 主配置 舞台配置
+        function applymainconfig() {
+            //位置数据;
+            var locationtr = window.item_location_editor.getValue();
+            var newlocation = JSON.parse(locationtr);
+            $("#preview").css({
+                width: newlocation.width,
+                height: newlocation.height
+            });
+            mainoption = {};
+            _mainoption.width = newlocation.width;
+            _mainoption.height = newlocation.height;
+
+            debugger;
+            //选项数据;
+            var optionstr = window.item_option_editor.getValue();
+            var newoption = {};
+            try {
+                //应用
+                newoption = JSON.parse(optionstr);
+            }
+            catch (err) {
+                //在这里处理错误
+                alert("属性应用错误,请检查书写格式" + err.message);
+                return;
+            }
+
+            //判断image；
+            //有图片属性;
+            var imgurl = _mainoption.image;
+            if (imgurl != null && imgurl != undefined && imgurl.length > 0) {
+                $("#image_edit_title").css("display", "block");
+                $("#image_edit_area").css("display", "block");
+                //
+                _mainoption.image = $("#demo1").attr("src");
+            }
+
+            $("#preview").css({
+                background: "url('" + _mainoption.image + "')  0% 0% / 100% 100%"
+            })
+
+            var mainoption = JSON.stringify(_mainoption);
+            //保存到数据库l
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/boardSavconfig")",
+                type: "post",
+                async: false,
+                data: {
+                    boardno: boardno,
+                    mainoption: mainoption
+                },
+                success: function (data) {
+                    if (data.access) {
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+
+        }
+
+   //应用对象选项数据;
+        function applyitemoption() {
+
+            if (currEditItem == undefined) {
+
+                //保存主对象;
+                applymainconfig();
+
+                return;
+            }
+            //
+            var id = currEditItem.options.itemno;
+
+            //位置数据;
+            var locationtr = window.item_location_editor.getValue();
+            var newlocation = JSON.parse(locationtr);
+            var div = $("#" + id);
+            div.css({
+                width: newlocation.width,
+                height: newlocation.height,
+                left: newlocation.x,
+                top: newlocation.y
+            });
+
+
+            //选项数据;
+            var optionstr = window.item_option_editor.getValue();
+            var newoption = {};
+            try {
+                //应用
+                newoption = JSON.parse(optionstr);
+            }
+            catch (err) {
+                //在这里处理错误
+                alert("属性应用错误,请检查书写格式" + err.message);
+                return;
+            }
+
+            //判断image；
+
+            //有图片属性;
+            var imgurl = currEditItem.options.viewoption.image;
+            if (imgurl != null && imgurl != undefined && imgurl.length > 0) {
+                $("#image_edit_title").css("display", "block");
+                $("#image_edit_area").css("display", "block");
+                //
+                newoption.image = $("#demo1").attr("src");
+            }
+
+            optionstr = JSON.stringify(newoption);
+            //应用
+            //var newoption = JSON.parse(optionstr);
+
+            currEditItem.options.viewoption = newoption;
+
+          currEditItem.resetviewoption();
+            //刷新此元素
+
+
+            //保存;itemOptionSave
+
+            //保存到数据库l
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemOptionSave")",
+                type: "post",
+                async: false,
+                data: {
+                    itemno: id,
+                    itemoption: optionstr
+                },
+                success: function (data) {
+                    if (data.access) {
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+
+
+
+    //应用对象选项数据;
+        function applyitemdata() {
+            debugger;
+            if (currEditItem == undefined)
+                return;
+
+            //设置映射关系;
+            setting_datamapping();
+            //
+            var id = currEditItem.options.itemno;
+
+            //数据;
+            var datastr = window.item_data_editor.getValue();
+            //新的数据类型;
+            var datatype = $("#item_viewdata_datatype").val();
+            currEditItem.options.viewdata.datatype = datatype;
+            if (datatype == "json") {
+
+                var newdata = {};
+                try {
+                    //应用
+                    newdata = JSON.parse(datastr);
+                }
+                catch (err) {
+                    //在这里处理错误
+                    alert("属性应用错误,请检查书写格式" + err.message);
+                    return;
+                }
+
+                currEditItem.options.viewdata.datajson = newdata;
+            }
+            if (datatype == "api") {
+                //
+                currEditItem.options.viewdata.dataapi.url = datastr;
+                //判断是否自动请求;
+                var auto = true;
+                if ($("#item_viewdata_intervalloading").hasClass("checked"))
+                    auto = true;
+                else
+                    auto = false;
+                currEditItem.options.viewdata.dataapi.intervalloading = auto;
+                //自动请求间隔秒数;
+                currEditItem.options.viewdata.dataapi.intervalsecond = $("#item_viewdata_intervalsecond").val();
+            }
+            // Intervalloading: 'N',
+            //intervalsecond: 1
+
+
+            currEditItem.resetviewdata();
+
+            //保存;itemOptionSave
+            var viewdatastr = JSON.stringify(currEditItem.options.viewdata);
+
+            //保存到数据库l
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemDataSave")",
+                type: "post",
+                async: false,
+                data: {
+                    itemno: id,
+                    itemdata: viewdatastr
+                },
+                success: function (data) {
+                    if (data.access) {
+                    }
+                    else {
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+
+        }
+
+        //自动时间选择
+        $('#item_viewdata_intervalloading').click(function (e) {
+            if ($(e.target).is('input')) {
+                return;
+            }
+            $(this).toggleClass('checked');
+        });
+
+        //层拖拽排序
+        $('.z-axis-item').on('click', function () {
+            // alert('1');
+            $(this).addClass('selected').siblings().removeClass('selected');
+        })
+        //初始化-拖拽排序;
+        $('#z-axis-list').DDSort({
+            callback: ddsortFinish,
+            target: '.z-axis-item',
+            floatStyle: {
+                'border': '1px solid #00c1de',
+                'background-color': 'rgba(0,192,222,.1)'
+            }
+        });
+
+        /*
+        * 排序项 排序操作结束
+        */
+        function ddsortFinish() {
+            //找到排序后的列表;
+            var list = $(".z-axis-item");
+            for (var a = 0; a < list.length; a++) {
+                var id = $(list[a]).attr("zindexid");
+                //更改z-index
+                $("#" + id).css("z-index", a);
+            }
+        }
+
+        /*
+        * 显示数据配置解析得到的结果
+        */
+        function showitemdata() {
+
+            if (currEditItem == undefined)
+                return;
+            var type = "auto";
+            //数据;
+            var datastr = window.item_data_editor.getValue();
+            //新的数据类型;
+            var datatype = $("#item_viewdata_datatype").val();
+            currEditItem.options.viewdata.datatype = datatype;
+            if (datatype == "json") {
+
+                var newdata = {};
+                try {
+                    //应用
+                    newdata = JSON.parse(datastr);
+                }
+                catch (err) {
+                    //在这里处理错误
+                    alert("属性应用错误,请检查书写格式" + err.message);
+                    return;
+                }
+
+                layer.open({
+                    type: 1
+                      , offset: type
+                      , id: 'layerDemo' + type
+                      , content: '<div style="padding: 20px 100px;">' + datastr + '</div>'
+                      , btn: '关闭全部'
+                      , btnAlign: 'c' //按钮居中
+                      , shade: 0 //不显示遮罩
+                      , yes: function () {
+                          layer.closeAll();
+                      }
+                });
+            }
+            if (datatype == "api") {
+
+                var url = datastr;
+                //保存到数据库l
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: false,
+                    data: {
+                    },
+                    success: function (data) {
+
+                        var str = JSON.stringify(data);
+
+                        layer.open({
+                            type: 1
+                            , offset: type
+                            , id: 'layerDemo' + type
+                            , content: '<div style="padding: 20px 100px;">' + str + '</div>'
+                            , btn: '关闭全部'
+                            , btnAlign: 'c' //按钮居中
+                            , shade: 0 //不显示遮罩
+                            , yes: function () {
+                                layer.closeAll();
+                            }
+                        });
+
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+            }
+
+        }
+
+        /*
+        * 拖拽排序项初始化
+        */
+        function zlist_init() {
+            var html = "";
+            for (a = 0; a < zResizeArray.length; a++) {
+                html += zlist_createhtml(zResizeArray[a].item);
+            }
+            $("#z-axis-list").html(html);
+        }
+        /*
+        * 增加一个拖拽排序项
+        */
+        function zlist_add(zResizeItem) {
+            var html = "";
+            html += zlist_createhtml(zResizeItem);
+            $("#z-axis-list").append(html);
+        }
+        /*
+        * 为排序项创建对应的html
+        */
+        function zlist_createhtml(zResizeItem) {
+            var html = "";
+            if (zResizeItem == undefined || zResizeItem.options == undefined || zResizeItem.options.itemno == undefined)
+                return html;
+
+            //更新位置信息;
+            var id = zResizeItem.options.itemno;
+            var itemname = zResizeItem.options.itemname;
+
+            html += '<div class="z-axis-item" id="zindex-' + id + '" zindexid="' + id + '">';
+            html += '    <div class="z-index-detail">';
+            html += '     <i class="fa fa-bar-chart"></i>';
+            var name = "图" + id;
+            if (itemname != undefined)
+                name = itemname;
+            //viewname
+            html += '      <span class="com-alias-text">' + name + '</span>';
+            html += '    </div>';
+            html += '</div>';
+
+            return html;
+        }
+
+    </script>
+</body>
+</html>

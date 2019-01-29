@@ -1,0 +1,148 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-toggle="topjui-panel" title="" data-options="fit:true,iconCls:'icon-ok',footer:'#footer'">
+        <div class="topjui-container">
+            <div class="topjui-row">
+                <div class="topjui-col-sm8">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                    </fieldset>
+                </div>
+            </div>
+                <form id="entdynamicformid" action="/" method="post">
+                    <input type="hidden" name="id" value=0 />
+                    <input type="hidden" name="putime" id="artputtimeid" />
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">标题</label>
+                            <div class="topjui-input-block">
+                                <input name="title" data-toggle="topjui-textbox" id="arttitleid">
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">副标题</label>
+                            <div class="topjui-input-block">
+                                <input name="subtitle" data-toggle="topjui-textbox" id="artsubtitleid">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">标题图</label>
+                            <div class="topjui-input-block">
+                                <a href="javascript:void(0)"
+                                   data-toggle="topjui-menubutton"
+                                   data-options="extend:'#productDg-toolbar',
+                                   iconCls:'fa fa-pencil',
+                                   btnCls:'topjui-btn-green',
+                                   onClick:myDialog">上传文件</a>
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">置顶</label>
+                            <div class="topjui-input-block">
+                                <input name="istop" data-toggle="topjui-switchbutton" id="istopidart"
+                                       data-istopidart="onText:'是',offText:'否'">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">图片预览</label>
+                            <div class="topjui-input-block">
+                                <img id="imgr" style="width:80px;height:80px;" />
+                                <input id="perviewimage" name="perviewimage" type="hidden">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">作者</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="author" data-toggle="topjui-textbox" id="authorartid">
+
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">来源</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="source" data-toggle="topjui-textbox" value="转发" id="artsourceid">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm10">
+                            <label class="topjui-form-label">内容</label>
+                            <div class="topjui-input-block">
+                                <textarea id="remarkAddEditortextarea" name="articlecontent"
+                                          data-toggle="topjui-ueditor" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.remarkeditor = document.getElementById("remarkAddEditortextarea");
+
+    function myDialog() {
+        $('<div></div>').iDialog({
+            id: 'myDialog',
+            title: '上传文件',
+            closed: false,
+            height: 600,
+            width: 700,
+            href: _ctx + 'html/complex/fileupload.html',
+            buttons: [
+                { text: '保存', iconCls: 'fa fa-plus', btnCls: 'topjui-btn-green', handler: ajaxSubmit },
+                { text: '关闭', iconCls: 'fa fa-no', btnCls: 'topjui-btn-red', handler: closeMyDialog }
+            ],
+            onload: function (data) {
+                debugger;
+                //alert(1);
+                //$("#fileupload").str = "../../../Dropzone.aspx"
+
+            }
+        })
+    }
+
+    var ajaxSubmit = function () {
+
+        //手动上传所有图片
+        window.fileDropzone.processQueue();
+
+    }
+    //文件上传完成，
+    function fileuploadcomplate(data) {
+        debugger;
+        //alert(data);
+        //imgr
+        $("#imgr").attr('src', _ctx + "../" + data.files[0].url);//
+        $('#perviewimage').val(data.files[0].url);
+    }
+    //文件上传完成后，自动关闭上传页面；
+    var fileuploadclose = function () {
+        $('#myDialog').dialog('close');
+        $('#myDialog').dialog('destroy');
+    }
+
+    var closeMyDialog = function () {
+        $('#myDialog').dialog('close');
+        $('#myDialog').dialog('destroy');
+    }
+
+</script>
+<script type="text/javascript" src="../../static/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="../../static/plugins/ueditor/ueditor.all.min.js"></script>
+
+
+
+

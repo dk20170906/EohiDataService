@@ -1,0 +1,418 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="apiModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityContainer Name="kailifonEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="a_systeminfo" EntityType="apiModel.a_systeminfo" />
+    <EntitySet Name="a_system_updatefile" EntityType="apiModel.a_system_updatefile" />
+    <EntitySet Name="api_items" EntityType="apiModel.api_items" />
+    <EntitySet Name="api_items_on" EntityType="apiModel.api_items_on" />
+    <EntitySet Name="api_links" EntityType="apiModel.api_links" />
+    <EntitySet Name="api_quartz" EntityType="apiModel.api_quartz" />
+    <EntitySet Name="api_webapp" EntityType="apiModel.api_webapp" />
+    <EntitySet Name="api_databoard" EntityType="apiModel.api_databoard" />
+    <EntitySet Name="api_databoard_items" EntityType="apiModel.api_databoard_items" />
+    <EntitySet Name="api_databoard_items_pub" EntityType="apiModel.api_databoard_items_pub" />
+    <EntitySet Name="api_databoard_pub" EntityType="apiModel.api_databoard_pub" />
+    <FunctionImport Name="pr_app_databoard_pub" ReturnType="Collection(Int32)">
+      <Parameter Name="boardno" Mode="In" Type="String" />
+      <Parameter Name="userid" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="api_type_htmlhelp" EntityType="apiModel.api_type_htmlhelp" />
+    <EntitySet Name="api_menu" EntityType="apiModel.api_menu" />
+    <EntitySet Name="a_3d_model_files" EntityType="apiModel.a_3d_model_files" />
+    <EntitySet Name="a_flowchart" EntityType="apiModel.a_flowchart" />
+    <EntitySet Name="a_flowchart_instance_pars" EntityType="apiModel.a_flowchart_instance_pars" />
+    <EntitySet Name="a_flowchart_line" EntityType="apiModel.a_flowchart_line" />
+    <EntitySet Name="a_flowchart_node_approveitem" EntityType="apiModel.a_flowchart_node_approveitem" />
+    <EntitySet Name="a_flowchart_node_switchitem" EntityType="apiModel.a_flowchart_node_switchitem" />
+    <EntitySet Name="a_3d_models" EntityType="apiModel.a_3d_models" />
+    <EntitySet Name="a_3d_scene" EntityType="apiModel.a_3d_scene" />
+    <EntitySet Name="a_flowchart_instance" EntityType="apiModel.a_flowchart_instance" />
+    <EntitySet Name="api_role_menu" EntityType="apiModel.api_role_menu" />
+    <EntitySet Name="api_user_role" EntityType="apiModel.api_user_role" />
+    <EntitySet Name="a_flowchart_node" EntityType="apiModel.a_flowchart_node" />
+    <EntitySet Name="api_role" EntityType="apiModel.api_role" />
+    <EntitySet Name="api_user" EntityType="apiModel.api_user" />
+    <EntitySet Name="a_system_article" EntityType="apiModel.a_system_article" />
+  </EntityContainer>
+  <EntityType Name="a_systeminfo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="system_id" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="system_name" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="system_worksitename" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="company_name" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="company_address" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+    <Property Name="company_tel" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="company_linkman" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="system_licenseno" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="system_effdate_s" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="system_effdate_e" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="a_system_updatefile">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="filename" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Type="String" Name="versionno" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="Int32" Name="filesize" />
+    <Property Type="String" Name="savedir" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Type="DateTime" Name="uptime" Nullable="false" Precision="3" />
+    <Property Type="String" Name="filenote" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="fileurl" MaxLength="500" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_items">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="apiname" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="apitype" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="apistatus" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="linkid" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="apinote" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="apipars" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="apiscript" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+  </EntityType>
+  <EntityType Name="api_items_on">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="apiname" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_links">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="linktype" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="linkname" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="linkstring" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+  </EntityType>
+  <EntityType Name="api_quartz">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="quartzname" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="quartznote" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="quartzstatus" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="crontrigger" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="jobtype" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="jobpars" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+  </EntityType>
+  <EntityType Name="api_webapp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="webappname" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="webappnote" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="webapphtml" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="webappscript" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+  </EntityType>
+  <EntityType Name="api_databoard">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="boardno" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="pubno" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="perviewimage" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="boardnote" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="cre_date" Precision="3" />
+    <Property Type="String" Name="cre_man" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+    <Property Type="String" Name="mod_man" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="gridsize" />
+    <Property Type="String" Name="mainoption" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_databoard_items">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="boardno" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemno" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="itemx" />
+    <Property Type="Int32" Name="itemy" />
+    <Property Type="Int32" Name="itemw" />
+    <Property Type="Int32" Name="itemh" />
+    <Property Type="Int32" Name="itemindex" />
+    <Property Type="String" Name="itemtype" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemversion" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemoption" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemdata" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Intervalloading" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="intervalsecond" />
+    <Property Type="String" Name="cre_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_databoard_items_pub">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="pubno" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemno" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="itemindex" />
+    <Property Type="Int32" Name="itemx" />
+    <Property Type="Int32" Name="itemy" />
+    <Property Type="Int32" Name="itemw" />
+    <Property Type="Int32" Name="itemh" />
+    <Property Type="String" Name="itemtype" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemversion" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemoption" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="itemdata" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="Intervalloading" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="intervalsecond" />
+    <Property Type="String" Name="cre_man" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+    <Property Type="String" Name="mod_man" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_databoard_pub">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="pubno" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="perviewimage" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="boardnote" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Type="Int32" Name="gridsize" />
+    <Property Type="DateTime" Name="cre_date" Precision="3" />
+    <Property Type="String" Name="cre_man" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="DateTime" Name="mod_date" Precision="3" />
+    <Property Type="String" Name="mod_man" MaxLength="60" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="mainoption" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_type_htmlhelp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TypeId" Type="Int32" />
+    <Property Name="HtmlStr" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Remarks" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_menu">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pid" Type="Int32" />
+    <Property Name="text" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="state" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="iconCls" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="url" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="pguid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="isChildNode" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="a_3d_model_files">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="fileSize" Type="Int32" />
+    <Property Name="fileSuffix" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="uploadTime" Type="DateTime" Precision="3" />
+    <Property Name="uploadUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="fileUrl" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="editTime" Type="DateTime" Precision="3" />
+    <Property Name="editUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modelIdentity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="modelName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modelId" Type="Int32" />
+  </EntityType>
+  <EntityType Name="a_flowchart">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="flowchart_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="flowchart_version" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="note" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="flowchart_name" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_flowchart_instance_pars">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="instance_id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="pars" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="funid" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="keyvalue" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_flowchart_line">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="line_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="node_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="label" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="next_node_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="flowchart_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="sourcepoint" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="targetpoint" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node_approveitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="flowchart_id" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="node_id" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="approveid" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="approvename" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="approvenote" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="approvescript" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="approvetype" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node_switchitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Type="String" Name="flowchart_id" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="node_id" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="switchid" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="switchname" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Type="String" Name="switchnote" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_3d_models">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="modelIdentity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="modelName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="modeDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="modelRemark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="createTime" Type="DateTime" Precision="3" />
+    <Property Name="createUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modelVersion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="editTime" Type="DateTime" Precision="3" />
+    <Property Name="editUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="yujiPutTime" Type="DateTime" Precision="3" />
+    <Property Name="modelImage" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="modelForOutfit" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modeltype" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="modelurl" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_3d_scene">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="scenenid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="scenename" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="scenenote" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="scenetype" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="scenecfg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="createtime" Type="DateTime" Precision="3" />
+    <Property Name="edittime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="a_flowchart_instance">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="flowchart_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="flowchart_version" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="instance_id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="cre_date" Type="DateTime" Precision="3" />
+    <Property Name="cre_man" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="instance_status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="instance_message" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_role_menu">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="role_guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="menu_guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_user_role">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="role_guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="user_guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="flowchart_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="node_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="nodetype" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="sourcepoints" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="targetpoints" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="label" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="style" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="x" Type="Int32" />
+    <Property Name="y" Type="Int32" />
+    <Property Name="operatorscript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="switchscript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="flowscript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="processscript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="approvalnotescript" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="api_role">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="role_guid" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="role_name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="role_allow" Type="Int32" />
+    <Property Name="create_time" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="api_user">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="user_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="user_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="user_allow" Type="Int32" />
+    <Property Name="remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="user_roles" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="create_time" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="a_system_article">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="istop" Type="Int32" />
+    <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="subtitle" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="perviewimage" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="articlecontent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="source" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="putime" Type="DateTime" Precision="3" />
+  </EntityType>
+</Schema>

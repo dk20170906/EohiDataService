@@ -1,0 +1,582 @@
+﻿/**
+ * Created by 郭广平 2018.05.16
+ */
+
+(function ($) {
+
+    /**
+     * 默认参数
+     */
+    var defaultOpts = {
+        item: '',
+    };
+
+    /**
+     * 定义类
+     */
+    var VChart = function (options) {
+        this.options = $.extend({}, defaultOpts, options);
+
+        //记录item值;
+        defaultOpts.item = this.options.item;
+
+        this.chart = undefined;
+
+        this.dataIndex = -1;
+        this.dataCount = 0;
+        this.dataCount2 = 0;
+
+        this.t_auto = undefined;
+        this.t_data = undefined;
+
+
+        this.init();
+    }
+
+    VChart.prototype = {
+        init: function () {
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+            var dataPanel2 = $('<div class="data-item-chart"></div>');
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+            dataPanel2.css({
+                width: width,
+                height: height,
+                top: 0,
+                left: 0,
+                position: 'absolute',
+                color: this.options.color,
+                "font-size": this.options.fontsize,
+            });
+            self.appendHandler(dataPanel2, pdiv);
+            //
+            //dataPanel2.html(this.options.html)
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(dataPanel2[0], "chalk");
+            //var myChart = echarts.init(dataPanel2[0]);
+            // var myChart = echarts.init(dataPanel[0]);
+            self.chart = myChart;
+            // 指定图表的配置项和数据
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+
+                    //检查定时器
+                    self.setData_apidata();
+
+
+                }
+            }
+            else
+                myChart.setOption(option);
+
+
+            //自动轮换饼图选中扇区
+            if (viewdata != null && viewdata.datafor =="chart.pie") {
+                self.autopietip();
+            }
+        
+        }
+        ,
+        /**
+         * 插入容器
+         */
+        appendHandler: function (handlers, target) {
+            for (var i = 0; i < handlers.length; i++) {
+                el = handlers[i];
+                $(target).append(el);
+            }
+        }
+        ,
+        bind: function (object, func) {
+            return function () {
+                return func.apply(object, arguments);
+            }
+        },
+        /*
+        * 更改大小
+        */
+        resize: function () {
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+
+            //self.resizeDiv = undefined;//拖拽面板
+            //更改数据面板大小
+
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+
+            //更改div
+            $(pdiv).children('div.data-item-chart').css({
+                width: width,
+                height: height
+            });
+            //
+            self.chart.resize();
+
+        },
+        setViewoption: function (viewoption) {
+            var self = this;
+            self.options.viewoption = $.extend({}, self.options.viewoption, viewoption);
+
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+                    //检查定时器
+                    self.setData_apidata();
+                }
+            }
+            else
+                myChart.setOption(option);
+
+          
+
+        },
+        /*
+        * 设置数据
+        */
+        setViewdata: function (viewdata) {
+
+            var self = this;
+            self.options.viewdata = $.extend({}, self.options.viewdata, viewdata);
+            //加载数据
+            var viewdata = self.options.viewdata;
+            if (viewdata != undefined) {
+                //设置数据;
+                if (viewdata.datatype == "json") {
+                    self.setData_jsondata();
+                }
+                if (viewdata.datatype == "api") {
+                    //检查定时器
+                    self.setData_apidata();
+                }
+            }
+        }
+        
+        ,
+        setData_jsondata: function () {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            if (viewdata.datafor == "chart.line" || viewdata.datafor == "chart.bar") {
+
+                //从
+                var data = viewdata.datajson;
+                self.dealData_Nomal(data);
+              
+            }
+
+            if (viewdata.datafor == "chart.pie") {
+                //x y s
+              
+                var data = viewdata.datajson;
+                self.dealData_Pie(data);
+            }
+
+            if (viewdata.datafor == "chart.ybp.hgl") {
+                //x y s
+
+                var data = viewdata.datajson;
+                self.dealData_ybp_hgl(data);
+            }
+
+            if (viewdata.datafor == "chart.liquidfill") {
+                //x y s
+                var data = viewdata.datajson;
+                self.dealData_liquidfill(data);
+            }
+        }
+        ,
+       
+        setData_apidata: function () {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            var url = self.options.viewdata.dataapi.url;
+            //
+            if (viewdata.datafor == "chart.line" || viewdata.datafor == "chart.bar") {
+               
+                //从api获取数据
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: true,
+                    data: {
+                    },
+                    success: function (data) {
+                       
+                        self.dealData_Nomal(data);
+
+                        //自动请求状态; intervalloading 
+                        //自动请求间隔秒数;  intervalsecond
+                        if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                            var times = viewdata.dataapi.intervalsecond * 1000;
+                            //清理;
+                            if (self.t_data != undefined) {
+                                clearTimeout(self.t_data);
+                            }
+                            self.t_data= setTimeout(self.bind(self, self.setData_apidata), times);
+                        }
+
+
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+
+            }
+
+            // 饼图;
+            if (viewdata.datafor == "chart.pie") {
+               
+                //从api获取数据
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: true,
+                    data: {
+                    },
+                    success: function (data) {
+
+                        self.dealData_Pie(data);
+
+                        //自动请求状态; intervalloading 
+                        //自动请求间隔秒数;  intervalsecond
+                        if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                            var times = viewdata.dataapi.intervalsecond * 1000;
+
+                            //清理;
+                            if (self.t_data != undefined) {
+                                clearTimeout(self.t_data);
+                            }
+                            self.t_data = setTimeout(self.bind(self, self.setData_apidata), times);
+                        }
+                      
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+
+            }
+            //仪表盘
+            if (viewdata.datafor == "chart.ybp.hgl" ) {
+
+                //从api获取数据
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: true,
+                    data: {
+                    },
+                    success: function (data) {
+
+                        self.dealData_ybp_hgl(data);
+
+                        //自动请求状态; intervalloading 
+                        //自动请求间隔秒数;  intervalsecond
+                        if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                            var times = viewdata.dataapi.intervalsecond * 1000;
+
+                            //清理;
+                            if (self.t_data != undefined) {
+                                clearTimeout(self.t_data);
+                            }
+                            self.t_data = setTimeout(self.bind(self, self.setData_apidata), times);
+                        }
+
+
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+
+            }
+
+            //水滴图
+            if (viewdata.datafor == "chart.liquidfill") {
+                //从api获取数据
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: true,
+                    data: {
+                    },
+                    success: function (data) {
+
+                        self.dealData_liquidfill(data);
+
+                        //自动请求状态; intervalloading 
+                        //自动请求间隔秒数;  intervalsecond
+                        if (viewdata.dataapi.intervalloading && viewdata.dataapi.intervalsecond != undefined) {
+
+                            var times = viewdata.dataapi.intervalsecond * 1000;
+
+                            //清理;
+                            if (self.t_data != undefined) {
+                                clearTimeout(self.t_data);
+                            }
+                            self.t_data = setTimeout(self.bind(self, self.setData_apidata), times);
+                        }
+
+
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+
+            }
+        }
+        ,
+        dealData_Nomal: function (data) {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            var datamapping = viewdata.datamapping;
+            //var datamapping = viewdata.datamapping;
+            //data=d;
+            var dx = [];
+            var ds = [];
+
+            //清除数据;
+            for (var s = 0; s < option.series.length; s++) {
+                option.series[s].data = [];
+            }
+            //
+            for (var b = 0; b < data.length; b++) {
+                var di = data[b];
+
+                //判断系列字段值是否存在;
+                var sfieldname = datamapping.s;
+                if (sfieldname != undefined && sfieldname != "") {
+                    //存在系列;
+                }
+
+
+                //判断是否已经存在，如果是，则不重复添加
+                if (dx.indexOf(di[datamapping.x]) < 0)
+                    dx.push(di[datamapping.x]);
+                var bvalueadd = false;
+                for (var s = 0; s < option.series.length; s++) {
+                    if (option.series[s].attrfiltervalue != undefined && option.series[s].attrfiltervalue!="") {
+                        if (di[datamapping.s].trim() == option.series[s].attrfiltervalue.trim()) {
+                            option.series[s].data.push(di[datamapping.y]);
+                        }
+                    }
+                    else {
+                        //
+                        option.series[s].data.push(di[datamapping.y]);
+                    }
+                }
+
+                option.xAxis.data = dx;
+            }
+
+            //option.series[0].itemStyle = { normal: { label: { show: true } } };// : { normal: {label : {show: true}}},
+            self.chart.setOption(option);
+        },
+        dealData_ybp_hgl: function (data) {
+            try {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            var datamapping = viewdata.datamapping;
+            var datavalue = [];
+                var datacatalog = [];
+            for (var b = 0; b < data.length; b++) {
+                var di = data[b];
+                var obj = {};
+
+
+                obj.value = di[datamapping.value];
+                obj.name = di[datamapping.name];
+                datavalue.push(obj);
+
+                //datacatalog.push(di[datamapping.x]);
+            }
+            option.series[0].data = [{
+                value: datavalue[0].value,
+                name: datavalue[0].name,
+            }];
+            
+
+            self.chart.setOption(option);
+
+        } catch (e) {
+            console.log(e.message);
+        }
+            
+    }
+        ,
+        //水滴图赋值
+        dealData_liquidfill: function (data) {
+            try {
+                var self = this;
+                var option = self.options.viewoption;
+                var viewdata = self.options.viewdata;
+                var datamapping = viewdata.datamapping;
+                var datavalue = [];
+                datavalue.push(data[0].x);
+                datavalue.push(data[0].y);
+                datavalue.push(data[0].z);
+                datavalue.push(data[0].v);
+                option.series[0].data = datavalue;
+
+
+                self.chart.setOption(option);
+
+            } catch (e) {
+                console.log(e.message);
+            }
+        }
+        ,dealData_Pie: function (data) {
+            try {
+                var self = this;
+                var option = self.options.viewoption;
+                var viewdata = self.options.viewdata;
+                var datamapping = viewdata.datamapping;
+                var datavalue = [];
+                var datacatalog = []
+                for (var b = 0; b < data.length; b++) {
+                    var di = data[b];
+                    var obj = {};
+
+                    obj.value = di[datamapping.y];
+                    obj.name = di[datamapping.x];
+                    datavalue.push(obj);
+
+                    datacatalog.push(di[datamapping.x]);
+                }
+
+                //option.xAxis.data = dx;
+                option.series[0].data = datavalue;
+                if (option.legend != undefined) {
+                    option.legend.data = datacatalog;
+                }
+
+                self.chart.setOption(option);
+
+                //自动轮换饼图选中扇区
+                if (viewdata != null && viewdata.datafor == "chart.pie") {
+                    self.autopietip();
+                }
+
+            } catch (e) {
+                console.log(e.message);
+            }
+            
+        }
+        ,
+        /*
+        * 自动轮播图例，针对饼图;
+        */
+        autopietip: function () {
+            //var curr = count % total;
+            var self = this;
+            var option = self.options.viewoption;
+            var datacount = option.series[0].data.length;
+
+            // 饼图;
+            var viewdata = self.options.viewdata;
+            //if (viewdata.datafor!= "chart.pie")
+            //    return;
+
+           //var datacount= self.chart.option.series[0].data.left;
+            //self.dataIndex;
+
+
+
+            //先取消高亮;
+            // 取消之前高亮的图形
+            self.chart.dispatchAction({
+                type: 'downplay',
+                seriesIndex: 0,
+                dataIndex: self.dataIndex
+            });
+
+
+            //for (var a = 0; a < datacount; a++) {
+            //    self.chart.dispatchAction({
+            //        type: 'downplay',
+            //        // 可选，系列 index，可以是一个数组指定多个系列
+            //        seriesIndex: 0,
+            //        dataIndex: a,
+            //    })
+            //}
+
+            self.dataIndex = (self.dataIndex + 1) % datacount;
+
+            //高亮;
+            self.chart.dispatchAction({
+                type: 'highlight',
+                seriesIndex: 0,
+                dataIndex: self.dataIndex,
+            });
+            //// 显示 tooltip
+            //self.chart.dispatchAction({
+            //    type: 'showTip',
+            //    seriesIndex: 0,
+            //    dataIndex: self.dataIndex
+            //});
+
+            //self.dataIndex += 1;
+            //if (self.dataIndex > datacount)
+            //    self.dataIndex = 0;
+            //
+            //debugger;
+            //self.dataCount2 += 1;
+
+            //清理;
+            if (self.t_auto != undefined) {
+                clearTimeout(self.t_auto);
+            }
+            var ms = Math.floor(Math.random() * 2000 + 4000);
+           // console.log(ms);
+            //var ms = 3000;
+            this.t_auto = setTimeout(self.bind(self, self.autopietip), ms);
+        }
+
+    }
+    window.VChart = VChart;
+
+})(jQuery);

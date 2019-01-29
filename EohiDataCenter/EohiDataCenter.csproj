@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8287164C-AEFD-4FFE-9007-01CA6703BCBD}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EohiDataCenter</RootNamespace>
+    <AssemblyName>EohiDataCenter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>3d_32px.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Common.Base, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Common.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Files, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Common.Files.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Util, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Common.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.WebDataHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Common.WebDataHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.BonusSkins.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v15.2.Core, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Sparkline.v15.2.Core, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraBars.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGrid.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraNavBar.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v15.2, Version=15.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="ICSharpCode.TextEditor, Version=3.1.0.4977, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Midapex, Version=2.2.1.24626, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Midapex.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.5.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.Common, Version=1.5.1.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\SuperSocket.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase, Version=1.5.1.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\SuperSocket.SocketBase.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.SocketEngine, Version=1.5.1.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\SuperSocket.SocketEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperWebSocket, Version=0.7.0.0, Culture=neutral, PublicKeyToken=7ba53b9a7cef5d1c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\SuperWebSocket.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\API定义\IronPythonManager.cs" />
+    <Compile Include="API\API定义\LayoutScriptEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="API\API定义\LayoutScriptEditForm.designer.cs">
+      <DependentUpon>LayoutScriptEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="API\API定义\Parameter.cs" />
+    <Compile Include="API\API定义\ParameterManager.cs" />
+    <Compile Include="API\API定义\ApiHost.cs" />
+    <Compile Include="API\API定义\From_ApiList_Selector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="API\API定义\From_ApiList_Selector.designer.cs">
+      <DependentUpon>From_ApiList_Selector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="API\API服务\ApiItem.cs" />
+    <Compile Include="API\API服务\From_ApiServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="API\API服务\From_ApiServer.designer.cs">
+      <DependentUpon>From_ApiServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CmdUtil.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Form_Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Main.Designer.cs">
+      <DependentUpon>Form_Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_Project_Docs_UpLoad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form_Project_Docs_UpLoad.designer.cs">
+      <DependentUpon>Form_Project_Docs_UpLoad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemotingConf\FormRemotingConf.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RemotingConf\FormRemotingConf.designer.cs">
+      <DependentUpon>FormRemotingConf.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceControl\WebSocketService组件\IMMessage.cs" />
+    <Compile Include="ServiceControl\WebSocketService组件\WebSocketIronPythonManager.cs" />
+    <Compile Include="ServiceControl\WebSocketService组件\JsonHelper.cs" />
+    <Compile Include="ServiceControl\WebSocketService组件\MyWebSocketSession.cs" />
+    <Compile Include="ServiceControl\RemotingAPIControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ServiceControl\RemotingAPIControl.Designer.cs">
+      <DependentUpon>RemotingAPIControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RemotingConf\RemotingConfig.cs" />
+    <Compile Include="ServiceControl\WebSocketService组件\FrmWebSocket.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceControl\WebSocketService组件\FrmWebSocket.Designer.cs">
+      <DependentUpon>FrmWebSocket.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceControl\WebSocketService组件\U3dMessage.cs" />
+    <Compile Include="Helper\SQL\SqlCmdExec.cs" />
+    <Compile Include="WebPages\Form_WebPageDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebPages\Form_WebPageDlg.designer.cs">
+      <DependentUpon>Form_WebPageDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebPages\From_WebPageList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebPages\From_WebPageList.designer.cs">
+      <DependentUpon>From_WebPageList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceControl\WebSocketService组件\WebSocketControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ServiceControl\WebSocketService组件\WebSocketControl.Designer.cs">
+      <DependentUpon>WebSocketControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebSocket\WebSocketScriptEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebSocket\WebSocketScriptEditForm.designer.cs">
+      <DependentUpon>WebSocketScriptEditForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="连接池\Form_LinkDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="连接池\Form_LinkDlg.designer.cs">
+      <DependentUpon>Form_LinkDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="连接池\From_LinkList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="连接池\From_LinkList.designer.cs">
+      <DependentUpon>From_LinkList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="API\API定义\Form_Api_Dlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="API\API定义\Form_Api_Dlg.designer.cs">
+      <DependentUpon>Form_Api_Dlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="API\API定义\From_ApiList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="API\API定义\From_ApiList.designer.cs">
+      <DependentUpon>From_ApiList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Update.cs" />
+    <EmbeddedResource Include="API\API定义\LayoutScriptEditForm.resx">
+      <DependentUpon>LayoutScriptEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="API\API定义\From_ApiList_Selector.resx">
+      <DependentUpon>From_ApiList_Selector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="API\API服务\From_ApiServer.resx">
+      <DependentUpon>From_ApiServer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Main.resx">
+      <DependentUpon>Form_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form_Project_Docs_UpLoad.resx">
+      <DependentUpon>Form_Project_Docs_UpLoad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="RemotingConf\FormRemotingConf.resx">
+      <DependentUpon>FormRemotingConf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceControl\RemotingAPIControl.resx">
+      <DependentUpon>RemotingAPIControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceControl\WebSocketService组件\FrmWebSocket.resx">
+      <DependentUpon>FrmWebSocket.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebPages\Form_WebPageDlg.resx">
+      <DependentUpon>Form_WebPageDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebPages\From_WebPageList.resx">
+      <DependentUpon>From_WebPageList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceControl\WebSocketService组件\WebSocketControl.resx">
+      <DependentUpon>WebSocketControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebSocket\WebSocketScriptEditForm.resx">
+      <DependentUpon>WebSocketScriptEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="连接池\Form_LinkDlg.resx">
+      <DependentUpon>Form_LinkDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="连接池\From_LinkList.resx">
+      <DependentUpon>From_LinkList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="API\API定义\Form_Api_Dlg.resx">
+      <DependentUpon>Form_Api_Dlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="API\API定义\From_ApiList.resx">
+      <DependentUpon>From_ApiList.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="3d_32px.ico" />
+    <Content Include="DLL\Common.Base.dll" />
+    <Content Include="DLL\Common.DBHelper.dll" />
+    <Content Include="DLL\Common.Files.dll" />
+    <Content Include="DLL\Common.Util.dll" />
+    <Content Include="DLL\Common.WebDataHelper.dll" />
+    <Content Include="DLL\ICSharpCode.TextEditor.dll" />
+    <Content Include="DLL\IronPython.dll" />
+    <Content Include="DLL\log4net.dll" />
+    <Content Include="DLL\Microsoft.Dynamic.dll" />
+    <Content Include="DLL\Microsoft.Scripting.dll" />
+    <Content Include="DLL\Microsoft.Scripting.Metadata.dll" />
+    <Content Include="DLL\Midapex.dll" />
+    <Content Include="DLL\Newtonsoft.Json.dll" />
+    <Content Include="DLL\SuperSocket.Common.dll" />
+    <Content Include="DLL\SuperSocket.SocketBase.dll" />
+    <Content Include="DLL\SuperSocket.SocketEngine.dll" />
+    <Content Include="DLL\SuperWebSocket.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EohiData.Lib\EohiData.Lib.csproj">
+      <Project>{9a06565c-6aee-493f-8227-69e26d8dd24c}</Project>
+      <Name>EohiData.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EohiDataRemoteObject\EohiDataRemoteObject.csproj">
+      <Project>{b968737d-fce0-4b6c-8cea-1585e43ee98c}</Project>
+      <Name>EohiDataRemoteObject</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="数据采集\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

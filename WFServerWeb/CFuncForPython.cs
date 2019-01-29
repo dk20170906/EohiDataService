@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+using System.Data;
+using System.Data.SqlClient;
+namespace WFServerWeb
+{
+    public class CFuncForPython
+    {
+        public enum GetUserType
+        {
+            ByDepartment,
+            ByRole,
+            BySql,
+            ByID
+        }
+
+        public DataTable GetUserByDepartment(string strDepartmenNameList)
+        {
+            string strDepartments = GetItemArray(strDepartmenNameList);
+            string strSql = @"select user_id,user_name,'" + GetUserType.ByDepartment + "' as GetUserType from  view_workflow_department_users where department_name in (" + strDepartments + ")";
+            DataTable dtUser = CDataHelper.GetDataTable(strSql);
+            return dtUser;
+        }
+
+        public DataTable GetUserByRole(string strRoleNameList)
+        {
+            string strRoles = GetItemArray(strRoleNameList);
+            string strSql = @"select user_id,user_name,'" + GetUserType.ByRole + "' as GetUserType from  view_workflow_role_users where role_name in (" + strRoles + ")";
+            DataTable dtUser = CDataHelper.GetDataTable(strSql);
+            return dtUser;
+        }
+
+        public DataTable RunSql(string strSql)
+        {
+            DataTable dt = CDataHelper.GetDataTable(strSql);
+            return dt;
+        }
+
+        public string GetData(string strSql)
+        {
+            string data = null;
+            DataTable dt = CDataHelper.GetDataTable(strSql);
+            if (dt != null)
+            {
+                if(dt.Rows.Count>0)
+                {
+                    data = dt.Rows[0][0].ToString();
+                }
+            }
+            return data;
+        }
+
+        public DataTable GetUserByID(string strUserList)
+        {
+            string strUsers = GetItemArray(strUserList);
+            string strSql = "select user_id,user_name,'" + GetUserType.ByID + "' as GetUserType from view_workflow_users where user_id in (" + strUsers + ")";
+
+            DataTable dtUser = CDataHelper.GetDataTable(strSql);
+            return dtUser;
+        }
+
+        public int ConvertToInt32(object obj)
+        {
+            try
+            {
+                return Convert.ToInt32(obj);
+            }
+            catch (Exception exp)
+            {
+            }
+
+            return 0;
+        }
+
+        public string ConvertToString(object obj)
+        {
+            try
+            {
+                return obj.ToString();
+            }
+            catch (Exception exp)
+            {
+            }
+
+            return "";
+        }
+        private string GetItemArray(string strList)
+        {
+            string[] Items = strList.Split(',');
+            string strItems = "";
+            for (int i = 0; i < Items.Length; i++)
+            {
+                strItems += "'" + Items[i] + "',";
+            }
+            strItems = strItems.Substring(0, strItems.Length - 1);
+            return strItems;
+        }
+    }
+}

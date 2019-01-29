@@ -1,0 +1,952 @@
+﻿/**
+ * 
+ *  郭广平 2018.05.16
+ */
+(function($) {
+
+    /**
+     * 默认参数
+     */
+    var defaultOpts = {
+        itemno: '',
+        itemindex: 0,
+        selected: false,
+        itemname:'',
+        stage: document, //舞台
+        item: 'resize-item',//可缩放的类名
+        viewtype:'chart',//表型类型
+        viewoption: {}
+    };
+
+    /**
+     * 定义类
+     */
+    var ZResize = function (options) {
+
+        this.options = $.extend({}, defaultOpts, options);
+       
+        this.resizeDiv = undefined;//拖拽面板
+        this.dataDiv = undefined;//数据面板
+        this.viewObject = undefined; //数据
+
+
+        this.init();
+
+    }
+
+    ZResize.prototype = {
+        init: function () {
+            //创建数据面板
+            this.initData();
+            //创建拖拽面板
+            this.initResizeBox();
+        },
+        /**
+         * 初始化拖拽item
+         */
+        initResizeBox: function () {
+
+
+            var self = this;
+
+            if (this.options.designmode == undefined || this.options.designmode == true) {
+
+                //
+                $(self.options.item).each(function () {
+                    //创建面板
+                    //debugger;
+                    var width = $(this).width();
+                    var height = $(this).height();
+                    var resizePanel = $('<div class="resize-panel"></div>');
+                    resizePanel.css({
+                        width: width,
+                        height: height,
+                        top: 0,
+                        left: 0,
+                        position: 'absolute',
+                        'background-color': 'rgba(0,0,0,0.3)',
+                        cursor: 'move',
+                        display: 'none'
+
+                    });
+                    self.appendHandler(resizePanel, $(this));
+
+                    //复制给全局变量
+                    self.resizeDiv = resizePanel;
+                    /**
+                     * 创建按钮
+                     */
+                    var btn = $('<div class="button-tip"></div>'); //创建按钮层
+                    var copy = $('<a title="拷贝" onclick="copyitem(\'' + self.options.itemno + '\');"><i class="datav-icon icon-copy"></i></a>'); //创建复制按钮
+                    var del = $('<a title="删除"  onclick="delitem(\'' + self.options.itemno + '\');"><i class="datav-icon icon-trash"></i></a>'); //创建删除按钮
+                    self.appendHandler([copy, del], btn);
+                    self.appendHandler(btn, resizePanel);
+                    /**
+                     * 创建控制点
+                     */
+                    var n = $('<div class="n"></div>');//北
+                    var s = $('<div class="s"></div>');//南
+                    var w = $('<div class="w"></div>');//西
+                    var e = $('<div class="e"></div>');//东
+                    var ne = $('<div class="ne"></div>');//东北
+                    var nw = $('<div class="nw"></div>');//西北
+                    var se = $('<div class="se"></div>');//东南
+                    var sw = $('<div class="sw"></div>');//西南
+
+                    //添加公共样式
+                    self.addHandlerCss([n, s, w, e, ne, nw, se, sw]);
+                    //添加各自样式
+                    n.css({
+                        'top': '-4px',
+                        'margin-left': '-4px',
+                        'left': '50%',
+                        'cursor': 'n-resize'
+                    });
+                    s.css({
+                        'bottom': '-4px',
+                        'margin-left': '-4px',
+                        'left': '50%',
+                        'cursor': 's-resize'
+                    });
+                    e.css({
+                        'top': '50%',
+                        'margin-top': '-4px',
+                        'right': '-4px',
+                        'cursor': 'e-resize'
+                    });
+                    w.css({
+                        'top': '50%',
+                        'margin-top': '-4px',
+                        'left': '-4px',
+                        'cursor': 'w-resize'
+                    });
+                    ne.css({
+                        'top': '-4px',
+                        'right': '-4px',
+                        'cursor': 'ne-resize'
+                    });
+                    nw.css({
+                        top: '-4px',
+                        'left': '-4px',
+                        'cursor': 'nw-resize'
+                    });
+                    se.css({
+                        'bottom': '-4px',
+                        'right': '-4px',
+                        'cursor': 'se-resize'
+                    });
+                    sw.css({
+                        'bottom': '-4px',
+                        'left': '-4px',
+                        'cursor': 'sw-resize'
+                    });
+
+                    // 添加项目
+                    self.appendHandler([n, s, w, e, ne, nw, se, sw], resizePanel);
+
+                    //绑定拖拽缩放事件
+                    self.bindResizeEvent(resizePanel, $(this));
+
+                    //
+
+                    //绑定触发事件
+                    self.bindTrigger($(this));
+
+                    //
+                    self.bindKeydown($(this));
+
+
+
+                });
+                self.bindHidePanel();
+            }
+        },
+        //控制点公共样式
+        addHandlerCss: function(els) {
+            for(var i = 0; i < els.length; i++) {
+                el = els[i];
+                el.css({
+                    position: 'absolute',
+                    width: '8px',
+                    height: '8px',
+                    background: '#ff6600',
+                    margin: '0',
+                    'border-radius': '2px',
+                    border: '1px solid #dd5500'
+                });
+            }
+        },
+        /**
+         * 插入容器
+         */
+        appendHandler: function(handlers, target) {
+            for(var i = 0; i < handlers.length; i++) {
+                el = handlers[i];
+                $(target).append(el);
+            }
+        },
+        /**
+         * 显示拖拽面板
+         */
+        triggerResize: function (el) {
+         
+            var self = this;
+            self.options.selected = true;
+            el.siblings(self.options.item).children('div').css({
+                display: 'none'
+            });
+            el.children('div').css({
+                display: 'block'
+            });
+          
+            //选择;
+            window.selectitem(self);
+        },
+        /**
+         * 拖拽事件控制 包含8个缩放点 和一个拖拽位置
+         */
+        bindResizeEvent: function(el) {
+
+            var self = this;
+            var ox = 0; //原始事件x位置
+            var oy = 0; //原始事件y位置
+            var ow = 0; //原始宽度
+            var oh = 0; //原始高度
+
+            var oleft = 0; //原始元素位置
+            var otop = 0;
+            var org = el.parent('div');
+
+            //东
+            var emove = false;
+            el.on('mousedown','.e', function(e) {
+                ox = e.pageX;//原始x位置
+                ow = el.width();
+                emove = true;
+            });
+
+            //南
+            var smove = false;
+            el.on('mousedown','.s', function(e) {
+                oy = e.pageY;//原始x位置
+                oh = el.height();
+                smove = true;
+            });
+
+            //西
+            var wmove = false;
+            el.on('mousedown','.w', function(e) {
+                ox = e.pageX;//原始x位置
+                ow = el.width();
+                wmove = true;
+                oleft = parseInt(org.css('left').replace('px', ''));
+            });
+
+            //北
+            var nmove = false;
+            el.on('mousedown','.n', function(e) {
+                oy = e.pageY;//原始x位置
+                oh = el.height();
+                nmove = true;
+                otop = parseInt(org.css('top').replace('px', ''));
+            });
+
+            //东北
+            var nemove = false;
+            el.on('mousedown','.ne', function(e) {
+                ox = e.pageX;//原始x位置
+                oy = e.pageY;
+                ow = el.width();
+                oh = el.height();
+                nemove = true;
+                otop = parseInt(org.css('top').replace('px', ''));
+            });
+
+            //西北
+            var nwmove = false;
+            el.on('mousedown','.nw', function(e) {
+                ox = e.pageX;//原始x位置
+                oy = e.pageY;
+                ow = el.width();
+                oh = el.height();
+                otop = parseInt(org.css('top').replace('px', ''));
+                oleft = parseInt(org.css('left').replace('px', ''));
+                nwmove = true;
+            });
+
+            //东南
+            var semove = false;
+            el.on('mousedown','.se', function(e) {
+                ox = e.pageX;//原始x位置
+                oy = e.pageY;
+                ow = el.width();
+                oh = el.height();
+                semove = true;
+            });
+
+            //西南
+            var swmove = false;
+            el.on('mousedown','.sw', function(e) {
+                ox = e.pageX;//原始x位置
+                oy = e.pageY;
+                ow = el.width();
+                oh = el.height();
+                swmove = true;
+                oleft = parseInt(org.css('left').replace('px', ''));
+            });
+
+            //拖拽
+            var drag = false;
+            el.on('mousedown', function(e) {
+                ox = e.pageX;//原始x位置
+                oy = e.pageY;
+                otop = parseInt(org.css('top').replace('px', ''));
+                oleft = parseInt(org.css('left').replace('px', ''));
+                drag = true;
+            });
+
+            $(self.options.stage).on('mousemove', function(e) {
+                if(emove) {
+                    var x = (e.pageX - ox);
+                    el.css({
+                        width: ow + x
+                    });
+                    org.css({
+                        width: ow + x
+                    });
+                    self.sizeChanged();
+                } else if(smove) {
+                    var y = (e.pageY - oy);
+                    el.css({
+                        height: oh + y
+                    });
+                    org.css({
+                        height: oh + y
+                    });
+                    self.sizeChanged();
+                } else if(wmove) {
+                    var x = (e.pageX - ox);
+                    el.css({
+                        width: ow - x,
+                        // left: oleft + x
+                    });
+                    org.css({
+                        width: ow - x,
+                        left: oleft + x
+                    });
+                    self.sizeChanged();
+                } else if(nmove) {
+                    var y = (e.pageY - oy);
+                    el.css({
+                        height: oh - y,
+                        // top: otop + y
+                    });
+                    org.css({
+                        height: oh - y,
+                        top: otop + y
+                    });
+                    self.sizeChanged();
+                } else if(nemove) {
+                    var x = e.pageX - ox;
+                    var y = e.pageY - oy;
+                    el.css({
+                        height: oh - y,
+                        // top: otop + y,
+                        width: ow + x
+                    });
+                    org.css({
+                        height: oh - y,
+                        top: otop + y,
+                        width: ow + x
+                    });
+                    self.sizeChanged();
+                } else if(nwmove) {
+                    var x = e.pageX - ox;
+                    var y = e.pageY - oy;
+                    el.css({
+                        height: oh - y,
+                        // top: otop + y,
+                        width: ow - x,
+                        // left: oleft + x
+                    });
+                    org.css({
+                        height: oh - y,
+                        top: otop + y,
+                        width: ow - x,
+                        left: oleft + x
+                    });
+                    self.sizeChanged();
+                } else if(semove) {
+                    var x = e.pageX - ox;
+                    var y = e.pageY - oy;
+                    el.css({
+                        width: ow + x,
+                        height: oh + y
+                    });
+                    org.css({
+                        width: ow + x,
+                        height: oh + y
+                    });
+                    self.sizeChanged();
+                } else if(swmove) {
+                    var x = e.pageX - ox;
+                    var y = e.pageY - oy;
+                    el.css({
+                        width: ow - x,
+                        // left: oleft + x,
+                        height: oh + y
+                    });
+                    org.css({
+                        width: ow - x,
+                        left: oleft + x,
+                        height: oh + y
+                    });
+                    self.sizeChanged();
+                } else if(drag) {
+                    var x = e.pageX - ox;
+                    var y = e.pageY - oy;
+                    org.css({
+                        left: oleft + x,
+                        top: otop + y
+                    });
+                }
+            }).on('mouseup', function(e) {
+                emove = false;
+                smove = false;
+                wmove = false;
+                nmove = false;
+                nemove = false;
+                nwmove = false;
+                swmove = false;
+                semove = false;
+                drag = false;
+            });
+        },
+        /**
+         * 点击item显示拖拽面板
+         */
+        bindTrigger: function(el) {
+            var self = this;
+            el.on('click', function(e) {
+                e.stopPropagation();
+                self.triggerResize(el);
+                el.attr('tabindex', -1);
+                el.focus();
+
+                //通知选中了;
+                
+            });
+			
+        },
+        /**
+         * 点击舞台空闲区域 隐藏缩放面板
+         */
+        bindHidePanel: function(el) {
+            var stage = this.options.stage;
+            var item = this.options.item;
+            var self = this;
+          
+            $(stage).bind('click', function () {
+                self.options.selected = false;
+                //debugger;
+                //隐藏面板
+                $(item).children('div.resize-panel').css({
+                    display: 'none'
+                });
+
+                //通知;
+                selectstage();
+
+                //self.resizeDiv.css({
+                //    display: 'none'
+                //});
+            })
+        },
+        /*
+       * 键盘事件控制
+       */
+        bindKeydown:function(el){
+            //console.log(el);
+            var self = this;
+            el.on('keydown',function(e){
+                switch (e.keyCode) {
+                    case 37: //左键
+                        el.css({
+                            'left':el[0].offsetLeft - 1 + "px"
+                        })
+                        break;
+                    case 39: //右键
+                        el.css({
+                            'left':el[0].offsetLeft + 1 + "px"
+                        })
+                        break;
+                    case 38: //上键
+                        el.css({
+                            'top':el[0].offsetTop - 1 + "px"
+                        })
+                        break;
+                    case 40: //下键
+                        el.css({
+                            'top':el[0].offsetTop + 1 + "px"
+                        })
+                        break;
+                }
+                e.stopPropagation();//阻止冒泡
+                e.stopPropagation() //停止事件传播
+            })
+        }
+        /*
+      * 创建数据展示面板
+      */
+        
+        , initData: function () {
+
+            var self = this;
+            $(self.options.item).each(function () {
+                //创建面板
+                //debugger;
+                var width = $(this).width();
+                var height = $(this).height();
+                var dataPanel = $('<div class="data-panel"></div>');
+                dataPanel.css({
+                    width: width,
+                    height: height,
+                    top: 0,
+                    left: 0,
+                    position: 'absolute',
+                    overflow:'hidden'
+                    //'background-color': 'rgba(0,0,0,0.5)'
+                });
+                self.appendHandler(dataPanel, $(this));
+                self.dataDiv = dataPanel;//数据面板
+
+                if (self.options.viewtype == 'chart') {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    /*for (var Key in self.options.viewoption) {
+                        option[Key] = self.options.viewoption[Key];//
+                    }
+                    */
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+
+                    self.viewObject = new VChart(option);
+
+                    /*
+                    //debugger;
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(dataPanel[0], "chalk");
+                    // var myChart = echarts.init(dataPanel[0]);
+                    self.viewObject = myChart;
+                    // 指定图表的配置项和数据
+                    var option = self.options.viewoption;
+                    var viewdata = self.options.viewdata;
+                    if (viewdata != undefined) {
+                        //设置数据;
+                        if (viewdata.datatype == "json") {
+                            self.setData_jsondata();
+                        }
+                        if (viewdata.datatype == "api") {
+                            self.setData_apidata();
+                        }
+                    }
+                    else
+                        myChart.setOption(option);
+                    
+                    */
+
+                }
+
+                if (self.options.viewtype == "text") {
+                  
+                    //self.viewObject = new VText({
+                    //    html: "文本显示",
+                    //    item: dataPanel[0]
+                    //});
+
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+
+                    self.viewObject = new VText(option);
+                   
+                }
+                //翻牌数字
+                if (self.options.viewtype == "textnumber") {
+
+                    //self.viewObject = new VText({
+                    //    html: "文本显示",
+                    //    item: dataPanel[0]
+                    //});
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VTextNumber(option);
+
+                }
+
+                //滚动数字
+                if (self.options.viewtype == "flopnum") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VFlopNum(option);
+
+                }
+
+                if (self.options.viewtype == "clock") {
+
+                    
+                    var option = {};
+                    option.item = dataPanel[0];//
+                    for (var Key in self.options.viewoption) {
+                        option[Key] = self.options.viewoption[Key];//
+                    }
+
+                    self.viewObject = new VClock(option);
+
+                }
+                if (self.options.viewtype == "marquee") {
+
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    for (var Key in self.options.viewoption) {
+                        option[Key] = self.options.viewoption[Key];//
+                    }
+                    self.viewObject = new VMarquee(option);
+                }
+                
+                //滚动字体修改
+                if (self.options.viewtype == "marqueed") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VMarqueed(option);
+                }
+
+
+                if (self.options.viewtype == "image") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                 
+                    self.viewObject = new VImage(option);
+                }
+
+                if (self.options.viewtype == "imageborder") {
+
+                    var option = {};
+                    option.item = dataPanel[0];//
+                    for (var Key in self.options.viewoption) {
+                        option[Key] = self.options.viewoption[Key];//
+                    }
+                    self.viewObject = new VImageborder(option);
+                }
+
+                if (self.options.viewtype == "percentpie") {
+
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+
+                    self.viewObject = new VPercentPie(option);
+
+                }
+                if (self.options.viewtype == "percentbar") {
+
+
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VPercentBar(option);
+
+                }
+
+                //滚动表格
+                if (self.options.viewtype == "table") {
+                   
+                  
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+
+                    self.viewObject = new VTable(option);
+
+                }
+
+                //滚动表格修改20180921
+                if (self.options.viewtype == "VScrollingTable") {
+
+
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+
+                    self.viewObject = new VScrollingTable(option);
+
+                }
+                   //键值表格
+                if (self.options.viewtype == "key_value_tabel") {
+
+                    try {
+                        var option = {};
+                        option.itemno = self.options.itemno;//
+                        option.item = dataPanel[0];//
+                        option.viewoption = self.options.viewoption;
+                        option.viewdata = self.options.viewdata;
+                        self.viewObject = new VKeyvaluetabel(option);
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+                    
+                   
+
+                }
+
+                //  多拆线图
+                if (self.options.viewtype == "chartlines") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VChartlines(option);
+                }
+
+                if (self.options.viewtype == "percentchinamapfornum") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                     option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VEChartsMap(option);
+                }
+
+
+                //  散列图
+                if (self.options.viewtype == "hashdiagram") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VHashDiagram(option);
+                }
+
+                //  按键
+                if (self.options.viewtype == "VButton") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VButton(option);
+                }
+
+                // VURl
+                if (self.options.viewtype == "VUrl") {
+                    var option = {};
+                    option.itemno = self.options.itemno;//
+                    option.designmode = self.options.designmode;
+                    option.item = dataPanel[0];//
+                    option.viewoption = self.options.viewoption;
+                    option.viewdata = self.options.viewdata;
+                    self.viewObject = new VUrl(option);
+                }
+
+
+             
+
+
+
+
+
+               
+            });
+          
+
+        }
+        , sizeChanged: function () {
+            //
+            var self = this;
+            //self.resizeDiv = undefined;//拖拽面板
+            //更改数据面板大小
+            self.dataDiv.css({
+                width: self.resizeDiv.width(),
+                height: self.resizeDiv.height()
+            });
+        
+            if (self.viewObject == undefined)
+                return;
+
+            if (self.viewObject.resize != undefined) {
+                self.viewObject.resize();
+                return;
+            }
+            /*
+            if (self.options.viewtype == "chart") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "chart.liquidfill") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "text") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "clock") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "mqrquee") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "image" || self.options.viewtype == "imageborder") {
+                self.viewObject.resize();
+            }
+            if (self.options.viewtype == "percentpie") {
+                self.viewObject.resize();
+            }
+            */
+        }
+       
+        /*
+        * 设置为非选中状态;
+        */
+        , unselected: function () {
+            var self = this;
+            //self.bindHidePanel();
+
+
+            var stage = this.options.stage;
+            var item = this.options.item;
+            var self = this;
+
+            self.options.selected = false;
+            //debugger;
+            //隐藏面板
+            $(item).children('div.resize-panel').css({
+                display: 'none'
+            });
+
+            //self.resizeDiv.css({
+            //    display: 'none'
+            //});
+        }
+        ,
+        resetviewoption: function () {
+            //
+            var self = this;
+            var option = self.options.viewoption;
+
+            if (self.viewObject != undefined && self.viewObject.setViewoption != undefined) {
+                 self.viewObject.setViewoption(option);
+            }
+           
+        },
+        resetviewdata:function()
+        {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+
+            if (self.viewObject != undefined && self.viewObject.setViewdata != undefined) {
+                self.viewObject.setViewdata(viewdata);
+            }
+            //self.viewObject.setViewdata(viewdata);
+
+        },
+        setData_jsondata: function () {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            if (viewdata.datafor == "chart.line") {
+                //x y s
+                var datamapping = viewdata.datamapping;
+                //从
+                var data = viewdata.datajson;
+                var dx = [];
+                var ds = [];
+                for (var b = 0; b < data.length; b++) {
+                    var di = data[b];
+                    dx.push(di[datamapping.x]);
+                    ds.push(di[datamapping.y]);
+                }
+
+                option.xAxis.data = dx;
+                option.series[0].data = ds;
+
+                self.viewObject.setOption(option);
+
+            }
+        }
+        ,
+        setData_apidata: function () {
+            var self = this;
+            var option = self.options.viewoption;
+            var viewdata = self.options.viewdata;
+            var url = self.options.viewdata.dataapi.url;
+            //
+            if (viewdata.datafor == "chart.line") {
+
+                //保存到数据库
+                $.ajax({
+                    url: url,
+                    type: "post",
+                    async: true,
+                    data: {
+                    },
+                    success: function (data) {
+                        //x y s
+                        var datamapping = viewdata.datamapping;
+                        //data=d;
+                        var dx = [];
+                        var ds = [];
+                        for (var b = 0; b < data.length; b++) {
+                            var di = data[b];
+                            dx.push(di[datamapping.x]);
+                            ds.push(di[datamapping.y]);
+                        }
+                        option.xAxis.data = dx;
+                        option.series[0].data = ds;
+
+
+                        self.viewObject.setOption(option);
+
+                    },
+                    error: function (e) {
+                        layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                });
+               
+            }
+        }
+
+    }
+
+    window.ZResize = ZResize;
+
+})(jQuery);

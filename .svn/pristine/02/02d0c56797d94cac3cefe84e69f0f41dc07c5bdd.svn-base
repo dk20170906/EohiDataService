@@ -1,0 +1,367 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Services;
+
+using System.Threading;
+using System.Data;
+using System.Collections;
+using Newtonsoft.Json;
+namespace WFServerWeb
+{
+    public struct struWFJoin
+    {
+        public string StartNode;
+        public string EndNode;
+        public string SourcePoint;
+        public string TargetPoint;
+        public string Line;
+        public struWFJoin(string StartNode, string EndNode, string SourcePoint, string TargetPoint, string Line)
+        {
+            this.StartNode = StartNode;
+            this.EndNode = EndNode;
+            this.SourcePoint = SourcePoint;
+            this.TargetPoint = TargetPoint;
+            this.Line = Line;
+        }
+    }
+
+    public struct struInstance
+    {
+        public string FlowName;
+        public string FlowID;
+        public string FlowVersion;
+        public string InstanceID;
+        public string CreateDate;
+        public string CreateManName;
+        public string CreateManID;
+        public string InstanceStatus;
+        public string InstanceMessage;
+        public struInstance(string FlowName,string FlowID,string FlowVersion,string InstanceID,string CreateDate,string CreateManName,string CreateManID,string InstanceStatus,string InstanceMessage)
+        {
+            this.FlowName=FlowName;
+            this.FlowID = FlowID;
+            this.FlowVersion = FlowVersion;
+            this.InstanceID = InstanceID;
+            this.CreateDate = CreateDate;
+            this.CreateManName = CreateManName;
+            this.CreateManID = CreateManID;
+            this.InstanceStatus = InstanceStatus;
+            this.InstanceMessage = InstanceMessage;
+        }
+    }
+
+    /// <summary>
+    /// WSWF 的摘要说明
+    /// </summary>
+    [WebService(Namespace = "http://tempuri.org/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    // 若要允许使用 ASP.NET AJAX 从脚本中调用此 Web 服务，请取消注释以下行。
+    // [System.Web.Script.Services.ScriptService]
+    public class WSWF : System.Web.Services.WebService
+    {
+        /// <summary>
+        /// 发起流程
+        /// </summary>
+        /// <param name="WFName">流程名称</param>
+        /// <param name="WFDataID">数据表相对应数据ID</param>
+        /// <param name="OpeManID">发起人ID</param>
+        [WebMethod]
+        public void StartWF(string WFName, string WFDataID, string OpeManID)
+        {
+            string NewInstanceID = CCommonFunc.GetNewInstanceID();
+            string WFID = CCommonFunc.GetWFIDByWFName(WFName);
+
+            if (WFID == null)
+            {
+                return;
+            }
+
+            //记录工作流实例
+            CCommonFunc.PutDownNewInstance(WFName, WFDataID, OpeManID, WFID, NewInstanceID);
+
+            //记录发起人、发起节点
+            string StartNodeID = CCommonFunc.GetStartNodeID(WFID);
+            if (StartNodeID == null)
+            {
+                CCommonFunc.SetInstanceError(NewInstanceID, "缺少开始节点");
+                return;
+            }
+            CCommonFunc.PutDownStartMan(NewInstanceID, StartNodeID, OpeManID);
+
+            //记录当前节点为起始节点
+            CCommonFunc.InsertCurrentNode(NewInstanceID, StartNodeID);
+
+            //流程流转
+            WFTransmit(NewInstanceID, StartNodeID, EApprovalOpinion.同意, OpeManID,null);
+        }
+
+        /// <summary>
+        /// 流程流转
+        /// </summary>
+        /// <param name="InstanceID">流程实例的ID</param>
+        /// <param name="NodeID">节点ID</param>
+        /// <param name="ApprovalOpinion">申批意见，同意，不同意，驳回上级，驳回至发起人</param>
+        /// <param name="OpeManID">申批人ID</param>
+        /// <param name="ApprovalReason">申批备注</param>
+        [WebMethod]
+        public void WFTransmit(string InstanceID, string NodeID, EApprovalOpinion ApprovalOpinion, string OpeManID,string ApprovalReason)
+        {
+            //执行审批意见脚本
+            string WFID = CCommonFunc.GetWFIDByInstanceID(InstanceID);
+            string script = CCommonFunc.GetApprovalScript(WFID, NodeID, ApprovalOpinion);
+            if (script != null && script != "")
+            {
+                CCommonFunc.ScriptExec(script, InstanceID);
+            }
+
+            //记录审批意见
+            PutDownApprovalOpinion(InstanceID, NodeID, ApprovalOpinion, OpeManID, ApprovalReason);
+
+            //记录审批状态和当前节点状态
+            CCommonFunc.SetNodeApprovalStatus(InstanceID, NodeID, ApprovalStatus.Complete);
+            CCommonFunc.SetNodeStatus(InstanceID, NodeID,NodeStatus.Complete);
+
+            //获取并执行流转定义脚本
+            string FlowScript = CCommonFunc.GetFlowScript(WFID, NodeID);
+            
+            string FlowResult="";
+            if (FlowScript != "")
+                FlowResult = CCommonFunc.ScriptExec(FlowScript, InstanceID).ToString();
+
+            if (FlowResult == "True" || FlowScript == "")
+            {
+                if (ApprovalOpinion == EApprovalOpinion.驳回上级)
+                {
+                    CReturnUP.ReturnUp(InstanceID, NodeID);
+                }
+                else if (ApprovalOpinion == EApprovalOpinion.驳回至发起人)
+                {
+                    CReturnToStart.ReturnToStart(InstanceID, NodeID);
+                }
+                else if (ApprovalOpinion == EApprovalOpinion.不同意)
+                {
+                    CGoEnd.GoEnd(InstanceID, NodeID);
+                }
+                else
+                {
+                    CCommonFunc.DeleteCurrentNode(InstanceID, NodeID);
+                    CGoNextNode.GoNextNode(WFID, InstanceID, NodeID);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 结束工作流实例
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        [WebMethod]
+        public void TerminateInstance(string InstanceID)
+        {
+            CCommonFunc.SetInstanceComplete(InstanceID);
+        }
+
+        /// <summary>
+        /// 获取活动流程实例
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetInstanceActive()
+        {
+            return GetInstance("SELECT f.flowchart_name,i.[flowchart_id],i.[flowchart_version],i.[instance_id],i.[cre_date] ,u.user_name,i.[cre_man],i.[instance_status],i.[instance_message] FROM [kailifon].[dbo].[a_flowchart_instance] as i left join a_flowchart as f on(f.flowchart_id=i.flowchart_id) left join a_user as u on (i.cre_man=u.user_id) where i.[instance_status]='" + InstanceStatus.Active.ToString() + "'");
+        }
+        /// <summary>
+        /// 获取所有流程实例
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetInstanceAll()
+        {
+            return GetInstance("SELECT f.flowchart_name,i.[flowchart_id],i.[flowchart_version],i.[instance_id],i.[cre_date] ,u.user_name,i.[cre_man],i.[instance_status],i.[instance_message] FROM [kailifon].[dbo].[a_flowchart_instance] as i left join a_flowchart as f on(f.flowchart_id=i.flowchart_id) left join a_user as u on (i.cre_man=u.user_id) ");
+        }
+        /// <summary>
+        /// 获取活动流程实例的dt数据
+        /// </summary>
+        /// <returns></returns>
+        [WebMethod]
+        public DataTable GetInstanceAllDataTable()
+        {
+
+            string strsql = "SELECT f.flowchart_name,i.[flowchart_id],i.[flowchart_version],i.[instance_id],i.[cre_date] ,u.user_name,i.[cre_man],i.[instance_status],i.[instance_message] FROM [kailifon].[dbo].[a_flowchart_instance] as i left join a_flowchart as f on(f.flowchart_id=i.flowchart_id) left join a_user as u on (i.cre_man=u.user_id) ";
+            return CDataHelper.GetDataTable(strsql);
+        }
+        ///// <summary>
+        ///// 配置webService
+        ///// </summary>
+        ///// <param name="server"></param>
+        ///// <param name="dbport"></param>
+        ///// <param name="userid"></param>
+        ///// <param name="password"></param>
+        ///// <param name="database"></param>
+        //[WebMethod]
+        //public void DataBaseConfig(string server, string dbport, string userid, string password, string database)
+        //{
+        //    Global.server = server;
+        //    Global.dbport = dbport;
+        //    Global.userid = userid;
+        //    Global.password = password;
+        //    Global.database = database;
+        //    Global.SqlConnStr = "server=" + Global.server + "," + Global.dbport + ";uid=" + Global.userid + ";pwd=" + Global.password + ";database=" + Global.database;
+        //    CDataHelper.idm = new CDataManagFactory().CreateDataManager(Global.DataTypeUse);
+        //}
+        /// <summary>
+        /// 获取流程实例的流转路径
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetInstanceFlowHistory(string InstanceID)
+        {
+            string strHistory = null;
+            DataTable dtHistory = CDataHelper.GetDataTable("select node_id,next_node_id from [a_flowchart_flow_history] where instance_id='" + InstanceID + "' order by ID asc");
+            if (dtHistory != null)
+            {
+                if (dtHistory.Rows.Count > 0)
+                {
+                    struWFJoin[] FlowHistory = new struWFJoin[dtHistory.Rows.Count];
+                    for (int i = 0; i < dtHistory.Rows.Count; i++)
+                    {
+                        string NodeID = dtHistory.Rows[i]["node_id"].ToString();
+                        string NextNodeID = dtHistory.Rows[i]["next_node_id"].ToString();
+                        string SourcePoint = null;
+                        string TargetPoint = null;
+                        string Line = null;
+                        DataTable dtLine = CDataHelper.GetDataTable("select top 1 sourcepoint,targetpoint,line_id from [a_flowchart_line] where node_id='" + NodeID + "' and next_node_id='" + NextNodeID + "'");
+                        if (dtLine != null)
+                        {
+                            if (dtLine.Rows.Count > 0)
+                            {
+                                SourcePoint = dtLine.Rows[0]["sourcepoint"].ToString();
+                                TargetPoint = dtLine.Rows[0]["targetpoint"].ToString();
+                                Line = dtLine.Rows[0]["line_id"].ToString();
+                            }
+                        }
+                        FlowHistory[i] = new struWFJoin(NodeID, NextNodeID, SourcePoint, TargetPoint, Line);
+                    }
+                    strHistory = JsonConvert.SerializeObject(FlowHistory);
+                }
+            }
+            return strHistory;
+        }
+        /// <summary>
+        /// 获取当前节点
+        /// </summary>
+        /// <param name="InstanceID">当前实例id</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetCurrentNode(string InstanceID)
+        {
+            string CurrentNodeStr = "";
+            DataTable dtCurrentNode = CDataHelper.GetDataTable("select current_node from a_flowchart_currentnode where instance_id='" + InstanceID + "'");
+            if (dtCurrentNode != null)
+            {
+                for (int i = 0; i < dtCurrentNode.Rows.Count; i++)
+                {
+                    CurrentNodeStr += dtCurrentNode.Rows[i][0].ToString()+";";
+                }
+                if (CurrentNodeStr.Length > 0)
+                {
+                    CurrentNodeStr = CurrentNodeStr.Substring(0, CurrentNodeStr.Length - 1);
+                }
+            }
+            return CurrentNodeStr;
+        }
+
+        /// <summary>
+        /// 获取工作流实例
+        /// </summary>
+        /// <param name="strsql"></param>
+        /// <returns></returns>
+        string GetInstance(string strsql)
+        {
+            string strInstance = null;
+
+            DataTable dtInstance = CDataHelper.GetDataTable(strsql);
+            if (dtInstance != null)
+            {
+                if (dtInstance.Rows.Count > 0)
+                {
+                    struInstance[] struInst = new struInstance[dtInstance.Rows.Count];
+                    for (int i = 0; i < dtInstance.Rows.Count; i++)
+                    {
+                        string FlowName = dtInstance.Rows[i]["flowchart_name"].ToString();
+                        string FlowID = dtInstance.Rows[i]["flowchart_id"].ToString();
+                        string FlowVersion = dtInstance.Rows[i]["flowchart_version"].ToString();
+                        string InstanceID = dtInstance.Rows[i]["instance_id"].ToString();
+                        string CreateDate = dtInstance.Rows[i]["cre_date"].ToString();
+                        string CreateManName = dtInstance.Rows[i]["user_name"].ToString();
+                        string CreateManID = dtInstance.Rows[i]["cre_man"].ToString();
+                        string InstanceStatus = dtInstance.Rows[i]["instance_status"].ToString();
+                        string InstanceMessage = dtInstance.Rows[i]["instance_message"].ToString();
+                        struInst[i] = new struInstance(FlowName, FlowID, FlowVersion, InstanceID, CreateDate, CreateManName, CreateManID, InstanceStatus, InstanceMessage);
+                    }
+                    strInstance = JsonConvert.SerializeObject(struInst);
+                }
+            }
+            return strInstance;
+        }
+
+        /// <summary>
+        /// 记录审批意见
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="ApprovalOpinion"></param>
+        /// <param name="OpeManID"></param>
+        /// <param name="ApprovalReason"></param>
+        void PutDownApprovalOpinion(string InstanceID, string NodeID, EApprovalOpinion ApprovalOpinion, string OpeManID, string ApprovalReason)
+        {
+            DateTime now = DateTime.Now;
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [approval_opinion]='" + ApprovalOpinion + "',operate_time='"+now.ToString()+"',approval_status='"+ApprovalStatus.Complete.ToString()+"',approval_reason='"+ApprovalReason+"' where [instance_id]='" + InstanceID + "' and [node_id]='" + NodeID + "' and [user_id]='" + OpeManID + "' and [approval_status]='"+ApprovalStatus.Active.ToString()+"'");
+        }
+
+        bool IsThroughPut(string InstanceID,string NodeID)
+        {
+            bool ThroughPut = false;
+            double ThroughPutRateThreshold = 1;
+            double ThroughPutRate = GetThroughPut(InstanceID, NodeID);
+            if (ThroughPutRate >= ThroughPutRateThreshold)
+            {
+                ThroughPut = true;
+            }
+            return ThroughPut;
+        }
+
+        double GetThroughPut(string InstanceID, string NodeID)
+        {
+            double ThroughPutRate = 0;
+            string strReceiverNum = CDataHelper.GetData("select count(*) from [a_flowchart_instance_node_receiver] where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' and node_status='"+NodeStatus.Active.ToString()+"'");
+            string strApprovalNum = CDataHelper.GetData("select count(*) from [a_flowchart_instance_node_receiver] where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' and node_status='" + NodeStatus.Active.ToString() + "' and ([approval_opinion]='同意')");
+            if (strApprovalNum != null && strReceiverNum != null)
+            {
+                int ReceiverNum = Convert.ToInt32(strReceiverNum);
+                int ApprvovalNum = Convert.ToInt32(strApprovalNum);
+                ThroughPutRate = ApprvovalNum * 1.0 / ReceiverNum;
+            }
+            return ThroughPutRate;
+        }
+
+        void WriteLog(string str)
+        {
+            CLog.WriteLog(str);
+        }
+    }
+
+    /// <summary>
+    /// 审批意见枚举
+    /// </summary>
+    public enum EApprovalOpinion
+    {
+        同意,
+        不同意,
+        驳回上级,
+        驳回至发起人
+    }
+}

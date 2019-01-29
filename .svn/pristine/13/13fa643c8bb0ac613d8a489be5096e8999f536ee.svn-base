@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="54d1536c1c6e4278a2e0dabaee6e9de1" Name="关系图1" ZoomLevel="98">
+        <EntityTypeShape EntityType="apiModel.a_systeminfo" Width="1.5" PointX="3.375" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="apiModel.a_system_updatefile" Width="3" PointX="3.625" PointY="4.625" />
+        <EntityTypeShape EntityType="apiModel.api_items" Width="1.5" PointX="1" PointY="0.5" />
+        <EntityTypeShape EntityType="apiModel.api_items_on" Width="1.5" PointX="0.875" PointY="3.875" />
+        <EntityTypeShape EntityType="apiModel.api_links" Width="1.5" PointX="5.375" PointY="0.875" />
+        <EntityTypeShape EntityType="apiModel.api_quartz" Width="1.5" PointX="7.5" PointY="0.875" />
+        <EntityTypeShape EntityType="apiModel.api_webapp" Width="1.5" PointX="7.625" PointY="4.625" />
+        <EntityTypeShape EntityType="apiModel.a_system_article" Width="3.875" PointX="9.25" PointY="0.875" />
+        <EntityTypeShape EntityType="apiModel.api_databoard" Width="1.5" PointX="9.75" PointY="5.5" />
+        <EntityTypeShape EntityType="apiModel.api_databoard_items" Width="1.5" PointX="11.875" PointY="5.875" />
+        <EntityTypeShape EntityType="apiModel.api_databoard_items_pub" Width="1.5" PointX="1.4699074595560819" PointY="31.44351990495041" />
+        <EntityTypeShape EntityType="apiModel.api_databoard_pub" Width="4.25" PointX="6.75" PointY="20.75" />
+        <EntityTypeShape EntityType="apiModel.api_type_htmlhelp" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="apiModel.api_menu" Width="1.5" PointX="3.375" PointY="8.75" />
+        <EntityTypeShape EntityType="apiModel.a_3d_model_files" Width="4" PointX="5.375" PointY="8.75" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart" Width="1.5" PointX="7.75" PointY="9.625" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_instance_pars" Width="1.5" PointX="11.375" PointY="11.75" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_line" Width="1.5" PointX="3.375" PointY="12.75" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_node_approveitem" Width="1.5" PointX="4" PointY="29.625" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_node_switchitem" Width="1.5" PointX="6.5" PointY="31.125" />
+        <EntityTypeShape EntityType="apiModel.a_3d_models" Width="1.5" PointX="14.375" PointY="5.75" />
+        <EntityTypeShape EntityType="apiModel.a_3d_scene" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_instance" Width="1.5" PointX="7.375" PointY="12.75" />
+        <EntityTypeShape EntityType="apiModel.a_flowchart_node" Width="1.5" PointX="0.75" PointY="13.125" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

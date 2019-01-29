@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="apiModelStoreContainer" CdmEntityContainer="kailifonEntities">
+    <EntitySetMapping Name="a_systeminfo">
+      <EntityTypeMapping TypeName="apiModel.a_systeminfo">
+        <MappingFragment StoreEntitySet="a_systeminfo">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="system_id" ColumnName="system_id" />
+          <ScalarProperty Name="system_name" ColumnName="system_name" />
+          <ScalarProperty Name="system_worksitename" ColumnName="system_worksitename" />
+          <ScalarProperty Name="company_name" ColumnName="company_name" />
+          <ScalarProperty Name="company_address" ColumnName="company_address" />
+          <ScalarProperty Name="company_tel" ColumnName="company_tel" />
+          <ScalarProperty Name="company_linkman" ColumnName="company_linkman" />
+          <ScalarProperty Name="system_licenseno" ColumnName="system_licenseno" />
+          <ScalarProperty Name="system_effdate_s" ColumnName="system_effdate_s" />
+          <ScalarProperty Name="system_effdate_e" ColumnName="system_effdate_e" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_system_updatefile">
+      <EntityTypeMapping TypeName="apiModel.a_system_updatefile">
+        <MappingFragment StoreEntitySet="a_system_updatefile">
+          <ScalarProperty Name="fileurl" ColumnName="fileurl" />
+          <ScalarProperty Name="filenote" ColumnName="filenote" />
+          <ScalarProperty Name="uptime" ColumnName="uptime" />
+          <ScalarProperty Name="savedir" ColumnName="savedir" />
+          <ScalarProperty Name="filesize" ColumnName="filesize" />
+          <ScalarProperty Name="versionno" ColumnName="versionno" />
+          <ScalarProperty Name="filename" ColumnName="filename" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_items">
+      <EntityTypeMapping TypeName="apiModel.api_items">
+        <MappingFragment StoreEntitySet="api_items">
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="apiscript" ColumnName="apiscript" />
+          <ScalarProperty Name="apipars" ColumnName="apipars" />
+          <ScalarProperty Name="apinote" ColumnName="apinote" />
+          <ScalarProperty Name="linkid" ColumnName="linkid" />
+          <ScalarProperty Name="apistatus" ColumnName="apistatus" />
+          <ScalarProperty Name="apitype" ColumnName="apitype" />
+          <ScalarProperty Name="apiname" ColumnName="apiname" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_items_on">
+      <EntityTypeMapping TypeName="apiModel.api_items_on">
+        <MappingFragment StoreEntitySet="api_items_on">
+          <ScalarProperty Name="apiname" ColumnName="apiname" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_links">
+      <EntityTypeMapping TypeName="apiModel.api_links">
+        <MappingFragment StoreEntitySet="api_links">
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="linkstring" ColumnName="linkstring" />
+          <ScalarProperty Name="linkname" ColumnName="linkname" />
+          <ScalarProperty Name="linktype" ColumnName="linktype" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_quartz">
+      <EntityTypeMapping TypeName="apiModel.api_quartz">
+        <MappingFragment StoreEntitySet="api_quartz">
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="jobpars" ColumnName="jobpars" />
+          <ScalarProperty Name="jobtype" ColumnName="jobtype" />
+          <ScalarProperty Name="crontrigger" ColumnName="crontrigger" />
+          <ScalarProperty Name="quartzstatus" ColumnName="quartzstatus" />
+          <ScalarProperty Name="quartznote" ColumnName="quartznote" />
+          <ScalarProperty Name="quartzname" ColumnName="quartzname" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_webapp">
+      <EntityTypeMapping TypeName="apiModel.api_webapp">
+        <MappingFragment StoreEntitySet="api_webapp">
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="webappscript" ColumnName="webappscript" />
+          <ScalarProperty Name="webapphtml" ColumnName="webapphtml" />
+          <ScalarProperty Name="webappnote" ColumnName="webappnote" />
+          <ScalarProperty Name="webappname" ColumnName="webappname" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_databoard">
+      <EntityTypeMapping TypeName="apiModel.api_databoard">
+        <MappingFragment StoreEntitySet="api_databoard">
+          <ScalarProperty Name="mainoption" ColumnName="mainoption" />
+          <ScalarProperty Name="gridsize" ColumnName="gridsize" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="cre_man" ColumnName="cre_man" />
+          <ScalarProperty Name="cre_date" ColumnName="cre_date" />
+          <ScalarProperty Name="boardnote" ColumnName="boardnote" />
+          <ScalarProperty Name="perviewimage" ColumnName="perviewimage" />
+          <ScalarProperty Name="pubno" ColumnName="pubno" />
+          <ScalarProperty Name="boardno" ColumnName="boardno" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_databoard_items">
+      <EntityTypeMapping TypeName="apiModel.api_databoard_items">
+        <MappingFragment StoreEntitySet="api_databoard_items">
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="cre_man" ColumnName="cre_man" />
+          <ScalarProperty Name="intervalsecond" ColumnName="intervalsecond" />
+          <ScalarProperty Name="Intervalloading" ColumnName="Intervalloading" />
+          <ScalarProperty Name="itemdata" ColumnName="itemdata" />
+          <ScalarProperty Name="itemoption" ColumnName="itemoption" />
+          <ScalarProperty Name="itemversion" ColumnName="itemversion" />
+          <ScalarProperty Name="itemtype" ColumnName="itemtype" />
+          <ScalarProperty Name="itemindex" ColumnName="itemindex" />
+          <ScalarProperty Name="itemh" ColumnName="itemh" />
+          <ScalarProperty Name="itemw" ColumnName="itemw" />
+          <ScalarProperty Name="itemy" ColumnName="itemy" />
+          <ScalarProperty Name="itemx" ColumnName="itemx" />
+          <ScalarProperty Name="itemno" ColumnName="itemno" />
+          <ScalarProperty Name="boardno" ColumnName="boardno" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_databoard_items_pub">
+      <EntityTypeMapping TypeName="apiModel.api_databoard_items_pub">
+        <MappingFragment StoreEntitySet="api_databoard_items_pub">
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="cre_man" ColumnName="cre_man" />
+          <ScalarProperty Name="intervalsecond" ColumnName="intervalsecond" />
+          <ScalarProperty Name="Intervalloading" ColumnName="Intervalloading" />
+          <ScalarProperty Name="itemdata" ColumnName="itemdata" />
+          <ScalarProperty Name="itemoption" ColumnName="itemoption" />
+          <ScalarProperty Name="itemversion" ColumnName="itemversion" />
+          <ScalarProperty Name="itemtype" ColumnName="itemtype" />
+          <ScalarProperty Name="itemh" ColumnName="itemh" />
+          <ScalarProperty Name="itemw" ColumnName="itemw" />
+          <ScalarProperty Name="itemy" ColumnName="itemy" />
+          <ScalarProperty Name="itemx" ColumnName="itemx" />
+          <ScalarProperty Name="itemindex" ColumnName="itemindex" />
+          <ScalarProperty Name="itemno" ColumnName="itemno" />
+          <ScalarProperty Name="pubno" ColumnName="pubno" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_databoard_pub">
+      <EntityTypeMapping TypeName="apiModel.api_databoard_pub">
+        <MappingFragment StoreEntitySet="api_databoard_pub">
+          <ScalarProperty Name="mainoption" ColumnName="mainoption" />
+          <ScalarProperty Name="mod_man" ColumnName="mod_man" />
+          <ScalarProperty Name="mod_date" ColumnName="mod_date" />
+          <ScalarProperty Name="cre_man" ColumnName="cre_man" />
+          <ScalarProperty Name="cre_date" ColumnName="cre_date" />
+          <ScalarProperty Name="gridsize" ColumnName="gridsize" />
+          <ScalarProperty Name="boardnote" ColumnName="boardnote" />
+          <ScalarProperty Name="perviewimage" ColumnName="perviewimage" />
+          <ScalarProperty Name="pubno" ColumnName="pubno" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="pr_app_databoard_pub" FunctionName="apiModel.Store.pr_app_databoard_pub" />
+    <EntitySetMapping Name="api_type_htmlhelp">
+      <EntityTypeMapping TypeName="apiModel.api_type_htmlhelp">
+        <MappingFragment StoreEntitySet="api_type_htmlhelp">
+          <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+          <ScalarProperty Name="HtmlStr" ColumnName="HtmlStr" />
+          <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_menu">
+      <EntityTypeMapping TypeName="apiModel.api_menu">
+        <MappingFragment StoreEntitySet="api_menu">
+          <ScalarProperty Name="isChildNode" ColumnName="isChildNode" />
+          <ScalarProperty Name="pguid" ColumnName="pguid" />
+          <ScalarProperty Name="guid" ColumnName="guid" />
+          <ScalarProperty Name="url" ColumnName="url" />
+          <ScalarProperty Name="iconCls" ColumnName="iconCls" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="text" ColumnName="text" />
+          <ScalarProperty Name="pid" ColumnName="pid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_3d_model_files">
+      <EntityTypeMapping TypeName="apiModel.a_3d_model_files">
+        <MappingFragment StoreEntitySet="a_3d_model_files">
+          <ScalarProperty Name="modelId" ColumnName="modelId" />
+          <ScalarProperty Name="modelName" ColumnName="modelName" />
+          <ScalarProperty Name="modelIdentity" ColumnName="modelIdentity" />
+          <ScalarProperty Name="editUser" ColumnName="editUser" />
+          <ScalarProperty Name="editTime" ColumnName="editTime" />
+          <ScalarProperty Name="fileUrl" ColumnName="fileUrl" />
+          <ScalarProperty Name="uploadUser" ColumnName="uploadUser" />
+          <ScalarProperty Name="uploadTime" ColumnName="uploadTime" />
+          <ScalarProperty Name="fileSuffix" ColumnName="fileSuffix" />
+          <ScalarProperty Name="fileSize" ColumnName="fileSize" />
+          <ScalarProperty Name="fileName" ColumnName="fileName" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart">
+        <MappingFragment StoreEntitySet="a_flowchart">
+          <ScalarProperty Name="flowchart_name" ColumnName="flowchart_name" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="flowchart_version" ColumnName="flowchart_version" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_instance_pars">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_instance_pars">
+        <MappingFragment StoreEntitySet="a_flowchart_instance_pars">
+          <ScalarProperty Name="keyvalue" ColumnName="keyvalue" />
+          <ScalarProperty Name="funid" ColumnName="funid" />
+          <ScalarProperty Name="pars" ColumnName="pars" />
+          <ScalarProperty Name="instance_id" ColumnName="instance_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_line">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_line">
+        <MappingFragment StoreEntitySet="a_flowchart_line">
+          <ScalarProperty Name="targetpoint" ColumnName="targetpoint" />
+          <ScalarProperty Name="sourcepoint" ColumnName="sourcepoint" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="next_node_id" ColumnName="next_node_id" />
+          <ScalarProperty Name="label" ColumnName="label" />
+          <ScalarProperty Name="node_id" ColumnName="node_id" />
+          <ScalarProperty Name="line_id" ColumnName="line_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_node_approveitem">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_node_approveitem">
+        <MappingFragment StoreEntitySet="a_flowchart_node_approveitem">
+          <ScalarProperty Name="approvetype" ColumnName="approvetype" />
+          <ScalarProperty Name="approvescript" ColumnName="approvescript" />
+          <ScalarProperty Name="approvenote" ColumnName="approvenote" />
+          <ScalarProperty Name="approvename" ColumnName="approvename" />
+          <ScalarProperty Name="approveid" ColumnName="approveid" />
+          <ScalarProperty Name="node_id" ColumnName="node_id" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_node_switchitem">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_node_switchitem">
+        <MappingFragment StoreEntitySet="a_flowchart_node_switchitem">
+          <ScalarProperty Name="switchnote" ColumnName="switchnote" />
+          <ScalarProperty Name="switchname" ColumnName="switchname" />
+          <ScalarProperty Name="switchid" ColumnName="switchid" />
+          <ScalarProperty Name="node_id" ColumnName="node_id" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_3d_models">
+      <EntityTypeMapping TypeName="apiModel.a_3d_models">
+        <MappingFragment StoreEntitySet="a_3d_models">
+          <ScalarProperty Name="modelurl" ColumnName="modelurl" />
+          <ScalarProperty Name="modeltype" ColumnName="modeltype" />
+          <ScalarProperty Name="modelForOutfit" ColumnName="modelForOutfit" />
+          <ScalarProperty Name="modelImage" ColumnName="modelImage" />
+          <ScalarProperty Name="yujiPutTime" ColumnName="yujiPutTime" />
+          <ScalarProperty Name="editUser" ColumnName="editUser" />
+          <ScalarProperty Name="editTime" ColumnName="editTime" />
+          <ScalarProperty Name="modelVersion" ColumnName="modelVersion" />
+          <ScalarProperty Name="createUser" ColumnName="createUser" />
+          <ScalarProperty Name="createTime" ColumnName="createTime" />
+          <ScalarProperty Name="modelRemark" ColumnName="modelRemark" />
+          <ScalarProperty Name="modeDescription" ColumnName="modeDescription" />
+          <ScalarProperty Name="modelName" ColumnName="modelName" />
+          <ScalarProperty Name="modelIdentity" ColumnName="modelIdentity" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_3d_scene">
+      <EntityTypeMapping TypeName="apiModel.a_3d_scene">
+        <MappingFragment StoreEntitySet="a_3d_scene">
+          <ScalarProperty Name="edittime" ColumnName="edittime" />
+          <ScalarProperty Name="createtime" ColumnName="createtime" />
+          <ScalarProperty Name="scenecfg" ColumnName="scenecfg" />
+          <ScalarProperty Name="scenetype" ColumnName="scenetype" />
+          <ScalarProperty Name="scenenote" ColumnName="scenenote" />
+          <ScalarProperty Name="scenename" ColumnName="scenename" />
+          <ScalarProperty Name="scenenid" ColumnName="scenenid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_instance">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_instance">
+        <MappingFragment StoreEntitySet="a_flowchart_instance">
+          <ScalarProperty Name="instance_message" ColumnName="instance_message" />
+          <ScalarProperty Name="instance_status" ColumnName="instance_status" />
+          <ScalarProperty Name="cre_man" ColumnName="cre_man" />
+          <ScalarProperty Name="cre_date" ColumnName="cre_date" />
+          <ScalarProperty Name="instance_id" ColumnName="instance_id" />
+          <ScalarProperty Name="flowchart_version" ColumnName="flowchart_version" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_role_menu">
+      <EntityTypeMapping TypeName="apiModel.api_role_menu">
+        <MappingFragment StoreEntitySet="api_role_menu">
+          <ScalarProperty Name="menu_guid" ColumnName="menu_guid" />
+          <ScalarProperty Name="role_guid" ColumnName="role_guid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_user_role">
+      <EntityTypeMapping TypeName="apiModel.api_user_role">
+        <MappingFragment StoreEntitySet="api_user_role">
+          <ScalarProperty Name="user_guid" ColumnName="user_guid" />
+          <ScalarProperty Name="role_guid" ColumnName="role_guid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_flowchart_node">
+      <EntityTypeMapping TypeName="apiModel.a_flowchart_node">
+        <MappingFragment StoreEntitySet="a_flowchart_node">
+          <ScalarProperty Name="approvalnotescript" ColumnName="approvalnotescript" />
+          <ScalarProperty Name="processscript" ColumnName="processscript" />
+          <ScalarProperty Name="flowscript" ColumnName="flowscript" />
+          <ScalarProperty Name="switchscript" ColumnName="switchscript" />
+          <ScalarProperty Name="operatorscript" ColumnName="operatorscript" />
+          <ScalarProperty Name="y" ColumnName="y" />
+          <ScalarProperty Name="x" ColumnName="x" />
+          <ScalarProperty Name="style" ColumnName="style" />
+          <ScalarProperty Name="label" ColumnName="label" />
+          <ScalarProperty Name="targetpoints" ColumnName="targetpoints" />
+          <ScalarProperty Name="sourcepoints" ColumnName="sourcepoints" />
+          <ScalarProperty Name="remark" ColumnName="remark" />
+          <ScalarProperty Name="nodetype" ColumnName="nodetype" />
+          <ScalarProperty Name="node_id" ColumnName="node_id" />
+          <ScalarProperty Name="flowchart_id" ColumnName="flowchart_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_role">
+      <EntityTypeMapping TypeName="apiModel.api_role">
+        <MappingFragment StoreEntitySet="api_role">
+          <ScalarProperty Name="create_time" ColumnName="create_time" />
+          <ScalarProperty Name="role_allow" ColumnName="role_allow" />
+          <ScalarProperty Name="remark" ColumnName="remark" />
+          <ScalarProperty Name="role_name" ColumnName="role_name" />
+          <ScalarProperty Name="role_guid" ColumnName="role_guid" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="api_user">
+      <EntityTypeMapping TypeName="apiModel.api_user">
+        <MappingFragment StoreEntitySet="api_user">
+          <ScalarProperty Name="create_time" ColumnName="create_time" />
+          <ScalarProperty Name="user_roles" ColumnName="user_roles" />
+          <ScalarProperty Name="remark" ColumnName="remark" />
+          <ScalarProperty Name="user_allow" ColumnName="user_allow" />
+          <ScalarProperty Name="user_password" ColumnName="user_password" />
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="a_system_article">
+      <EntityTypeMapping TypeName="apiModel.a_system_article">
+        <MappingFragment StoreEntitySet="a_system_article">
+          <ScalarProperty Name="putime" ColumnName="putime" />
+          <ScalarProperty Name="source" ColumnName="source" />
+          <ScalarProperty Name="author" ColumnName="author" />
+          <ScalarProperty Name="articlecontent" ColumnName="articlecontent" />
+          <ScalarProperty Name="perviewimage" ColumnName="perviewimage" />
+          <ScalarProperty Name="subtitle" ColumnName="subtitle" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="istop" ColumnName="istop" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

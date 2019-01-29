@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "系统信息";
+}
+
+
+
+<blockquote class="layui-elem-quote layui-text" style="margin-top: 20px;">
+    系统信息
+</blockquote>
+<form id="popupForm" action="@Url.Content("~/Admin/Systeminfo/Save")" method="POST" enctype="multipart/form-data" >
+
+   <input type="hidden" class="form-control" name="id" value= "@ViewBag.entity.id">
+   
+    <div class="layui-form-item">
+        <label class="layui-form-label">系统标识</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_id"  id="system_id"   autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.system_id" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">系统名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_name" id="system_name" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.system_name" />
+        </div>
+    </div>
+     <div class="layui-form-item">
+        <label class="layui-form-label">终端系统名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_worksitename" id="system_worksitename" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.system_worksitename" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">公司名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="company_name" id="company_name" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.company_name" />
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系电话</label>
+        <div class="layui-input-block">
+            <input type="text" name="company_tel" id="company_tel" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.company_tel" />
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系人</label>
+        <div class="layui-input-block">
+            <input type="text" name="company_linkman" id="company_linkman" lay-verify="title" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.company_linkman" />
+        </div>
+    </div>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="company_address" id="company_address"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.company_address" />
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">授权序列号</label>
+        <div class="layui-input-block">
+            <input type="text" name="system_licenseno" id="system_licenseno"  autocomplete="off" readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_licenseno" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">授权开始</label>
+        <div class="layui-input-block">
+             <input type="text" name="system_effdate_s" id="system_effdate_s"  autocomplete="off"  readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_effdate_s" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">授权截止</label>
+        <div class="layui-input-block">
+             <input type="text" name="system_effdate_e" id="system_effdate_e"  autocomplete="off" readonly="readonly" placeholder="" class="layui-input" value="@ViewBag.entity.system_effdate_e" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit="" >立即提交</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+@section scripts{
+
+
+ <script type="text/javascript">
+     var layer;
+     //检查
+     function doCheck() {
+         var filename = $("#filename").val();
+         if (filename == undefined || filename == "") {
+             layerAlert("请填写文件");
+             return false;
+         }
+         var fileurl = $("#fileurl").val();
+         if (fileurl == undefined || fileurl == "") {
+             layerAlert("请选择文件");
+             return false;
+         }
+
+         return true;
+     }
+
+
+     layui.use(['upload', 'jquery'], function () {
+         var form = layui.form;
+         var upload = layui.upload;
+         $ = layui.jquery;
+
+     });
+     </script>
+}

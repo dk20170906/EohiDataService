@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="font-size:36px">
+        WFSERVEICE START/STOP:
+        <label id="statuslab"></label>
+    </div>
+    <input id="startWFId" class="button" type="button" value="启动服务" onclick="wfHandler(this);" />
+    <!--<input id="stopWFId"  class="button disabled" type="button" value="停止WF服务" onclick="stopWF(this);" />-->
+
+
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md12">
+            <blockquote class="layui-elem-quote explain">
+                <div>
+                    <p style="font-size:24px">
+                        接收流程流转命令：参数，API,返回值类型
+                    </p>
+                    <p>
+                        InstanceID:流程实例的ID
+                    </p>
+                    <p>
+                        NodeID:节点ID
+                    </p>
+                    <p>
+                        ApprovalOpinion:申批意见，同意，不同意，驳回上级，驳回至发起人
+                    </p>
+                    <p>
+                        OpeManID:申批人ID
+                    </p>
+                    <p>
+                        ApprovalReason:申批备注
+                    </p>
+                    <p>
+                        http://localhost:8001/WF/Data/WFService/CWFTransmit?InstanceID=*****&NodeID=*****&ApprovalOpinion=*****&OpeManID=*****&ApprovalReason=*****
+                    </p>
+                    <p>
+                        返回值：string字符串类型
+                    </p>
+                    <p>-----------------------------------------------------------------------------</p>
+                    <div>
+                        <p style="font-size:24px">
+                            接收发起流程命令：参数，API,返回值类型
+                        </p>
+                        <p>
+                            WFName:流程名称
+                        </p>
+                        <p>
+                            WFDataID:数据表相对应数据IDID
+                        </p>
+                        <p>
+                            OpeManID:发起人ID
+                        </p>
+                        <p>
+                            http://localhost:8001/WF/Data/WFService/CWFStart?WFName=*****&WFDataID=*****&OpeManID=*****
+                        </p>
+                        <p>
+                            返回值：string字符串类型
+                        </p>
+                    </div>
+                    <p>-----------------------------------------------------------------------------</p>
+                    <div>
+                        <p style="font-size:24px">
+                            结束工作流实例：参数，API,返回值类型
+                        </p>
+                        <p>
+                            InstanceID:流程实例的ID
+                        </p>
+                        <p>
+                            http://localhost:8001/WF/Data/WFService/CTerminateInstance?InstanceID=*****
+                        </p>
+                        <p>
+                            返回值：string字符串类型
+                        </p>
+                    </div>
+                </div>
+                
+            </blockquote>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+<script src="../../../Scripts/jquery-1.7.1.min.js"></script>
+<script src="../../../Scripts/jquery.min.js"></script>
+<script>
+    var mysetinter = null;
+    //服务运行状态
+    var isServiceStatus = true;
+    serviceStatus();
+    //获取服务是否在运行
+    function serviceStatus() {
+        $.ajax({
+            type: 'get',
+            url: '../../../../WF/WFService/GetServiceStatus',
+            success: function (data) {
+                if (data.success) {
+                    IsStartService = true;
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').val("服务正在运行");
+                    $("#startWFId").css("background-color", "green");
+                } else {
+                    IsStartService = false;
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').val("服务已停止");
+                    $("#startWFId").css("background-color", "red");
+                }
+            },
+            error: function (data) {
+                alert("服务运行错误，请刷新页面");
+            }
+        });
+    }
+
+
+    function wfHandler(obj) {
+        if (IsStartService) {
+            stopWF(obj);
+        } else {
+            startWF(obj);
+        }
+    }
+
+
+
+    function startWF(obj) {
+        mysetinter = setInterval(function () {
+            var myDate = new Date();
+            $('#statuslab').html("正在启动WF服务...." + myDate.toLocaleTimeString());
+        }, 1000);
+        $.ajax({
+            type: 'get',
+            url: '../../../../WF/WFService/WFServiceStart',
+            success: function (data) {
+                if (data.success) {
+                    clearInterval(mysetinter);
+                    IsStartService = true;
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').val("服务正在运行");
+                    $("#startWFId").css("background-color", "green");
+                } else {
+                    IsStartService = false;
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').value("启动WF服务失败");
+                    $("#startWFId").css("background-color", "yellow");
+                }
+            },
+            error: function (data) {
+                IsStartService = false;
+                $('#statuslab').html(data.msg);
+                $('#startWFId').value("启动WF服务失败");
+                $("#startWFId").css("background-color", "yellow");
+            }
+        });
+    }
+
+
+
+    function stopWF(obj) {
+        mysetinter = setInterval(function () {
+            var myDate = new Date();
+            $('#statuslab').html("正在停止WF服务...." + myDate.toLocaleTimeString());
+        }, 1000);
+        $.ajax({
+            type: 'get',
+            url: '../../../../WF/WFService/WFServiceStop',
+            success: function (data) {
+                if (data.success) {
+                    IsStartService = false;
+                    clearInterval(mysetinter);
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').val("服务已停止");
+                    $("#startWFId").css("background-color", "red");
+                } else {
+                    IsStartService = true;
+                    $('#statuslab').html(data.msg);
+                    $('#startWFId').val("停止WF服务失败");
+                    $("#startWFId").css("background-color", "yellow");
+                }
+            },
+            error: function (data) {
+                IsStartService = true;
+                $('#statuslab').html(data.msg);
+                $('#startWFId').val("停止WF服务失败");
+                $("#startWFId").css("background-color", "yellow");
+            }
+        });
+    }
+
+
+
+
+    //$('#statuslab').html("正在启动WF服务....")
+    //    $.ajax({
+    //        type: 'get',
+    //        url: '../../../../WF/WFService/StartWFService',
+    //        success: function (data) {
+    //            debugger;
+    //            if (data.success) {
+    //                clearInterval(mysetinter);
+    //                $('#statuslab').html(data.msg);
+    //                 window.location.href = "../../../../Areas/WF/WSWF.asmx";
+    //            } else {
+    //                clearInterval(mysetinter);
+    //                $('#statuslab').html(data.msg);
+    //            }
+    //        },
+    //        error: function (data) {
+
+    //        }
+
+    //});
+
+
+
+</script>

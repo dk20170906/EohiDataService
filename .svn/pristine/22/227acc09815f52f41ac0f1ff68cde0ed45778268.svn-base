@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>LoginSession</title>
+</head>
+<body>
+    <div>
+        
+    </div>
+</body>
+</html>
+<script >
+    debugger;
+    window.location.href="@Url.Content("/NewAdmin/login.html")";
+</script>

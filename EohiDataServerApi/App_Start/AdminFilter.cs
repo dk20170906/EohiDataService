@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace EohiDataServerApi
+{
+    public class AdminFilter : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            //获取 controllerName 名称
+            string controllerName = filterContext.RouteData.Values["controller"].ToString();
+            //获取ACTION 名称
+            string actionName = filterContext.RouteData.Values["action"].ToString();
+
+
+
+            //判断区域-Admin
+            var areaName = filterContext.Controller.ControllerContext.RouteData.DataTokens["area"];
+            if (areaName != null)
+            {
+                if (areaName.ToString().ToLower() == "admin")
+                {
+                    //当前访问为 admin/login/index 时
+                    if (controllerName.ToLower() == "login")
+                    {
+                        if (actionName.ToLower() == "index" || actionName.ToLower() == "login")
+                            return;
+                    }
+
+                    //判断管理员账号是否登录;
+                    Models.api_user api_User = (Models.api_user)filterContext.HttpContext.Session["admin"];
+                    if (api_User == null)
+                    {
+                        //跳转到管理员登录页面;
+                        filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { Controller = "Login", action = "Index", area = "Admin", ReturnUrl = filterContext.HttpContext.Request.Url }));
+                    }
+                }
+                if (areaName.ToString().ToLower() == "data")
+                {
+                    //当前访问为 admin/login/index 时
+                    if (controllerName.ToLower() == "login")
+                    {
+                        if (actionName.ToLower() == "apilogin" || actionName.ToLower() == "login" || actionName.ToLower() == "loginsession")
+                            return;
+                    }
+
+                    //判断管理员账号是否登录;
+                    Models.api_user ec_admin_account = (Models.api_user)filterContext.HttpContext.Session["admin"];
+                    if (ec_admin_account == null)
+                    {
+
+                        if (filterContext.HttpContext.Request.IsAjaxRequest())
+                        {
+                            //filterContext.HttpContext.Response.StatusCode = 401;//这个可以指定为其他的
+                            filterContext.Result = new JsonResult
+                            {
+                                //Data = new
+                                //{
+                                //    ErrorMessage = "您长时间没有操作，请重新登录！"
+                                //}, //这样使用，最终的结果判断时，xhr.responseText为"{ErrorMessage:"您长时间没有操作，请重新登录！"}",还需要Json转化一下
+
+                                Data = new{ sessionstatus="timeout", msg = "您长时间没有操作，请重新登录！" },
+                                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                            };
+                        }
+                        //filterContext.RequestContext
+                        //filterContext.
+                        //如果是ajax请求响应头会有，x - requested - with；
+                        //if (req.getHeader("x-requested-with") != null && req.getHeader("x-requested-with").equalsIgnoreCase("XMLHttpRequest"))
+                        //{
+
+                        //    rep.setHeader("sessionstatus", "timeout");//在响应头设置session状态
+                        //    rep.getWriter().print("登录超时！"); //打印一个返回值，没这一行，在tabs页中无法跳出（导航栏能跳出），具体原因不明
+                        //}
+
+                        //filterContext.ActionParameters.Add("sessionstatus", "sessiontimeout");
+                        //跳转到管理员登录页面;
+                        //filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { Controller = "Login", action = "LoginSession", area = "data", ReturnUrl = filterContext.HttpContext.Request.Url }));
+                    }
+                }
+            }
+          
+
+
+            return;
+            //base.OnActionExecuting(filterContext);
+        }
+
+    }
+}

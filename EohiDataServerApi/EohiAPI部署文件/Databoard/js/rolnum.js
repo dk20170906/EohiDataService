@@ -1,0 +1,145 @@
+﻿//鏁板瓧婊氬姩
+;(function($, window, document) {
+    "use strict";
+    var defaults = {
+        itemno: '',
+        deVal: 0,       //浼犲叆鍊?
+        className:'dataNums',   //鏍峰紡鍚嶇О
+        digit: '',   //榛樿鏄剧ず鍑犱綅鏁板瓧
+        rollnumbackcss: '',
+        rollnumcss: '',
+        allhight:''
+       // backgroundColor:'' //鏇存敼婊氬姩鏁板瓧鑳屾櫙棰滆壊
+    };
+    function rollNumDaq(obj, options) {
+        debugger;
+        this.obj = obj;
+        this.options = $.extend(defaults, options);
+        this.init = function(){
+             this.initHtml(obj,defaults);
+        }
+    }
+    rollNumDaq.prototype = {
+        initHtml: function(obj,options){
+			
+			//鍒ゆ柇鏄惁宸茬粡瀛樺湪锛屽瓨鍦ㄥ垯;
+			//鍒ゆ柇鏁板瓧闀垮害鏄惁涓€鑷?
+			var valLen = options.digit ||  (options.deVal + '').length;
+			 if(obj.find('.'+options.className).length > 0){
+				//宸茬粡鍒涘缓杩?
+				//var oldLen=obj.find('.'+options.className).length;
+				var oldLen =obj.find('.'+options.className+" li").length;
+				if(oldLen<valLen)
+				 {
+					debugger;
+					var strHtml='';
+					//棰濆娣诲姞;
+					for( var k = 0 ; k<(valLen-oldLen);k++)
+					 {
+						strHtml += this.createli();
+					 }
+					 //
+					 obj.find("ul").appendTo(strHtml);
+				 }
+				 
+				 if(oldLen>valLen)
+				 {
+					 //绉婚櫎
+				 }
+				
+
+			 }
+
+            var strHtml = '<ul class="' + options.className + ' inrow">';
+
+            if(obj.find('.'+options.className).length <= 0){
+				//鍒涘缓
+                for(var i = 0; i<  valLen; i++){
+                    strHtml += this.createli();
+                }
+                strHtml += '</ul>';
+                obj.html(strHtml);
+            }
+            this.scroNum(options);
+        },
+	    createli:function()
+		{
+			var strHtml='';
+			strHtml += '<li class="dataOne ">';
+					strHtml += '<div class="dataBoc">';
+					strHtml += '<div class="tt" t="38">';
+					strHtml += '<span class="num0">0</span>';
+					strHtml += '<span class="num1">1</span>';
+					strHtml += '<span class="num2">2</span>';
+					strHtml += '<span class="num3">3</span>';
+					strHtml += '<span class="num4">4</span>';
+					strHtml += '<span class="num5">5</span>';
+					strHtml += '<span class="num6">6</span>';
+					strHtml += '<span class="num7">7</span>';
+					strHtml += '<span class="num8">8</span>';
+					strHtml += '<span class="num9">9</span>';
+					strHtml += '<span class="num0">0</span>';
+					strHtml += '<span class="num1">1</span>';
+					strHtml += '<span class="num2">2</span>';
+					strHtml += '<span class="num3">3</span>';
+					strHtml += '<span class="num4">4</span>';
+					strHtml += '<span class="num5">5</span>';
+					strHtml += '<span class="num6">6</span>';
+					strHtml += '<span class="num7">7</span>';
+					strHtml += '<span class="num8">8</span>';
+					strHtml += '<span class="num9">9</span>';
+            strHtml += '</div></div></li>';
+		return strHtml;
+		}
+		,
+        scroNum: function (options) {
+            var self = this;
+            debugger;
+            //this.obj = obj;
+            // $('.dataOne').css('background', options.backgroundColor);
+
+            //$('.dataOne').css(options.rollnumbackcss);
+            var $dataone = this.obj.find('.dataOne');
+            $dataone.css(options.rollnumbackcss);
+
+            var number = options.deVal;
+            //var $num_item = $('.' + options.className).find('.tt');
+            var $num_item = this.obj.find('.' + options.className).find('.tt');
+
+            //var $rowh = this.obj.find('.' + options.className);
+
+            //debugger;
+            //var h = this.obj.find('.dataBoc').height();
+            //从html元素获取高度有偏差，改从配置文件中读取
+            var h = parseInt(options.rollnumbackcss.height);
+            $num_item.css('transition', 'all 2s ease-in-out');
+            //$rowh.css('height', options.allhight);
+
+            var numberStr = number.toString();
+            if(numberStr.length <= $num_item.length - 1){
+                var tempStr = '';
+                for(var a = 0; a < $num_item.length - numberStr.length; a++){
+                    tempStr += '0';
+                }
+                numberStr = tempStr + numberStr;
+            }
+
+            var numberArr = numberStr.split('');
+
+            // h li的高度
+            //h = 100;
+            $num_item.each(function (i, item) {
+                //alert(item);
+                setTimeout(function(){
+                    $num_item.eq(i).css('top',-parseInt(numberArr[i])*h - h*10 + 'px');
+                },i*100)
+            });
+            $num_item.find("span").css(options.rollnumcss);
+        }
+    }
+    $.fn.rollNumDaq = function(options){
+        var $that = this;
+        var rollNumObj = new rollNumDaq($that, options);
+        rollNumObj.init();
+    };
+})(jQuery, window, document);

@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WFServerWeb
+{
+    public class CGoNextNode
+    {
+        /// <summary>
+        /// 获取分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="SwitchNodeID">分支节点ID</param>
+        /// <returns></returns>
+        public static void GoNextNodesFromSwitchNode(string InstanceID, string SwitchNodeID)
+        {
+            string[] SwitchNames = GetSwitchName(InstanceID, SwitchNodeID);
+            for (int i = 0; i < SwitchNames.Length; i++)
+            {
+                string SwitchID = CDataHelper.GetData("select [switchid] from " + CTableName.FlowChartSwitchitem + " where [node_id]='" + SwitchNodeID + "' and [switchname]='" + SwitchNames[i] + "'");
+                //根据switchid获取下一级节点ID
+                string NextNodeID = CDataHelper.GetData("select next_node_id from " + CTableName.FlowChartLine + " where [sourcepoint]='" + SwitchID + "-out'");
+                NodeTransfer(InstanceID, SwitchNodeID, NextNodeID);
+            }
+        }
+
+        /// <summary>
+        /// 通过工作流实例ID和分支节点ID，获取当前分支节点所选的分支的名称
+        /// </summary>
+        /// <param name="InstanceID">工作流实例ID</param>
+        /// <param name="NodeID">节点ID</param>
+        /// <returns></returns>
+        public static string[] GetSwitchName(string InstanceID, string NodeID)
+        {
+            string[] SwitchNames = null;
+            string SwitchScript = CDataHelper.GetData("select switchscript from " + CTableName.FlowChartNode + " where [node_id]='" + NodeID + "'");
+            object SwitchNameObj = CScriptOpe.ScriptExec(SwitchScript, InstanceID);
+            SwitchNames = SwitchNameDecode(SwitchNameObj);
+            return SwitchNames;
+        }
+
+        /// <summary>
+        /// 从返回值中分解得到具体的SwitchName
+        /// </summary>
+        /// <param name="SwitchNameObj"></param>
+        /// <returns></returns>
+        public static string[] SwitchNameDecode(object SwitchNameObj)
+        {
+            string[] SwitchNames = null;
+            SwitchNames = ((string)(SwitchNameObj)).Split(';');
+            return SwitchNames;
+        }
+
+        /// <summary>
+        /// 运行流程节点处理脚本
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="ProcessNodeID"></param>
+        private static void RunProcessScript(string InstanceID, string ProcessNodeID)
+        {
+            string ProcessScript = CCommonFunc.GetScript(ProcessNodeID, EScriptType.ProcessScript);
+            CScriptOpe.ScriptExec(ProcessScript, InstanceID);
+        }
+
+        /// <summary>
+        /// 获取非分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static void GoNextNodesFromOtherNode(string InstanceID, string NodeID)
+        {
+            string NextNodeID = CDataHelper.GetData("select next_node_id from " + CTableName.FlowChartLine + " where node_id='" + NodeID + "'");
+            NodeTransfer(InstanceID, NodeID, NextNodeID);
+        }
+
+        /// <summary>
+        /// 节点转移，从当前节点进入下一节点
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="NextNodeID"></param>
+        public static void NodeTransfer(string InstanceID, string NodeID, string NextNodeID)
+        {
+            if (CCommonFunc.IsThroughEnable(InstanceID, NextNodeID))
+            {
+                //记录流转历史
+                CDataHelper.ExecuteNonQuery("insert into " + CTableName.FlowChartHistory + "(instance_id,node_id,next_node_id) values('" + InstanceID + "','" + NodeID + "','" + NextNodeID + "')");
+
+                string NodeType = CCommonFunc.GetNodeType(NextNodeID);
+                if (NodeType == CNodeType.SwitchType)
+                {
+                    GoNextNodesFromSwitchNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ProcessType)
+                {
+                    RunProcessScript(InstanceID, NextNodeID);
+                    GoNextNodesFromOtherNode(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ApproveType || NodeType == CNodeType.StartType)
+                {
+                    CPutDownReceiver.PutDownReceiver(InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.EndType)
+                {
+                    CCommonFunc.SetInstanceComplete(InstanceID);
+                }
+            }
+        }
+    }
+}

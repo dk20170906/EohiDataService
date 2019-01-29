@@ -1,0 +1,48 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/layui.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/layui/css/global.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/css/pace.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Scripts/css/fs.css")">
+
+    <style>
+    input[readonly="readonly"] {
+        background: #dedcdc;
+    }
+</style>
+
+    <script src="@Url.Content("~/Scripts/jquery-1.7.1.min.js")"></script>   
+    <script src="@Url.Content("~/Scripts/jquery.form.js")"></script>  
+    <script src="  @Url.Content("~/Scripts/dateconvert.js")"></script>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <!--header-->
+        @{ Html.RenderAction("NavBar", "Menu");}
+
+        <!-- 左侧导航 -->
+        @{ Html.RenderAction("LeftMenu", "Menu");}
+
+        <!-- 内容主体区域 -->
+        <div class="layui-body site-demo">
+            <div class="layui-main">
+                @RenderBody()
+            </div>
+        </div>
+
+        <!-- 底部固定区域 -->
+        @{ Html.RenderAction("NavFooter", "Menu");}
+
+    </div>
+    <script src="@Url.Content("~/Scripts/layui/layui.js")"></script>
+    <script src="@Url.Content("~/Scripts/pace.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/dialog2.js")"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

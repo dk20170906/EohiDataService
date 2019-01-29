@@ -1,0 +1,72 @@
+﻿<div class="topjui-fluid">
+    <fieldset>
+        <legend>必填信息</legend>
+    </fieldset>
+    <div class="topjui-row">
+        <div class="topjui-col-sm12">
+            <label class="topjui-form-label">操作名称</label>
+            <div class="topjui-input-block">
+                <input type="text" name="approvename" id="approvename" data-toggle="topjui-textbox" data-options="required:true">
+            </div>
+        </div>
+    </div>
+    <div class="topjui-row">
+        <div class="topjui-col-sm12">
+            <label class="topjui-form-label">操作类型</label>
+            <div class="topjui-input-block" style="padding-top: 4px;">
+                <input type="text" name="approvetype" id="approvetype"
+                       data-toggle="topjui-combobox"
+                       data-options="data:[{value:'下一步',text:'下一步'},{value:'终止',text:'终止'},{value:'返回上一级',text:'返回上一级'},{value:'返回起点',text:'返回起点'}]">
+            </div>
+        </div>
+    </div>
+    <fieldset>
+        <legend>选填信息</legend>
+    </fieldset>
+
+    <div class="topjui-row">
+        <div class="topjui-col-sm12">
+            <label class="topjui-form-label">说明</label>
+            <div class="topjui-input-block" style="padding-top: 4px;">
+                <input type="text" name="approvenote" id="approvenote" data-toggle="topjui-textbox" data-options="required:false">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="topjui-row">
+        <div class="topjui-col-sm12">
+            <label class="topjui-form-label">附加脚本</label>
+            <div class="topjui-input-block">
+                <textarea id="approvescript"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+
+    var tejsm = document.getElementById("approvescript");
+    window.editorjsm = CodeMirror.fromTextArea(tejsm, {
+        mode: "python",
+        theme: "night",
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    });
+
+
+
+
+</script>
+
+
+
+

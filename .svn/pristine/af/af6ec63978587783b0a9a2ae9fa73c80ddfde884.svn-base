@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Data;
+using Microsoft.Scripting.Hosting;
+using System.Collections;
+namespace WFServerWeb
+{
+    class CCommonFunc
+    {
+        public static string GetStartNodeID(string WFID)
+        {
+            
+            return CDataHelper.GetData("select [node_id] from "+CTableName.FlowChartNode+" where [flowchart_id]='" + WFID + "' and [nodetype]='" + CNodeType.StartType + "'");
+        }
+        
+        /// <summary>
+        /// 将工作流实例设置为错误状态
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="ErrorMessage">错误状态信息</param>
+        public static void SetInstanceError(string InstanceID,string ErrorMessage)
+        {
+            //设置审批状态为无效
+            CDataHelper.ExecuteNonQuery("update "+CTableName.FlowChartReceiver+" set [approval_status]='" + EApprovalStatus.Invalid.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + EApprovalStatus.Active.ToString() + "'");
+
+            //设置实例状态为错误
+            CDataHelper.ExecuteNonQuery("update "+CTableName.FlowChartInstance+" set [instance_status]='" + EInstanceStatus.Error.ToString() + "',[instance_message]='"+ErrorMessage+"' where instance_id='" + InstanceID + "' and instance_status='" + EInstanceStatus.Active.ToString() + "'");
+        }
+        
+
+        public static string GetNodeType(string NodeID)
+        {
+            return CDataHelper.GetData("select [nodetype] from "+CTableName.FlowChartNode+" where [node_id]='" + NodeID + "'");
+        }
+
+        public static string GetScript( string NodeID,EScriptType ScriptType)
+        {
+            return CDataHelper.GetData("select "+ScriptType.ToString()+" from "+CTableName.FlowChartNode+" where  node_id='" + NodeID + "'");
+        }
+        
+        public static void SetInstanceComplete(string InstanceID)
+        {
+            CDataHelper.ExecuteNonQuery("update "+CTableName.FlowChartInstance+" set [instance_status]='" + EInstanceStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "'");
+            CDataHelper.ExecuteNonQuery("update "+CTableName.FlowChartReceiver+" set [approval_status]='" + EApprovalStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + EApprovalStatus.Active.ToString() + "'");
+        }
+
+        /// <summary>
+        /// 判断是否可以向下个节点流转
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static bool IsThroughEnable(string InstanceID, string NextNodeID)
+        {
+            string FlowScript = GetScript(NextNodeID, EScriptType.FlowScript);
+            string ScriptResult = null;
+            if (FlowScript != "")
+            {
+                ScriptResult = CScriptOpe.ScriptExec(FlowScript, InstanceID).ToString();
+            }
+
+            if (FlowScript == "" || ScriptResult == "True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}

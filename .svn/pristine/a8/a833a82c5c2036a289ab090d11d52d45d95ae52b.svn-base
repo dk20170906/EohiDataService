@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+  @section scripts{
+      <script type="text/javascript">
+          $(function () {
+              window.location.href = "@Url.Content("~/CrystalQuartzPanel.axd")";     //在同当前窗口中打开窗口
+          })
+
+      </script>
+      
+      
+      }

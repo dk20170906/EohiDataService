@@ -1,0 +1,9 @@
+E:\dk\EohiDataService\EohiNFFunctionPublic\bin\Debug\EohiNFFunctionPublic.exe
+E:\dk\EohiDataService\EohiNFFunctionPublic\bin\Debug\EohiNFFunctionPublic.pdb
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.csprojAssemblyReference.cache
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.Form1.resources
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.Properties.Resources.resources
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.csproj.GenerateResource.cache
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.csproj.CoreCompileInputs.cache
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.exe
+E:\dk\EohiDataService\EohiNFFunctionPublic\obj\Debug\EohiNFFunctionPublic.pdb

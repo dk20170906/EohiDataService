@@ -1,0 +1,151 @@
+/**
+ * Created by 郭广平 2018.05.16
+ */
+
+(function ($) {
+
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "H+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S": this.getMilliseconds() //毫秒 
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
+
+    /**
+     * 默认参数
+     */
+    var defaultOpts = {
+        item: '',
+        html: '显示文本',
+        color: '#FFFFFF',
+        format: "yyyy-MM-dd HH:mm:ss"
+    };
+
+    /**
+     * 定义类
+     */
+    var VClock = function (options) {
+        this.options = $.extend({}, defaultOpts, options);
+        //记录item值;
+        defaultOpts.item = this.options.item;
+        this.init();
+    }
+
+    VClock.prototype = {
+        init: function () {
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+            var dataPanel2 = $('<div class="data-item-text clock"></div>');
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+            dataPanel2.css({
+                width: width,
+                height: height,
+                top: 0,
+                left: 0,
+                position: 'absolute',
+                color: this.options.color,
+                "font-size": this.options.fontsize
+            });
+            self.appendHandler(dataPanel2, pdiv);
+            //
+            //dataPanel2.html("2015-01-01 12:00:00")
+            
+            self.displayTime();
+
+            
+        }
+        ,
+        /**
+         * 插入容器
+         */
+        appendHandler: function (handlers, target) {
+            for (var i = 0; i < handlers.length; i++) {
+                el = handlers[i];
+                $(target).append(el);
+            }
+        }
+        ,
+        bind : function(object, func) {  
+            return function() {  
+                return func.apply(object, arguments);  
+            }  
+        }
+        ,
+        //创建定时器;
+        // 定义一个函数用以显示当前时间
+        displayTime: function () {
+            var self = this;
+            var pdiv = this.options.item;
+            //var elt = document.getElementById("clock"); // 通过id= "clock"找到元素
+            //var now = new Date(); // 得到当前时间
+            //$(pdiv).children('div.data-item-text').html(now.toLocaleTimeString())
+            //elt.innerHTML = now.toLocaleTimeString(); //让elt来显示它
+            var txt = new Date().Format(self.options.format);
+            $(pdiv).children('div.data-item-text').html(txt)
+          
+            //
+            //setTimeout(self.displayTime, 1000); //在1秒后再次执行
+            setTimeout(this.bind(this, this.displayTime), 1000);
+        }
+        ,
+        /*
+        * 更改大小
+        */
+        resize: function () {
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+
+            //self.resizeDiv = undefined;//拖拽面板
+            //更改数据面板大小
+
+            var width = $(pdiv).width();
+            var height = $(pdiv).height();
+
+            //更改div
+            $(pdiv).children('div.data-item-text').css({
+                width: width,
+                height: height
+            });
+
+            //self.resizeDiv.css({
+            //    display: 'none'
+            //});
+
+        }
+        ,
+        setOption: function (option) {
+            this.options = $.extend({}, defaultOpts, option);
+            var self = this;
+            //console.log('test');
+            var pdiv = this.options.item;
+            //更改div
+            var dataview = $(pdiv).children('div.data-item-text');
+
+            //更改文本内容
+            //dataview.html(this.options.html);
+            dataview.css({
+                color: this.options.color,
+                "font-size": this.options.fontsize,
+            });
+
+        }
+    }
+    window.VClock = VClock;
+
+})(jQuery);

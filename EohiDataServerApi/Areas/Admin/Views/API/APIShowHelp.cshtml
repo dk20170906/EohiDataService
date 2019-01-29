@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "APIShowHelp";
+}
+
+
+<h4>帮助文档</h4>
+
+<link rel="stylesheet" href="~/Scripts/doc/docs.css" />
+<link rel="stylesheet" href="~/Scripts/lib/codemirror.css" />
+<link rel="stylesheet" href="~/Scripts/addon/fold/foldgutter.css" />
+<link rel="stylesheet" href="~/Scripts/theme/night.css" />
+<script src="~/Scripts/lib/codemirror.js"></script>
+<script src="~/Scripts/lib/formatting.js"></script>
+<script src="~/Scripts/addon/fold/foldcode.js"></script>
+<script src="~/Scripts/addon/fold/foldgutter.js"></script>
+<script src="~/Scripts/addon/fold/brace-fold.js"></script>
+<script src="~/Scripts/addon/fold/xml-fold.js"></script>
+<script src="~/Scripts/addon/fold/indent-fold.js"></script>
+<script src="~/Scripts/addon/fold/markdown-fold.js"></script>
+<script src="~/Scripts/addon/fold/comment-fold.js"></script>
+<script src="~/Scripts/mode/javascript/javascript.js"></script>
+<script src="~/Scripts/mode/xml/xml.js"></script>
+<script src="~/Scripts/mode/css/css.js"></script>
+<script src="~/Scripts/mode/htmlmixed/htmlmixed.js"></script>
+<script src="~/Scripts/mode/python/python.js"></script>
+<script src="~/Scripts/mode/markdown/markdown.js"></script>
+
+
+
+
+@using (Html.BeginForm("APIShowHelpSave", "API", FormMethod.Post))
+{
+
+    <div>
+        <textarea id="editor_id" cols="100" rows="8" style="width:700px;height:200px;visibility:hidden;" name="HtmlStr"></textarea>
+    </div>
+    <div>
+        <input type="hidden" id="Tid" name="TId" />
+        <input type="hidden" id="typeid" name="TypeId" />
+        <input type="submit" name="name" value="保存" />
+    </div>
+}
+@section Scripts{
+
+
+    <script>
+        @*function insert() {
+            var oDiv = document.createElement("DIV");
+            oDiv.innerHTML = "@ViewBag.HtmlStr";
+            document.getElementById("editor_id").appendChild(oDiv);
+        }*@
+
+
+
+
+        var tejs = document.getElementById("editor_id");
+        window.item_option_editor = CodeMirror.fromTextArea(tejs, {
+            //mode: "python",
+            mode: "application/json",
+            theme: "night",
+            lineNumbers: true,
+            lineWrapping: true,
+            indentUnit: 4,
+            indentWithTabs: true,
+            extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+        });
+
+
+        $.ajax({
+            url: "@Url.Content("~/Admin/API/APIShowHelpAJAX")",
+            type: "get",
+            data: {
+                typeid:@ViewBag.TypeId
+            },
+            success: function (data) {
+                $('#Tid').val(data.tId);
+                $('#typeid').val(data.typeId);
+                          //设置属性;
+                window.item_option_editor.setValue(data.htmlStr);
+                      var totalLines = window.item_option_editor.lineCount();
+                    window.item_option_editor.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+            }
+
+        });
+
+
+
+
+
+
+    </script>
+}

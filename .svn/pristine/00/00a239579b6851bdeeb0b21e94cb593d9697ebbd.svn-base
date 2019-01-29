@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Collections;
+namespace WFServerWeb
+{
+    public static class CGoNextNode
+    {
+        /// <summary>
+        /// 将工作流流转到下一级节点
+        /// </summary>
+        /// <param name="WFID">工作流ID</param>
+        /// <param name="InstanceID">工作流实例ID</param>
+        /// <param name="CurrentNodeID">当前节点ID</param>
+        public static void GoNextNode(string WFID, string InstanceID, string CurrentNodeID) 
+        {
+            ArrayList NextNodeArr = CCommonFunc.GetNextNodeID(WFID, InstanceID, CurrentNodeID);
+            if (NextNodeArr.Count == 0)
+            {
+                CCommonFunc.SetInstanceStatus(InstanceID, InstanceStatus.Error,"找不到节点："+CurrentNodeID+" 的下一个节点。");
+                return;
+            }
+
+            CCommonFunc.DeleteCurrentNode(InstanceID, CurrentNodeID);
+
+            foreach(string NextNodeID in NextNodeArr)
+            {
+                CCommonFunc.InsertCurrentNode(InstanceID, NextNodeID);
+                //判断流程是否结束
+                string nodetype = CCommonFunc.GetNodeType(NextNodeID);
+                if (nodetype == CNodeType.EndType)
+                {
+                    CCommonFunc.SetInstanceComplete(InstanceID);
+                    break;
+                }
+                else
+                {
+                    CPutDownReceiver.PutDownReceiver(InstanceID, NextNodeID);
+                }
+            }
+        }
+    }
+}

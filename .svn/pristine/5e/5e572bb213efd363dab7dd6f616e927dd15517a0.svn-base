@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+
+namespace EohiDataServerApi.CommonUtil
+{
+    public class ToolUnit
+    {
+
+        /// <summary>
+        /// 根据路径删除文件
+        /// </summary>
+        /// <param name="path"></param>
+        public static void DelectDir(string srcPath)
+        {
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(srcPath);
+                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
+                foreach (FileSystemInfo i in fileinfo)
+                {
+                    if (i is DirectoryInfo)            //判断是否文件夹
+                    {
+                        DirectoryInfo subdir = new DirectoryInfo(i.FullName);
+                        subdir.Delete(true);          //删除子目录和文件
+                    }
+                    else
+                    {
+                        File.Delete(i.FullName);      //删除指定文件
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public static List<FileSystemInfo> SelectDirFiles(string srcPath, string fileSuffix)
+        {
+            List<FileSystemInfo> list = new List<FileSystemInfo>();
+            try
+            {
+                DirectoryInfo dir = new DirectoryInfo(srcPath);
+                FileSystemInfo[] fileinfo = dir.GetFileSystemInfos();  //返回目录中所有文件和子目录
+                foreach (FileSystemInfo i in fileinfo)
+                {
+                    if (i is DirectoryInfo)            //判断是否文件夹
+                    {
+                    }
+                    else
+                    {
+                        if (i.Extension==fileSuffix&&!list.Contains(i))
+                        {
+                            list.Add(i);
+                        }
+                        else
+                        {
+                            return fileinfo.ToList();
+                        }
+                    }
+                }
+                return list;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+    }
+}

@@ -1,0 +1,399 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Data;
+using Microsoft.Scripting.Hosting;
+using System.Collections;
+namespace WFServerWeb
+{
+    class CCommonFunc
+    {
+        public static string GetStartNodeID(string WFID)
+        {
+            return CDataHelper.GetData("select [node_id] from [a_flowchart_node] where [flowchart_id]='" + WFID + "' and [nodetype]='" + CNodeType.StartType + "'");
+        }
+
+        public static string GetEndNodeID(string WFID)
+        {
+            return CDataHelper.GetData("select [node_id] from [a_flowchart_node] where [flowchart_id]='" + WFID + "' and [nodetype]='" + CNodeType.EndType + "'");
+        }
+
+        public static string GetWFIDByInstanceID(string InstanceID)
+        {
+            return CDataHelper.GetData("select [flowchart_id] from a_flowchart_instance where [instance_id]='" + InstanceID + "'");
+        }
+
+        public static string GetWFIDByWFName(string WFName)
+        {
+            return CDataHelper.GetData("select top 1 flowchart_id from a_flowchart where flowchart_name='" + WFName + "' order by flowchart_version desc");
+        }
+
+        public static string GetWFVersion(string WFName)
+        {
+            return CDataHelper.GetData("select top 1 isnull(flowchart_version,'') as flowchart_version from a_flowchart where flowchart_name='" + WFName + "' order by id desc");
+        }
+
+        public static string GetNewInstanceID()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public static void PutDownSwitchNodeSelect(string InstanceID, string SwitchNodeID, string SwitchName)
+        {
+            CDataHelper.ExecuteNonQuery("insert into [a_flowchart_instance_node_receiver]([instance_id],[node_id],[approval_opinion],[operate_time],[user_id],[approval_status],node_status) values('" + InstanceID + "','" + SwitchNodeID + "','" + SwitchName + "','" + DateTime.Now.ToString() + "','SwitchNode','"+ApprovalStatus.Complete+"','"+NodeStatus.Complete.ToString()+"')");
+        }
+
+        public static void PutDownProcessNodeFlow(string InstanceID,string ProcessNodeID)
+        {
+            CDataHelper.ExecuteNonQuery("insert into [a_flowchart_instance_node_receiver]([instance_id],[node_id],[approval_opinion],[operate_time],[user_id],[approval_status],node_status) values('" + InstanceID + "','" + ProcessNodeID + "','Through','" + DateTime.Now.ToString() + "','ProcessNode','" + ApprovalStatus.Complete + "','" + NodeStatus.Complete.ToString() + "')");
+        }
+
+        /// <summary>
+        /// 获取上级节点ID
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="CurrentNodeID"></param>
+        /// <returns></returns>
+        public static string GetUpNodeID(string InstanceID, string CurrentNodeID)
+        {
+            string UpNodeID = GetUpNodeIDByCurrentNodeID(CurrentNodeID);
+            if (UpNodeID == null)
+            {
+                CCommonFunc.SetInstanceError(InstanceID, "查找节点" + CurrentNodeID + "的上一级节点失败");
+                return null;
+            }
+
+            string NodeType = GetNodeType(UpNodeID);
+            while (NodeType == CNodeType.SwitchType)
+            {
+                CCommonFunc.SetInstanceApprovalComplete(InstanceID);
+                UpNodeID = GetUpNodeIDByCurrentNodeID(UpNodeID);
+                NodeType = GetNodeType(UpNodeID);
+            }
+
+            return UpNodeID;
+        }
+
+        /// <summary>
+        /// 判断是否是分支节点
+        /// </summary>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static bool IsSwitchNode(string NodeID)
+        {
+            bool SwitchNode = false;
+            string strNodeFoundNum = CDataHelper.GetData("select count(*) from [a_flowchart_node_switchitem] where [switchid]='" + NodeID + "'");
+            int NodeFoundNum = Convert.ToInt32(strNodeFoundNum);
+            if (NodeFoundNum > 0)
+            {
+                SwitchNode = true;
+            }
+            return SwitchNode;
+        }
+
+        public static string GetStartMan(string InstanceID)
+        {
+            return CDataHelper.GetData("select cre_man from [a_flowchart_instance] where instance_id='" + InstanceID + "'");
+        }
+
+        /// <summary>
+        /// 将工作流实例设置为错误状态
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="ErrorMessage">错误状态信息</param>
+        public static void SetInstanceError(string InstanceID,string ErrorMessage)
+        {
+            //设置审批状态为无效
+            CDataHelper.ExecuteNonQuery("update a_flowchart_instance_node_receiver set [approval_status]='" + ApprovalStatus.Invalid.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + ApprovalStatus.Active.ToString() + "'");
+            //设置节点状态为无效
+            CDataHelper.ExecuteNonQuery("update a_flowchart_instance_node_receiver set [node_status]='" + NodeStatus.Invalid.ToString() + "' where instance_id='" + InstanceID + "' and [node_status]='" + NodeStatus.Active.ToString() + "'");
+
+            //设置实例状态为错误
+            CDataHelper.ExecuteNonQuery("update a_flowchart_instance set [instance_status]='" + InstanceStatus.Error.ToString() + "',[instance_message]='"+ErrorMessage+"' where instance_id='" + InstanceID + "' and instance_status='" + InstanceStatus.Active.ToString() + "'");
+        }
+
+        /// <summary>
+        /// 记录新发起的工作流实例
+        /// </summary>
+        /// <param name="WFName">工作流名称</param>
+        /// <param name="WFDataID">工作流实例对应的数据的ID</param>
+        /// <param name="OpeManID">操作人</param>
+        /// <param name="WFID">工作流ID</param>
+        /// <param name="NewInstanceID">新工作流实例ID</param>
+        public static void PutDownNewInstance(string WFName, string WFDataID, string OpeManID, string WFID, string NewInstanceID)
+        {
+            string WFVersion = CCommonFunc.GetWFVersion(WFName);
+            if (WFVersion == null)
+            {
+                SetInstanceError(NewInstanceID,"缺少工作流版本号");
+                return;
+            }
+
+            string DateTimeNow = DateTime.Now.ToString();
+            string cmdPutDownInstance = "insert into a_flowchart_instance(flowchart_id,flowchart_version,instance_id,cre_date,cre_man,instance_status) values('" + WFID + "','" + WFVersion + "','" + NewInstanceID + "','" + DateTimeNow + "','" + OpeManID + "','" + InstanceStatus.Active.ToString() + "')";
+            CDataHelper.ExecuteNonQuery(cmdPutDownInstance);
+
+            string cmdPutDownDataSource = "insert into a_flowchart_instance_pars(instance_id,keyvalue) values('" + NewInstanceID + "','" + WFDataID + "')";
+            CDataHelper.ExecuteNonQuery(cmdPutDownDataSource);
+        }
+
+        public static void SetNodeApprovalStatus(string InstanceID, string NodeID, ApprovalStatus Status)
+        {
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [approval_status]='" + Status.ToString() + "' where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+        }
+
+        public static void SetInstanceApprovalComplete(string InstanceID)
+        {
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [approval_status]='" + ApprovalStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + ApprovalStatus.Active.ToString() + "'");
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [node_status]='" + NodeStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and node_status=[node_status]='" + NodeStatus.Active.ToString() + "'");
+        }
+
+        public static void PutDownStartMan(string InstanceID, string NodeID, string UserID)
+        {
+            CDataHelper.ExecuteNonQuery("insert into [a_flowchart_instance_node_receiver](instance_id,node_id,user_id,approval_opinion,operate_time,approval_status,node_status) values('" + InstanceID + "','" + NodeID + "','" + UserID + "','" + EApprovalOpinion.同意.ToString()+ "','" + DateTime.Now.ToString() + "','" + ApprovalStatus.Complete.ToString() + "','" + NodeStatus.Active.ToString() + "')");
+        }
+
+        public static string GetNodeIDBySwitchID(string SwitchID)
+        {
+            return CDataHelper.GetData("select node_id from [a_flowchart_node_switchitem] where [switchid]='" + SwitchID + "'");
+        }
+
+        public static void ClearNodeOpinion(string InstanceID,string NodeID)
+        {
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set approval_opinion=null where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+        }
+
+        public static void ClearNodeReceiver(string InstanceID, string NodeID)
+        {
+            CDataHelper.ExecuteNonQuery("delete from [a_flowchart_instance_node_receiver] where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+        }
+        
+        public static void SetInstanceStatus(string InstanceID, InstanceStatus Status,string Info)
+        {
+            CDataHelper.ExecuteNonQuery("update a_flowchart_instance set [instance_status]='" + Status.ToString() + "',[instance_message]='"+Info+"' where instance_id='" + InstanceID + "'");
+        }
+
+        public static void DeleteCurrentNode(string InstanceID, string CurrentNodeID)
+        {
+            CDataHelper.ExecuteNonQuery("delete from a_flowchart_currentnode where instance_id='" + InstanceID + "' and current_node='" + CurrentNodeID + "'");
+        }
+
+        public static void DeleteCurrentNode(string InstanceID)
+        {
+            CDataHelper.ExecuteNonQuery("delete from a_flowchart_currentnode where instance_id='" + InstanceID + "'");
+        }
+
+        public static void InsertCurrentNode(string InstanceID, string CurrentNodeID)
+        {
+            //判断当前节点是否存在
+            string strCount = CDataHelper.GetData("select count(*) from a_flowchart_currentnode where instance_id='" + InstanceID + "' and current_node='" + CurrentNodeID + "'");
+            
+            //如果不存在，则插入当前节点
+            if(Convert.ToInt32(strCount)==0)
+                CDataHelper.ExecuteNonQuery("insert into a_flowchart_currentnode(instance_id,current_node) values('" + InstanceID + "','" + CurrentNodeID + "')");
+        }
+
+        public static void UpdateCurrentNode(string InstanceID, string CurrentNodeID, string LastNodeID)
+        {
+            CDataHelper.ExecuteNonQuery("update a_flowchart_currentnode set current_node='" + CurrentNodeID + "' where instance_id='" + InstanceID + "' and current_node='" + LastNodeID + "'");
+        }
+
+        /// <summary>
+        /// 获取接收人
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static DataTable GetReceiver(string InstanceID, string NodeID)
+        {
+            string WFID=GetWFIDByInstanceID(InstanceID);
+            string ReceiverScript = CDataHelper.GetData("select [operatorscript] from [a_flowchart_node] where [flowchart_id]='" + WFID + "' and [node_id]='" + NodeID + "'");
+            DataTable dtReceiver = (DataTable)ScriptExec(ReceiverScript, InstanceID);
+            return dtReceiver;
+        }
+
+        public static string GetNextNodeIDByCurrentNodeID(string CurrentNodeID)
+        {
+            return CDataHelper.GetData("select next_node_id from a_flowchart_line where node_id='" + CurrentNodeID + "'");
+        }
+
+        public static string GetNextNodeIDByCurrentNodeID(string CurrentNodeID,EApprovalOpinion Apo)
+        {
+            if (Apo == EApprovalOpinion.同意)
+            {
+                return CDataHelper.GetData("select next_node_id from a_flowchart_line where node_id='" + CurrentNodeID + "'");
+            }
+            else if(Apo==EApprovalOpinion.不同意)
+            {
+                return GetEndNodeID(GetWFIDByNodeID(CurrentNodeID));
+            }
+            else if(Apo==EApprovalOpinion.驳回上级)
+            {
+                return GetUpNodeIDByCurrentNodeID(CurrentNodeID);
+            }
+            else
+            {
+                return GetStartNodeID(GetWFIDByNodeID(CurrentNodeID));
+            }
+        }
+
+        public static string GetWFIDByNodeID(string NodeID)
+        {
+            return CDataHelper.GetData("select flowchart_id from [a_flowchart_node] where node_id='" + NodeID + "'");
+        }
+
+        public static string GetNextNodeIDBySwitchID(string SwitchID)
+        {
+            return CDataHelper.GetData("select next_node_id from a_flowchart_line where [sourcepoint]='" + SwitchID + "-out'");
+        }
+
+        public static string GetUpNodeIDByCurrentNodeID(string CurrentNodeID)
+        {
+            return CDataHelper.GetData("select node_id from a_flowchart_line where next_node_id='" + CurrentNodeID + "'");
+        }
+
+        public static string GetSwitchID(string WFID, string NodeID, string SwitchName)
+        {
+            return CDataHelper.GetData("select [switchid] from [a_flowchart_node_switchitem] where [flowchart_id]='" + WFID + "' and [node_id]='" + NodeID + "' and [switchname]='" + SwitchName + "'");
+        }
+
+        /// <summary>
+        /// 通过工作流实例ID和分支节点ID，获取当前分支节点所选的分支的名称
+        /// </summary>
+        /// <param name="InstanceID">工作流实例ID</param>
+        /// <param name="NodeID">节点ID</param>
+        /// <returns></returns>
+        public static string[] GetSwitchName(string InstanceID, string NodeID)
+        {
+            string[] SwitchNames = null;
+            string WFID=GetWFIDByInstanceID(InstanceID);
+            string SwitchScript = CDataHelper.GetData("select switchscript from [a_flowchart_node] where [flowchart_id]='" + WFID + "' and [node_id]='"+NodeID+"'");
+            object SwitchNameObj = ScriptExec(SwitchScript, InstanceID);
+            SwitchNames = SwitchNameDecode(SwitchNameObj);
+            return SwitchNames;
+        }
+
+        public static string[] SwitchNameDecode(object SwitchNameObj)
+        {
+            string[] SwitchNames = null;
+            SwitchNames = ((string)(SwitchNameObj)).Split(';');
+            return SwitchNames;
+        }
+
+        public static string GetNodeType(string NodeID)
+        {
+            return CDataHelper.GetData("select [nodetype] from [a_flowchart_node] where [node_id]='" + NodeID + "'");
+        }
+
+        private static ScriptEngine engine = null;
+        public static ScriptEngine CreateScriptEngine()
+        {
+            if (engine == null)
+            {
+                Console.Write("创建 ScriptEngine ");
+                engine = IronPython.Hosting.Python.CreateEngine();
+            }
+            return engine;
+        }
+
+        /// <summary>
+        /// 运行Python脚本
+        /// </summary>
+        /// <param name="scrpitTxt"></param>
+        /// <param name="InstanceID"></param>
+        /// <returns></returns>
+        public static object ScriptExec(string scrpitTxt, string InstanceID)
+        {
+            try
+            {
+                //创建一个IpyRunTime，需要2-3秒时间。建议进入全局时加载，此为演示
+                var engine = CreateScriptEngine();// IronPython.Hosting.Python.CreateEngine();
+                var code = engine.CreateScriptSourceFromString(scrpitTxt);
+
+                //设置参数;
+                ScriptScope scope = engine.CreateScope();
+                CFuncForPython cffp = new CFuncForPython();
+                scope.SetVariable("wfhost", cffp);
+                scope.SetVariable("InstanceID", InstanceID);
+
+                var actual = code.Execute<object>(scope);
+
+                return actual;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void SetNodeStatus(string InstanceID,string NodeID,NodeStatus ns)
+        {
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set node_status='" + ns.ToString() + "' where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+        }
+
+        public static void PutDownFlowHistory(string InstanceID, string NodeID, string NextNodeID)
+        {
+            CDataHelper.ExecuteNonQuery("insert into a_flowchart_flow_history(instance_id,node_id,next_node_id) values('"+InstanceID+"','"+NodeID+"','"+NextNodeID+"')");
+        }
+
+        public static string GetApprovalScript( string NodeID, EApprovalOpinion AppOpi)
+        {
+            return CDataHelper.GetData("select [approvescript] from [a_flowchart_node_approveitem] where node_id='" + NodeID + "' and [approvename]='" + AppOpi.ToString() + "'");
+        }
+
+        public static string GetFlowScript(string NodeID)
+        {
+            return GetScript(NodeID, EScriptType.FlowScript);
+        }
+
+        public static string GetProcessScript(string NodeID)
+        {
+            return GetScript(NodeID, EScriptType.ProcessScript);
+        }
+
+        private static string GetScript( string NodeID,EScriptType ScriptType)
+        {
+            return CDataHelper.GetData("select "+ScriptType.ToString()+" from [a_flowchart_node] where  node_id='" + NodeID + "'");
+        }
+        
+        public static string GetReceiverScript(string WFID, string NodeID)
+        {
+            return CDataHelper.GetData("select [operatorscript] from [a_flowchart_node] where [flowchart_id]='" + WFID + "' and node_id='" + NodeID + "'");
+        }
+
+        public static void SetInstanceComplete(string InstanceID)
+        {
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance] set [instance_status]='" + InstanceStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "'");
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [approval_status]='" + ApprovalStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + ApprovalStatus.Active.ToString() + "'");
+            CDataHelper.ExecuteNonQuery("update [a_flowchart_instance_node_receiver] set [node_status]='" + NodeStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and [node_status]='" + NodeStatus.Active.ToString() + "'");
+        }
+
+        /// <summary>
+        /// 判断是否可以向下个节点流转
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static bool IsThroughEnable(string InstanceID, string NextNodeID)
+        {
+            string FlowScript = CCommonFunc.GetFlowScript(NextNodeID);
+            string ScriptResult = null;
+            if (FlowScript != "")
+            {
+                ScriptResult = CCommonFunc.ScriptExec(FlowScript, InstanceID).ToString();
+            }
+
+            if (FlowScript == "" || ScriptResult == "True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}

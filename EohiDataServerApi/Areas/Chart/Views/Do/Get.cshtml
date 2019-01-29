@@ -1,0 +1,41 @@
+﻿@{
+    
+    if (string.IsNullOrEmpty(ViewBag.webappname))
+    {
+        ViewBag.Title = ViewBag.webappname;
+    }
+    else
+    {
+        ViewBag.Title = "EOHI-API-WEBAPP";
+    }
+}
+
+@if (string.IsNullOrEmpty(ViewBag.webapphtml))
+{
+    <div class="page-body">
+    </div>
+}
+else
+{
+    @Html.Raw(ViewBag.webapphtml)
+}
+
+<!-- /Page Body -->
+
+@section scripts{
+    <script type="text/javascript">
+
+        @{
+            if (string.IsNullOrEmpty(ViewBag.webappscript))
+            {
+
+            }
+            else
+            {
+                @Html.Raw(ViewBag.webappscript)
+            }
+         }
+
+       
+    </script>
+}

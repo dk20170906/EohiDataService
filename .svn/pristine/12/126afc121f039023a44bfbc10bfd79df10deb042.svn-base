@@ -1,0 +1,73 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="必填信息" data-options="iconCls:'fa fa-th'">
+                <div class="topjui-fluid">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                    </fieldset>
+                    <input type="hidden" name="id" value="" />
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">菜单名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="text" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">菜单默认状态</label>
+                            <div class="topjui-input-block">
+                                <div data-toggle="topjui-radio">
+                                    <input type="radio" name="state" label="open" value="open">
+                                    <input type="radio" name="state" label="closed" value="closed" checked="checked">
+                                    <label>*当有子节点时，选closed显示子节点，open不显示子节点*</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">样式</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="iconCls" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">URL</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="url" data-toggle="topjui-textbox"
+                                       data-options="required:true,">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">PGUID</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="pguid" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">GUID</label>
+                            <div class="topjui-input-block">
+                                <input id="guidaddoreditmm" type="text" name="guid" data-toggle="topjui-textbox"
+                                       data-options="required:true" readonly="readonly">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

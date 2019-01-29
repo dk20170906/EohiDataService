@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewBag.Title = "在线更新";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutSimple.cshtml";
+}
+
+ <div class="layui-fluid">
+
+
+<form id="popupForm" action="@Url.Content("~/Admin/UpdateFile/dataSave")" method="POST" enctype="multipart/form-data" >
+
+   <input type="hidden" class="form-control" name="id" value= "@ViewBag.entity.id">
+   <input type="hidden" class="form-control" id="fileurl" name="fileurl" value= "@ViewBag.entity.fileurl">
+     <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文件</label>
+        <div class="layui-input-block">
+            <button type="button"  class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">文件名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="filename"  id="filename"  lay-verify="required" readonly="readonly" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.filename" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">文件大小</label>
+        <div class="layui-input-block">
+            <input type="text" name="filesize" id="filesize" lay-verify="required"  readonly="readonly" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.filesize" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">存放路径</label>
+        <div class="layui-input-block">
+            <input type="text" name="savedir" id="savedir"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.savedir" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">版本号</label>
+        <div class="layui-input-block">
+            <input type="text" name="versionno" id="versionno" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.versionno" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">更新说明</label>
+        <div class="layui-input-block">
+             <input type="text" name="filenote" id="filenote"  autocomplete="off" placeholder="" class="layui-input" value="@ViewBag.entity.filenote" />
+        </div>
+    </div>
+
+    <div class="layui-form-item" style="display:none">
+      <div class="layui-input-block">
+        <button class="layui-btn" id="submit" lay-filter="demo2" lay-submit="">提交</button>
+      </div>
+    </div>
+
+    
+
+    </form>
+
+</div>
+
+
+@section scripts{
+
+
+ <script type="text/javascript">
+
+     layui.use(['upload', 'jquery'], function () {
+         var  form = layui.form;
+         var upload = layui.upload;
+         $ = layui.jquery;
+
+         //指定允许上传的文件类型
+         upload.render({
+             elem: '#test3'
+           //, url: '/upload/'
+           , url: "@Url.Content("~/FileUpLoad.ashx")"
+           , accept: 'file' //普通文件
+           , done: function (res) {
+               // console.log(res)
+               $("#filename").val(res.files[0].filename);
+               $("#filesize").val(res.files[0].size);
+               $("#versionno").val(res.files[0].version);
+               $("#fileurl").val(res.files[0].url);
+           }
+         });
+
+         //
+         window.DataSave = function(){
+             //检验form对象;
+             var result = Verification("#popupForm");
+             if (result == false) {
+                 return;
+             }
+
+             if (!doCheck())
+                 return;
+
+             var test = $('#popupForm').serialize();
+             $.ajax({
+                 url: $("#popupForm").attr("Action") + "?",// + "?id=0&pubdate=&cre_date=&usetype=9999&fromtype=&title=&subtitle=&previewimg=&txt=&author=&cre_man=&mod_man=",
+                 type: "POST",
+                 data: $('#popupForm').serialize(),// $("#popupForm"),
+                 processData: false,
+                 //contentType: "application/json",
+                 success: function (data) {
+                     //
+                     if (data.access) {
+                         var index = parent.layer.getFrameIndex(window.name);
+                         parent.$("#iframe_handle_status").val('1');
+                         parent.layer.close(index);
+                     }
+                     else {
+                         //提示错误信息;
+                         //modalConfirm(data.access, "");
+                         layerAlert(data.msg);
+                     }
+                 },
+                 error: function (e) {
+                     parent.$("#iframe_handle_status").val('0');
+                     //
+                     layerAlert(e);
+                 }
+             });
+         }
+
+         //检查
+         function doCheck() {
+             var filename = $("#filename").val();
+             if (filename == undefined || filename == "") {
+                 layer.tips('请选择文件', '#test3', {
+                     tips: [2, '#CC3299'],
+                     time: 2000
+                 });
+                 return false;
+             }
+             var fileurl = $("#fileurl").val();
+             if (fileurl == undefined || fileurl == "") {
+                 layer.tips('请选择文件', '#test3', {
+                     tips: [2, '#CC3299'],
+                     time: 2000
+                 });
+                 return false;
+             }
+             return true;
+         }
+     });
+
+   
+     </script>
+}

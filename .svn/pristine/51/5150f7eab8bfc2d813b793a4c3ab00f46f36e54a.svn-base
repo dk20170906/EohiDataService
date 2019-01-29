@@ -1,0 +1,144 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Collections;
+namespace WFServerWeb
+{
+    public static class CGoNextNode
+    {
+        /// <summary>
+        /// 获取下一级节点ID
+        /// </summary>
+        /// <param name="WFID">工作流ID</param>
+        /// <param name="InstanceID"></param>
+        /// <param name="CurrentNodeID"></param>
+        /// <returns></returns>
+        public static void GoNextNode(string WFID, string InstanceID, string CurrentNodeID)
+        {
+            string NodeType = CCommonFunc.GetNodeType(CurrentNodeID);
+
+            if (NodeType == CNodeType.SwitchType)
+            {
+                GoNextNodesFromSwitchNode(WFID, InstanceID, CurrentNodeID);
+            }
+            else if (NodeType == CNodeType.ProcessType)
+            {
+                GoNextNodesFromProcessNode(WFID, InstanceID, CurrentNodeID);
+            }
+            else if (NodeType == CNodeType.EndType)
+            {
+                PutDownCurrentNode(InstanceID, CurrentNodeID);
+            }
+            else
+            {
+                GoNextNodesFromOtherNode(WFID, InstanceID, CurrentNodeID);
+            }
+        }
+        
+
+        /// <summary>
+        /// 获取分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="SwitchNodeID">分支节点ID</param>
+        /// <returns></returns>
+        public static void GoNextNodesFromSwitchNode(string WFID, string InstanceID, string SwitchNodeID)
+        {
+            string[] SwitchNames = CCommonFunc.GetSwitchName(InstanceID, SwitchNodeID);
+            for (int i = 0; i < SwitchNames.Length; i++)
+            {
+                string SwitchName = SwitchNames[i];
+                CCommonFunc.PutDownSwitchNodeSelect(InstanceID, SwitchNodeID, SwitchName);
+                string SwitchID = CCommonFunc.GetSwitchID(WFID, SwitchNodeID, SwitchName);
+                string NextNodeID = CCommonFunc.GetNextNodeIDBySwitchID(SwitchID);
+
+                CCommonFunc.PutDownFlowHistory(InstanceID, SwitchNodeID, NextNodeID);
+
+                string NodeType = CCommonFunc.GetNodeType(NextNodeID);
+
+                if (NodeType == CNodeType.SwitchType)
+                {
+                    GoNextNodesFromSwitchNode(WFID, InstanceID, NextNodeID);
+                }
+                else if (NodeType == CNodeType.ProcessType)
+                {
+                    GoNextNodesFromProcessNode(WFID, InstanceID, NextNodeID);
+                }
+                else
+                {
+                    PutDownCurrentNode(InstanceID, NextNodeID);
+                }
+            }
+        }
+
+        public static void GoNextNodesFromProcessNode(string WFID, string InstanceID, string ProcessNodeID)
+        {
+            string FlowScript = CCommonFunc.GetFlowScript(WFID, ProcessNodeID);
+            string ScriptResult = null;
+            if (FlowScript != "")
+            {
+                ScriptResult = CCommonFunc.ScriptExec(FlowScript, InstanceID).ToString();
+            }
+
+            if (FlowScript == "" || ScriptResult == "True")
+            {
+                CCommonFunc.DeleteCurrentNode(InstanceID, ProcessNodeID);
+                string NextNodeID = CCommonFunc.GetNextNodeIDByCurrentNodeID(ProcessNodeID);
+                CCommonFunc.PutDownFlowHistory(InstanceID, ProcessNodeID, NextNodeID);
+                CCommonFunc.PutDownProcessNodeFlow(InstanceID, ProcessNodeID);
+                GoNextNode(WFID, InstanceID, NextNodeID);
+            }
+            else
+            {
+                PutDownCurrentNode(InstanceID, ProcessNodeID);
+            }
+        }
+
+        /// <summary>
+        /// 获取非分支节点的下一级节点ID
+        /// </summary>
+        /// <param name="WFID"></param>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static void GoNextNodesFromOtherNode(string WFID, string InstanceID, string NodeID)
+        {
+            string NextNodeID = CCommonFunc.GetNextNodeIDByCurrentNodeID(NodeID);
+
+            CCommonFunc.PutDownFlowHistory(InstanceID, NodeID, NextNodeID);
+
+            string NodeType = CCommonFunc.GetNodeType(NextNodeID);
+            if (NodeType == CNodeType.SwitchType)
+            {
+                GoNextNodesFromSwitchNode(WFID, InstanceID, NextNodeID);
+            }
+            else if (NodeType == CNodeType.ProcessType)
+            {
+                GoNextNodesFromProcessNode(WFID, InstanceID, NextNodeID);
+            }
+            else
+            {
+                PutDownCurrentNode(InstanceID, NextNodeID);
+            }
+        }
+
+        public static void PutDownCurrentNode(string InstanceID, string CurrentNodeID)
+        {
+            CCommonFunc.InsertCurrentNode(InstanceID, CurrentNodeID);
+            //判断流程是否结束
+            string nodetype = CCommonFunc.GetNodeType(CurrentNodeID);
+            if (nodetype == CNodeType.EndType)
+            {
+                CCommonFunc.SetInstanceComplete(InstanceID);
+            }
+            else
+            {
+                CPutDownReceiver.PutDownReceiver(InstanceID, CurrentNodeID);
+            }
+        }
+    }
+}

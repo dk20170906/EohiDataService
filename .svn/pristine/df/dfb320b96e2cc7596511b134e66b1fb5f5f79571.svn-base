@@ -1,0 +1,147 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="API新增/编辑" data-options="iconCls:'fa fa-th'">
+      
+                <div class="topjui-fluid">
+                    <div class="topjui-row">
+                    </div>
+                    <div class="topjui-row" id="APIidhide">
+                        <input type="hidden" name="id" value="" data-toggle="topjui-textbox"  style="display:none"/>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm8">
+                            <label class="topjui-form-label">页面名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="webappname" data-toggle="topjui-textbox"
+                                       data-options="required:true,prompt:'页面名称'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">说明</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="webappnote" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="topjui-row" style="display:block" id="textareainputidhtml">
+                    <div class="topjui-col-sm12">
+                        <input type="hidden" id="webapphtml" name="webapphtml" data-toggle="topjui-textbox" style="display:none"/>
+                    </div>
+                </div>
+
+
+                <div class="topjui-row">
+                    <div class="topjui-col-sm12">
+                        <label class="topjui-form-label">html代码</label>
+                        <div class="topjui-input-block">
+                            <!--<textarea name="ppp" data-toggle="topjui-ueditor" data-options="id:'contentAddEditor'"></textarea>-->
+                            <textarea id="apiscript_eidtorhtml"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="topjui-row" style="display:block" id="textareainputid" >
+                    <div class="topjui-col-sm12">
+                        <input type="hidden" id="webappscript" name="webappscript" data-toggle="topjui-textbox"  style="display:none"/>
+                    </div>
+                </div>
+
+
+                <div class="topjui-row">
+                    <div class="topjui-col-sm12">
+                        <label class="topjui-form-label">脚本代码</label>
+                        <div class="topjui-input-block">
+                            <!--<textarea name="ppp" data-toggle="topjui-ueditor" data-options="id:'contentAddEditor'"></textarea>-->
+                            <textarea id="apiscript_eidtor"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    .some-css {
+        color: red;
+        line-height: 2;
+    }
+</style>
+<link rel="stylesheet" href="../../../Scripts/doc/docs.css" />
+<link rel="stylesheet" href="../../../Scripts/lib/codemirror.css" />
+<link rel="stylesheet" href="../../../Scripts/addon/fold/foldgutter.css" />
+
+
+<link rel="stylesheet" href="../../../Scripts/theme/night.css" />
+<script src="../../../Scripts/lib/codemirror.js"></script>
+<script src="../../../Scripts/addon/fold/foldcode.js"></script>
+<script src="../../../Scripts/addon/fold/foldgutter.js"></script>
+<script src="../../../Scripts/addon/fold/brace-fold.js"></script>
+<script src="../../../Scripts/addon/fold/xml-fold.js"></script>
+<script src="../../../Scripts/addon/fold/indent-fold.js"></script>
+<script src="../../../Scripts/addon/fold/markdown-fold.js"></script>
+<script src="../../../Scripts/addon/fold/comment-fold.js"></script>
+<script src="../../../Scripts/mode/javascript/javascript.js"></script>
+<script src="../../../Scripts/mode/xml/xml.js"></script>
+<script src="../../../Scripts/mode/css/css.js"></script>
+<script src="../../../Scripts/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../../../Scripts/mode/python/python.js"></script>
+<script src="../../../Scripts/mode/markdown/markdown.js"></script>
+<style type="text/css">
+    .CodeMirror {
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+
+
+    var tejs = document.getElementById("apiscript_eidtor");
+    window.editorjs = CodeMirror.fromTextArea(tejs, {
+        mode: "python",
+        theme: "night",
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    });
+
+
+    var tejshtml = document.getElementById("apiscript_eidtorhtml");
+    window.editorjshtml = CodeMirror.fromTextArea(tejshtml, {
+        mode: "python",
+        theme: "night",
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    });
+
+
+    $('#textareainputid').css("display", "none");
+    $('#textareainputidhtml').css("display", "none")
+
+
+    $("#APIidhide").css("display", "none");
+
+</script>
+

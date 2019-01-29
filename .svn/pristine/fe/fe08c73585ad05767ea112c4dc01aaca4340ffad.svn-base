@@ -1,0 +1,75 @@
+﻿using Quartz;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Web;
+
+namespace EohiQuartzService
+{
+    [DisallowConcurrentExecution]     //禁止并发
+    public class HttpRequestJob : IJob
+    {
+        private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //public string httpurl = "http://www.baidu.com";
+        public void Execute(IJobExecutionContext context)
+        {
+            /*
+            var reportDirectory = string.Format("~/reports/{0}/", DateTime.Now.ToString("yyyy-MM"));
+            reportDirectory = System.Web.Hosting.HostingEnvironment.MapPath(reportDirectory);
+            if (!Directory.Exists(reportDirectory))
+            {
+                Directory.CreateDirectory(reportDirectory);
+            }
+            var dailyReportFullPath = string.Format("{0}report_{1}.log", reportDirectory, DateTime.Now.Day);
+            var logContent = string.Format("{0}==>>{1}{2}", DateTime.Now, "create new log.", Environment.NewLine);
+            File.AppendAllText(dailyReportFullPath, logContent);
+            */
+
+            System.Net.HttpWebRequest myHttpWebRequest = null;
+            System.Net.HttpWebResponse myHttpWebResponse = null;
+            JobDataMap dataMap = null;
+
+            try
+            {
+                dataMap = context.JobDetail.JobDataMap;
+                string httpurl = dataMap.GetString("httpurl");
+
+                myHttpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(httpurl);
+                myHttpWebResponse = (System.Net.HttpWebResponse)myHttpWebRequest.GetResponse();
+                //System.IO.Stream receiveStream = myHttpWebResponse.GetResponseStream();//得到回写的字节流  
+
+                //string start = string.Format("{0}-{1}", DateTime.Now.ToString("yyyyMMddHHmmss"), " HttpRequestJob+ Execute:" + httpurl);
+                //log.Info(start);
+
+                //string startm = string.Format("{0}-{1}", DateTime.Now.ToString("yyyyMMddHHmmss"), " HttpRequestJobreceiveStream+ Execute:" + receiveStream);
+                //log.Info(startm);
+
+            }
+            catch (Exception exp)
+            {
+                string start = string.Format("{0}-{1}", DateTime.Now.ToString("yyyyMMddHHmmss"), " HttpRequestJob+ Execute:" + exp.Message);
+                log.Info(start);
+                //throw;
+            }
+            finally
+            {
+                //任务完成或失败都要释资源
+                if (dataMap!=null)
+                {
+                    dataMap.Clear();
+                    dataMap.Clone();
+                }
+                if (myHttpWebRequest != null)
+                {
+                    myHttpWebRequest.Abort();
+                }
+                if (myHttpWebResponse != null)
+                {
+                    myHttpWebResponse.Close();
+                }
+            }
+        }
+    }
+}

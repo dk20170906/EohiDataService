@@ -1,0 +1,569 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace EohiDataServerApi.Areas.ThreeD.Controllers
+{
+    /// <summary>
+    /// 数据交互
+    /// </summary>
+    public class DataInteractionController : Controller
+    {
+        EFDBHelper<Models.api_items> dbhelper = new EFDBHelper<Models.api_items>();
+        EFDBHelper<Models.api_type_htmlhelp> dbAPITypeHelp = new EFDBHelper<Models.api_type_htmlhelp>();
+        EFDBHelper<Models.api_webapp> dbwebapp = new EFDBHelper<Models.api_webapp>();
+        EFDBHelper<Models.api_links> dblink = new EFDBHelper<Models.api_links>();
+
+        #region API管理
+        //获取API列表
+        public JsonResult ApiDataInterList(int page, int rows)
+        {
+            int total = 0;
+            var list = dbhelper.Page(page, rows, out total, u => u.apiname, null);
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            dic.Add("rows", list);
+            dic.Add("total", total.ToString());
+            dic.Add("page", page);
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+
+        //通过id获取api
+        public JsonResult SelectAPIById(int id)
+        {
+            var api = dbhelper.FindById(id);
+            if (api != null)
+            {
+                return Json(api, JsonRequestBehavior.AllowGet);
+            }
+            return null;
+        }
+
+        // 新增/编辑api
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult ApiDataInterAdd(Models.api_items api_Items)
+        {
+            api_Items.mod_date = DateTime.Now;
+            if (api_Items.id > 0)
+            {
+                dbhelper.Update(api_Items);
+            }
+            else
+            {
+                dbhelper.Insert(api_Items);
+            }
+            int m = dbhelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    data = m,
+                    message = "保存成功"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "保存失败"
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+        //删除API
+        public JsonResult DeleteApiInter(int id)
+        {
+            var apiite = dbhelper.FindById(id);
+            dbhelper.Delete(apiite);
+            int m = dbhelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "删除成功",
+                    data = m
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "删除失败",
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        #region  //测试API
+
+
+        public JsonResult TestAPI()
+        {
+
+            string method = Request.QueryString["method"];
+            //是否将结果包含在结构体内，默认为包含，withstruct=y withstruct=n
+            string withstruct = Request.QueryString["withstruct"];//y/n
+            string returntype = Request.QueryString["returntype"];
+
+            if (withstruct == null || withstruct == "")
+            {
+                withstruct = "y";
+                //return Json("", JsonRequestBehavior.AllowGet);
+            }
+
+            if (method == null || method == "")
+            {
+
+                JDataResult jdataResult = new JDataResult();
+                jdataResult.resultcode = 200;
+                jdataResult.apicode = 2;
+                jdataResult.reason = "参数错误，请提供参数[method]";
+                return Json(jdataResult, JsonRequestBehavior.AllowGet);
+
+                //return Json("", JsonRequestBehavior.AllowGet);
+            }
+
+            if (returntype == null)
+                returntype = "json";
+
+            //获取所有参数;
+            Hashtable parsHashtable = new Hashtable();
+            for (int i = 0; i < Request.Params.Keys.Count; i++)
+            {
+                string key = Request.Params.GetKey(i);
+                string value = Request.Params[key];
+                parsHashtable.Add(key, value);
+            }
+
+            if (returntype.ToLower() == "xml")
+            {
+                return Json(XmlData(parsHashtable));
+            }
+            else
+            {
+                return JData(parsHashtable, withstruct);
+            }
+
+
+
+
+
+
+        }
+
+        public ActionResult XmlData(Hashtable hashtable)
+        {
+            try
+            {
+                ApiResult apiresult = ApiExec.Done(hashtable);
+                if (apiresult.Code > 0)
+                {
+                    return Json(apiresult.msg, JsonRequestBehavior.AllowGet);
+
+                }
+                else
+                {
+                    if (apiresult.ResultDataType == 4)
+                    {
+                        DataTable dt = apiresult.DataTable;
+
+                        // 序列化为XML格式显示  
+                        XmlResult xResult = new XmlResult(dt, dt.GetType());
+                        return xResult;
+                    }
+                    else if (apiresult.ResultDataType == 2)
+                    {
+                        //DataTable dt = apiresult.DataTable;
+                        // 序列化为XML格式显示  
+                        //XmlResult xResult = new XmlResult(dt, dt.GetType());
+                        return new XmlResult(apiresult.Data.ToString(), typeof(string));
+                    }
+                    else
+                    {
+                        //return Json(SerializeDataTableXml(dt), JsonRequestBehavior.AllowGet);
+                        return new XmlResult("无法转换成xml输出", typeof(string));
+                    }
+                }
+
+            }
+            catch (Exception exp)
+            {
+                return new XmlResult(exp.Message, typeof(string));
+                //return Json(exp.Message, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        public JsonResult JData(Hashtable hashtable, string withstruct)
+        {
+            Response.ContentType = "applicaton/json";
+            try
+            {
+                ApiResult apiresult = ApiExec.Done(hashtable);
+                if (apiresult.Code > 0)
+                {
+                    JDataResult jdataResult = new JDataResult();
+                    jdataResult.resultcode = 200;
+                    jdataResult.apicode = apiresult.Code;
+                    jdataResult.reason = apiresult.msg;
+                    return Json(jdataResult, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    JDataResult jdataResult = ConvertToJDataResult(apiresult);
+                    if (withstruct.ToLower() == "y")
+                    {
+                        return Json(jdataResult, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(jdataResult.result, JsonRequestBehavior.AllowGet);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                JDataResult jdataResult = new JDataResult();
+                jdataResult.resultcode = 200;
+                jdataResult.apicode = 2;
+                jdataResult.reason = "API数据处理子件通讯异常！" + exp.Message;
+                return Json(jdataResult, JsonRequestBehavior.AllowGet);
+                //return Json(exp.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JDataResult ConvertToJDataResult(ApiResult apiresult)
+        {
+            JDataResult jdataResult = new JDataResult();
+            jdataResult.resultcode = 200;
+            jdataResult.apicode = apiresult.Code;
+            jdataResult.reason = "";
+            try
+            {
+                //数组，
+                if (apiresult.ResultDataType == 4)
+                {
+                    DataTable dt = apiresult.DataTable;
+                    ArrayList arrayList = new ArrayList();
+                    foreach (DataRow dataRow in dt.Rows)
+                    {
+                        Dictionary<string, object> dictionary = new Dictionary<string, object>(); //实例化一个参数集合
+                        foreach (DataColumn dataColumn in dt.Columns)
+                        {
+                            //dictionary.Add(dataColumn.ColumnName, dataRow[dataColumn.ColumnName]);
+                            dictionary.Add(dataColumn.ColumnName, dataRow[dataColumn.ColumnName].ToString());
+                        }
+                        arrayList.Add(dictionary); //ArrayList集合中添加键值
+                    }
+                    jdataResult.result = arrayList;
+                }
+                //0 txt 转换json对象
+                else if (apiresult.ResultDataType == 0)
+                {
+                    var jobject = JObject.Parse(apiresult.Data.ToString());
+                    Dictionary<string, object> dictionary = new Dictionary<string, object>(); //实例化一个参数集合
+                    JToken record = jobject;
+                    foreach (JProperty jp in record)
+                    {
+                        dictionary.Add(jp.Name, jp.Value.ToString());
+                    }
+                    jdataResult.result = dictionary;
+                }
+                //1 
+                else if (apiresult.ResultDataType == 1)
+                {
+                    if (apiresult.Data is JArray)
+                    {
+                        jdataResult.result = apiresult.Data.ToString();
+                    }
+                    else
+                    {
+                        var jobject = (JObject)apiresult.Data;
+                        Dictionary<string, object> dictionary = new Dictionary<string, object>(); //实例化一个参数集合
+                        JToken record = jobject;
+                        foreach (JProperty jp in record)
+                        {
+                            dictionary.Add(jp.Name, jp.Value.ToString());
+                        }
+                        jdataResult.result = dictionary;
+                    }
+                }
+                //2 xml
+                else if (apiresult.ResultDataType == 2)
+                {
+                    jdataResult.result = "无法将xml类型转换成json";
+                }
+                //3 other 
+                else if (apiresult.ResultDataType == 2)
+                {
+                    jdataResult.result = "无法将other类型转换成json";
+                }
+                else
+                {
+                    jdataResult.result = "未知的值类型";
+                }
+            }
+            catch (Exception exp)
+            {
+                jdataResult.reason = exp.Message;
+            }
+            return jdataResult;
+        }
+        #endregion
+        #endregion
+
+        #region WEBAPP管理
+        /// <summary>
+        /// 获取 Webapp的分页列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        public JsonResult WebApplist(int page, int rows)
+        {
+            int total = 0;
+            var list = dbwebapp.Page(page, rows, out total, u => u.id, null);
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            dic.Add("rows", list);
+            dic.Add("total", total.ToString());
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 通过id获取Webapp
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult WebAppOneById(int id)
+        {
+            var webApp = dbwebapp.FindById(id);
+            return Json(webApp, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 新增webapp
+        /// </summary>
+        /// <param name="api_Webapp"></param>
+        /// <returns></returns>
+        [ValidateInput(false)]
+        public JsonResult WebAppAdd(Models.api_webapp api_Webapp)
+        {
+            api_Webapp.mod_date = DateTime.Now;
+            if (api_Webapp.id > 0)
+            {
+                dbwebapp.Update(api_Webapp);
+            }
+            else
+            {
+                dbwebapp.Insert(api_Webapp);
+            }
+            var m = dbwebapp.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "保存成功",
+                    data = m
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "保存失败",
+            }, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 通过id 删除Webapp
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DeleteWebApp(int id)
+        {
+            var webApp = dbwebapp.FindById(id);
+            dbwebapp.Delete(webApp);
+            var m = dbwebapp.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "删除成功",
+                    data = m
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "删除失败",
+            }, JsonRequestBehavior.AllowGet);
+        }
+        #region WEBAPP测试
+        /// <summary>
+        /// webApp测试
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult TestWebApp()
+        {
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+
+            string id = Request.QueryString["id"];
+            string webappname = Request.QueryString["webappname"];
+            if (id == null && webappname == null)
+            {
+                ViewBag.webapphtml = "找到不预定的参数 id 或者 webappname";
+                ViewBag.webappscript = "";
+            }
+
+            else
+            {
+                try
+                {
+                    DataTable dt = null;
+
+                    string strSql = @"";
+                    if (id != null)
+                    {
+                        strSql = @"select * from  api_webapp where id=@id";
+                        SqlParameter[] parames = new SqlParameter[]
+                        {
+                            new SqlParameter("@id", id.ToString())
+                        };
+                        dt = DBHelper.getDataTable(strSql, parames);
+                    }
+                    else
+                    {
+                        strSql = @"select * from  api_webapp where webappname=@webappname";
+                        SqlParameter[] parames = new SqlParameter[]
+                        {
+                            new SqlParameter("@webappname", webappname.ToString())
+                        };
+                        dt = DBHelper.getDataTable(strSql, parames);
+                    }
+
+
+                    //DataTable dt = DBHelper.getDataTable(strSql, parames);
+
+
+                    //this.gridControl_report.DataSource = result.DataTable;
+                    string html = "";
+                    string javascript = "";
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        html = dt.Rows[0]["webapphtml"].ToString();
+                        javascript = dt.Rows[0]["webappscript"].ToString();
+                    }
+                    else
+                    {
+                        html = "信息获取失败";
+                        //Common.Util.NocsMessageBox.Message("信息获取失败！");
+                    }
+                    dic.Add("webapphtml", html);
+                    dic.Add("webappscript", javascript);
+
+
+                }
+                catch (Exception exp)
+                {
+                    dic.Add("webapphtml", exp.Message);
+                    dic.Add("webappscript", "");
+                }
+            }
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+
+
+        #endregion
+        #endregion
+
+        #region 连接管理 
+        /// <summary>
+        /// 连接管理分页列表
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        public JsonResult LinkManageList(int page, int rows)
+        {
+            int total = 0;
+            var list = dblink.Page(page, rows, out total, u => u.id, null);
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            dic.Add("total", total.ToString());
+            dic.Add("rows", list);
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 通过id得到连接管理对像
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult SelectLinkManageById(int id)
+        {
+            var linkManage = dblink.FindById(id);
+            return Json(linkManage, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 新增/修改连接管理对像
+        /// </summary>
+        /// <param name="api_Links"></param>
+        /// <returns></returns>
+        public JsonResult LinkmanageAdd(Models.api_links api_Links)
+        {
+            api_Links.mod_date = DateTime.Now;
+            if (api_Links.id > 0)
+            {
+                dblink.Update(api_Links);
+            }
+            else
+            {
+                dblink.Insert(api_Links);
+            }
+            var m = dblink.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "保存成功",
+                    data = m
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "保存失败",
+            }, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 通过id删除连接管理对像
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DeleteLinkManage(int id)
+        {
+            var linkManage = dblink.FindById(id);
+            dblink.Delete(linkManage);
+            var m = dblink.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "删除成功",
+                    data = m
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "删除失败"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

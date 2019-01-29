@@ -1,0 +1,890 @@
+﻿using EohiDataServerApi.CommonUtil;
+using EohiDataServerApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace EohiDataServerApi.Areas.ThreeD.Controllers
+{
+    public class ThreeDUploadFilesController : Controller
+    {
+        //
+        // GET: /Admin/ThreeDUploadFiles/
+        EFDBHelper<Models.a_3d_models> modeldbhelper = new EFDBHelper<Models.a_3d_models>();
+        EFDBHelper<Models.a_3d_model_files> filedbhelper = new EFDBHelper<Models.a_3d_model_files>();
+        EFDBHelper<Models.a_3d_scene> scenehelper = new EFDBHelper<a_3d_scene>();
+
+
+        private static string modelGuid = null;
+        private static string acountModelName = null;
+        private static a_3d_models A_3D_Models = null;
+        private static List<string> listmodeltype = new List<string>();
+        private static Dictionary<string, HttpPostedFileBase> dicFile = new Dictionary<string, HttpPostedFileBase>();
+        #region 3D文件上传
+        /// <summary>
+        /// 获取模型列表;
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public JsonResult GetThreeDModels()
+        {
+            List<Models.a_3d_models> a_3D_Models = modeldbhelper.GetAll(u => u.id);
+            return Json(a_3D_Models, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 通过模型类型获取3d模型列表   (页面初始化全部加载)
+        /// </summary>
+        /// <param name="scenemodeltype"></param>
+        /// <returns></returns>
+        public JsonResult GetTreeDModelListByModelType(string scenemodeltype)
+        {
+            List<a_3d_models> listmodel = null;
+            if (scenemodeltype != null && scenemodeltype.Length > 0)
+            {
+                listmodel = modeldbhelper.GetAll(u => u.modeltype == scenemodeltype && u.modelurl != null, u => u.id);
+            }
+            listmodel = modeldbhelper.GetAll(u => u.modelurl != null, u => u.id);
+            if (listmodel.Count > 0)
+            {
+                listmodel.ForEach(u =>
+                    {
+                        if (!listmodeltype.Contains(u.modeltype))
+                        {
+                            listmodeltype.Add(u.modeltype);
+                        }
+                    });
+                return Json(new
+                {
+                    success = true,
+                    massage = "请求成功，共有模型" + listmodel.Count + "个",
+                    data = listmodel
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "暂无相关数据，请先上传相关模型"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetModelType()
+        {
+            if (listmodeltype.Count > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "模型类型加载完成，共有" + listmodeltype.Count + "种类型",
+                    data = listmodeltype
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "暂无类型数据，请选为模型指定类型"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 添加修改模型
+        /// </summary>
+        /// <param name="a_3D_Models"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult AddModels(Models.a_3d_models a_3D_Models)
+        {
+            var m = 0;
+            try
+            {
+                if (a_3D_Models != null)
+                {
+                    //模型已创建已存在
+                    if (a_3D_Models.id > 0)
+                    {
+                        if (a_3D_Models.createTime == null)
+                        {
+                            a_3D_Models.createTime = DateTime.Now;
+                        }
+                        //在已有模型中创建文件
+                        if (dicFile.Count > 0)
+                        {
+                            foreach (KeyValuePair<string, HttpPostedFileBase> item in dicFile)
+                            {
+                                //文件已存在修改
+                                var file = filedbhelper.FirstOrDefault(u => u.fileName == item.Value.FileName && u.modelIdentity == a_3D_Models.modelIdentity);
+                                if (file != null && file.id > 0)
+                                {
+                                    file.fileName = item.Value.FileName;
+                                    file.fileSize = item.Value.ContentLength;
+                                    file.fileSuffix = Path.GetExtension(item.Value.FileName);
+                                    file.fileUrl = item.Key;
+                                    file.uploadTime = DateTime.Now;
+                                    file.uploadUser = a_3D_Models.createUser;
+                                    file.modelIdentity = a_3D_Models.modelIdentity;
+                                    file.modelId = a_3D_Models.id;
+                                    file.modelName = a_3D_Models.modelName;
+                                    filedbhelper.Update(file);
+                            
+                                }
+
+                                else
+                                {
+                                    //文件不存在插入
+                                    a_3d_model_files a_3D_Modelfile = new a_3d_model_files()
+                                    {
+                                        fileName = item.Value.FileName,
+                                        fileSize = item.Value.ContentLength,
+                                        fileSuffix = Path.GetExtension(item.Value.FileName),
+                                        fileUrl = item.Key,
+                                        uploadTime = DateTime.Now,
+                                        uploadUser = a_3D_Models.createUser,
+                                        modelIdentity = a_3D_Models.modelIdentity,
+                                        modelId = a_3D_Models.id,
+                                        modelName = a_3D_Models.modelName
+                                    };
+                                    filedbhelper.Insert(a_3D_Modelfile);
+                                }
+                                m += filedbhelper.SaveChanges();
+                                if (file.fileSuffix.Contains("gltf"))
+                                {
+                                    a_3D_Models.modelurl = file.fileUrl;
+                                    a_3D_Models.editTime = DateTime.Now;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //文件已存在修改
+                            var filemodel = filedbhelper.FirstOrDefault(k => k.modelIdentity == a_3D_Models.modelIdentity && k.fileSuffix.Contains(".gltf"));
+                            if (filemodel != null && filemodel.id > 0)
+                            {
+                                a_3D_Models.modelurl = filemodel.fileUrl;
+                            }
+                            a_3D_Models.editTime = DateTime.Now;
+                        
+                        }
+                        modeldbhelper.Update(a_3D_Models);
+                        m += modeldbhelper.SaveChanges();
+
+                    }
+                    else
+                    {
+                        var model = modeldbhelper.FirstOrDefault(u => u.modelName == a_3D_Models.modelName);
+                        if (model != null)
+                        {
+                            return Json(new
+                            {
+                                statusCode = 300,
+                                title = "操作提示",
+                                message = "此模型名称已存在，请重新为模型命名！！！"
+                            }, JsonRequestBehavior.AllowGet);
+                        }
+                        a_3D_Models.modelIdentity = System.Guid.NewGuid().ToString().ToUpper();
+                        a_3D_Models.createTime = DateTime.Now;
+                        if (dicFile.Count > 0)
+                        {
+                            KeyValuePair<string, HttpPostedFileBase> filemodelvaleu = dicFile.Where(u => Path.GetExtension(u.Value.FileName).Contains(".gltf")).FirstOrDefault();
+                            a_3D_Models.modelurl = filemodelvaleu.Key;
+                        }
+                        modeldbhelper.Insert(a_3D_Models);
+                        m += modeldbhelper.SaveChanges();
+                        if (dicFile.Count > 0)
+                        {
+                            foreach (KeyValuePair<string, HttpPostedFileBase> item in dicFile)
+                            {
+                                a_3d_model_files a_3D_Modelfile = new a_3d_model_files()
+                                {
+                                    fileName = item.Value.FileName,
+                                    fileSize = item.Value.ContentLength,
+                                    fileSuffix = Path.GetExtension(item.Value.FileName),
+                                    fileUrl = item.Key,
+                                    uploadTime = DateTime.Now,
+                                    uploadUser = a_3D_Models.createUser,
+                                    modelIdentity = a_3D_Models.modelIdentity,
+                                    modelId = a_3D_Models.id,
+                                    modelName = a_3D_Models.modelName
+                                };
+                                filedbhelper.Insert(a_3D_Modelfile);
+                            }
+                        }
+
+                    }
+                }
+                var n = filedbhelper.SaveChanges();
+                dicFile.Clear();
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，保存成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+
+                throw;
+            }
+        }
+        /// <summary>
+        /// 删除 模型
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DeleteByID(string id)
+        {
+            if (id != null && id.Length > 0 && id != "")
+            {
+                string[] ids = id.Split(new char[] { ',', ' ', '\'' }, StringSplitOptions.RemoveEmptyEntries);
+                if (ids.Length > 0)
+                {
+                    foreach (var item in ids)
+                    {
+                        if (item != null && item.Length > 0 && item != "")
+                        {
+                            var model = modeldbhelper.FindById(Convert.ToInt32(item));
+                            if (model != null)
+                            {
+                                modeldbhelper.Delete(model);
+                            }
+                        }
+                    }
+                }
+            }
+            var m = modeldbhelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，删除成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = "Error"
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        /// <summary>
+        /// 删除模型文件
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DeleteFileByID(string id)
+        {
+            if (id != null && id.Length > 0 && id != "")
+            {
+                string[] ids = id.Split(new char[] { ',', ' ', '\'' }, StringSplitOptions.RemoveEmptyEntries);
+                if (ids.Length > 0)
+                {
+                    foreach (var item in ids)
+                    {
+                        if (item != null && item.Length > 0 && item != "")
+                        {
+                            var model = filedbhelper.FindById(Convert.ToInt32(item));
+                            if (model != null)
+                            {
+                                filedbhelper.Delete(model);
+                            }
+                        }
+                    }
+                }
+            }
+            var m = filedbhelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，删除成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = "Error"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult UploadModelFiles()
+        {
+            bool isSavedSuccessfully = true;
+            string fName = "";
+            string dataUrl = null;
+            try
+            {
+                foreach (string fileName in Request.Files)
+                {
+                    HttpPostedFileBase file = Request.Files[fileName];
+                    //Save file content goes here
+                    fName = file.FileName;
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}Upload\\SanD", Server.MapPath(@"\")));
+
+                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), DateTime.Now.ToString("yyyy-MM-dd"));
+
+                        var fileName1 = Path.GetFileName(file.FileName);
+
+                        var fulx = Path.GetExtension(file.FileName);
+
+                        bool isExists = System.IO.Directory.Exists(pathString);
+
+                        if (!isExists)
+                            System.IO.Directory.CreateDirectory(pathString);
+
+                        var path = string.Format("{0}\\{1}", pathString, fName);
+                        int mint = path.IndexOf("Upload\\SanD");
+                        dataUrl = path.Substring(mint);
+                        if (System.IO.File.Exists(path))
+                            System.IO.File.Delete(path);
+                        //保存
+                        file.SaveAs(path);
+                        dicFile.Add(dataUrl, file);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                isSavedSuccessfully = false;
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+
+            if (isSavedSuccessfully)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，上传成功！" + fName,
+                    filePath = dataUrl
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = "Error in saving file"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult SetAcountModeName(string modelName)
+        {
+            if (modelName != null && modelName.Length > 0 && modelName != "")
+            {
+                acountModelName = modelName;
+                if (acountModelName != null && acountModelName.Length > 0 && acountModelName != "")
+                {
+                    return Json(new
+                    {
+                        statusCode = 200,
+                        title = "操作提示",
+                        message = "模型名复称设置成功"
+                    }, JsonRequestBehavior.AllowGet);
+
+                }
+            }
+            return Json(new
+            {
+                statusCode = 300,
+                title = "操作提示",
+                message = "模型名复称设置成功"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult WebTreeDUploadModelFiles()
+        {
+            bool isSavedSuccessfully = true;
+            string fName = "";
+            string dataUrl = null;
+            try
+            {
+                foreach (string fileName in Request.Files)
+                {
+                    HttpPostedFileBase file = Request.Files[fileName];
+                    //Save file content goes here
+                    fName = file.FileName;
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}Upload\\SanD", Server.MapPath(@"\")));
+
+                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), DateTime.Now.ToString("yyyy-MM-dd")) + "\\" + acountModelName;
+
+                        var fileName1 = Path.GetFileName(file.FileName);
+
+                        var fulx = Path.GetExtension(file.FileName);
+
+                        bool isExists = System.IO.Directory.Exists(pathString);
+
+                        if (!isExists)
+                        {
+                            System.IO.Directory.CreateDirectory(pathString);
+                        }
+                        if (fulx.Equals(".gltf"))
+                        {
+                            if (ToolUnit.SelectDirFiles(pathString, fulx).Count>1)
+                            {
+                                continue;
+                            }
+                        }
+                        var path = string.Format("{0}\\{1}", pathString, fName);
+                        int mint = path.IndexOf("Upload\\SanD");
+                        dataUrl = path.Substring(mint);
+                        if (System.IO.File.Exists(path))
+                            System.IO.File.Delete(path);
+                        //保存
+                        file.SaveAs(path);
+                        dicFile.Add(dataUrl, file);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                isSavedSuccessfully = false;
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+
+            if (isSavedSuccessfully)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，上传成功！" + fName,
+                    filePath = dataUrl
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    statusCode = 300,
+                    title = "操作提示",
+                    message = "Error in saving file"
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public JsonResult UploadFileToDataBase(string url, HttpPostedFileBase file)
+        {
+            return Json(new
+            {
+                statusCode = 300,
+                title = "操作提示",
+                message = "Error in saving file"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        ///通过id获取模型
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <returns></returns>
+        public JsonResult GetModelById(int uuid)
+        {
+
+            A_3D_Models = modeldbhelper.FindById(uuid);
+            return Json(A_3D_Models, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 设置所选模型的唯一标识集合
+        /// </summary>
+        /// <param name="modelids"></param>
+        /// <returns></returns>
+        public JsonResult SetModelIds(string modelids)
+        {
+            if (modelids != null && modelids.Length > 0 && modelids != "")
+            {
+                modelGuid = modelids;
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "标识设置成功！！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                statusCode = 300,
+                title = "操作提示",
+                message = "请重新选择模型！！！"
+            }, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 通过模型id集合得到所选模型的内部文件
+        /// </summary>
+        /// <param name="uuid">id集合</param>
+        /// <param name="guid">模型的唯一标识集合</param>
+        /// <returns></returns>
+        public JsonResult GetModelsBySelectIds(string modelIdentity)
+        {
+            modelIdentity = modelGuid;
+            List<Models.a_3d_model_files> a_3D_Model_Files = new List<Models.a_3d_model_files>();
+            if (modelIdentity != null && modelIdentity.Length > 0 && modelIdentity != "")
+            {
+                string[] modelids = modelIdentity.Split(new char[] { ',', ' ', '\'' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (modelids.Length > 0)
+                {
+                    foreach (var item in modelids)
+                    {
+                        a_3D_Model_Files = a_3D_Model_Files.Union(filedbhelper.GetAll(u => u.modelIdentity == item, u => u.id)).ToList();
+                    }
+                }
+            }
+            return Json(new
+            {
+                rows = a_3D_Model_Files,
+                total = a_3D_Model_Files.Count
+            }, JsonRequestBehavior.AllowGet);
+        }
+        class a_3d_modelfile
+        {
+            public int id { get; set; }
+            //模型名称
+            public string modelName { get; set; }
+            //     模型说明(模型大小，文件数量，模型使用对像用途等)
+            public string modeDescription { get; set; }
+            //  模型备注(如有必要对模型内的各别文件加以说明)
+            public string modelRemark { get; set; }
+            //模型版本
+            public string modelVersion { get; set; }
+            //文件名称
+            public string fileName { get; set; }
+            //文件后缀
+            public string fileSuffix { get; set; }
+            //文件大小
+            public int fileSize { get; set; }
+            //文件上传时间
+            public DateTime uploadTime { get; set; }
+            //文件上传人
+            public string uploadUser { get; set; }
+            //文件路径
+            public string fileUrl { get; set; }
+
+
+        }
+        #endregion
+
+
+        #region a_3d_scene
+        /// <summary>
+        /// 获取场景模型列表分页
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        public JsonResult GetSceneList(int page, int rows)
+        {
+            int total = 0;
+            var list = scenehelper.Page(page, rows, out total, u => u.id, null);
+            Dictionary<string, object> dic = new Dictionary<string, object>();
+            dic.Add("total", total.ToString());
+            dic.Add("rows", list);
+            return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取所有的场景类型集合
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetSceneType()
+        {
+            List<string> scenType = new List<string>();
+            List<a_3d_scene> a_3D_Scenes = new List<a_3d_scene>();
+            var scens = scenehelper.GetAll(u => u.id);
+            if (scens.Count > 0)
+            {
+                scens.ForEach(u =>
+                {
+                    if (u.scenetype == null)
+                    {
+                        u.scenetype = "Null";
+                    }
+                    if (!scenType.Contains(u.scenetype))
+                    {
+                        scenType.Add(u.scenetype);
+                        a_3D_Scenes.Add(u);
+                    }
+                });
+                return Json(new
+                {
+                    success = true,
+                    message = "请求数据成功",
+                    data = a_3D_Scenes
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "请求数据失败或暂无数据",
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetSceneBySceneType(string sceneType)
+        {
+            List<a_3d_scene> scnes = null;
+            if (sceneType != null)
+            {
+                scnes = scenehelper.GetAll(u => u.scenetype == sceneType, u => u.id);
+                if (scnes.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "请求数据成功",
+                        data = scnes
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new
+                {
+                    success = false,
+                    message = "此类型场景暂无数据"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            scnes = scenehelper.GetAll(u => u.id);
+            if (scnes.Count > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "请求数据成功",
+                    data = scnes
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "无场景数据"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 新增场景模型
+        /// </summary>
+        /// <param name="a_3D_Scene_Model"></param>
+        /// <returns></returns>
+        //[HttpPost]
+        [ValidateInput(false)]
+        public JsonResult AddScene(Models.a_3d_scene a_3D_Scene)
+        {
+            if (a_3D_Scene != null && a_3D_Scene.id > 0)
+            {
+                a_3D_Scene.edittime = DateTime.Now;
+                scenehelper.Update(a_3D_Scene);
+            }
+            else
+            {
+                a_3D_Scene.createtime = DateTime.Now;
+                a_3D_Scene.scenenid = Guid.NewGuid().ToString().ToUpper();
+                scenehelper.Insert(a_3D_Scene);
+            }
+            int m = scenehelper.SaveChanges();
+
+            //return Json(m, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                success = true,
+                count = m,
+                data = a_3D_Scene
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 保存及修改场景配置文件
+        /// </summary>
+        /// <param name="sceneId"></param>
+        /// <param name="sceneCFG"></param>
+        /// <returns></returns>
+        public JsonResult AddSceneCFG(string sceneId, string sceneCFG)
+        {
+            if (sceneId != null && sceneId.Length > 0 && sceneId != "")
+            {
+                var a3dscene = scenehelper.FirstOrDefault(u => u.scenenid == sceneId);
+                if (a3dscene != null && a3dscene.id > 0)
+                {
+                    a3dscene.scenecfg = sceneCFG;
+                    a3dscene.edittime = DateTime.Now;
+                    scenehelper.Update(a3dscene);
+                }
+            }
+            var mint = scenehelper.SaveChanges();
+            if (mint > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "保存数据成功",
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                message = "保存数据失败",
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 通过场景guid获取场景
+        /// </summary>
+        /// <param name="sceneId"></param>
+        /// <returns></returns>
+        public JsonResult GetSceneCFGBySceneId(string sceneId)
+        {
+            if (sceneId != null && sceneId.Length > 0 && sceneId != "")
+            {
+                var a3dscene = scenehelper.FirstOrDefault(u => u.scenenid == sceneId);
+                if (a3dscene != null && a3dscene.id > 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "初始化场景请求场景配置数据成功",
+                        data = a3dscene
+                    }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            return Json(new
+            {
+                success = false,
+                message = "初始化场景请求场景配置数据失败，场景标识出错，请从场景列表中选择",
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 修改场景模型
+        /// </summary>
+        /// <param name="a_3D_Scene_Model"></param>
+        /// <returns></returns>
+        //[HttpPost]
+        [ValidateInput(false)]
+        public JsonResult AddSceneEdit(Models.a_3d_scene a_3D_Scene)
+        {
+            //int flowid, string flowchart_version, string note,string flowchart_id
+            if (a_3D_Scene.id > 0)
+            {
+                a_3D_Scene.edittime = DateTime.Now;
+                scenehelper.Update(a_3D_Scene);
+            }
+            int m = scenehelper.SaveChanges();
+
+            return Json(new
+            {
+                success = true,
+                count = m,
+                data = a_3D_Scene
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// /通过id获取场景模型
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult GetSceneById(int id)
+        {
+            var flow = scenehelper.FindById(id);
+            if (flow != null && flow.id > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    data = flow
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+            }, JsonRequestBehavior.AllowGet);
+
+        }
+        /// <summary>
+        /// 通过id删除场景模型
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult DeleteSceneById(int id)
+        {
+            var flow = scenehelper.FindById(id);
+            scenehelper.Delete(flow);
+            int m = scenehelper.SaveChanges();
+            if (m > 0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    code = m,
+                    data = flow
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                code = 0,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        #endregion
+
+
+
+    }
+
+
+}

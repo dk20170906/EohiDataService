@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="apiModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityType Name="a_3d_model_files">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fileName" Type="nvarchar" MaxLength="500" />
+    <Property Name="fileSize" Type="int" />
+    <Property Name="fileSuffix" Type="nvarchar" MaxLength="50" />
+    <Property Name="uploadTime" Type="datetime" />
+    <Property Name="uploadUser" Type="nvarchar" MaxLength="50" />
+    <Property Name="fileUrl" Type="nvarchar" MaxLength="100" />
+    <Property Name="editTime" Type="datetime" />
+    <Property Name="editUser" Type="nvarchar" MaxLength="100" />
+    <Property Name="modelIdentity" Type="nvarchar" MaxLength="50" />
+    <Property Name="modelName" Type="nvarchar" MaxLength="100" />
+    <Property Name="modelId" Type="int" />
+  </EntityType>
+  <EntityType Name="a_3d_models">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="modelIdentity" Type="nvarchar" MaxLength="50" />
+    <Property Name="modelName" Type="nvarchar" MaxLength="500" />
+    <Property Name="modeDescription" Type="nvarchar(max)" />
+    <Property Name="modelRemark" Type="nvarchar(max)" />
+    <Property Name="createTime" Type="datetime" />
+    <Property Name="createUser" Type="nvarchar" MaxLength="100" />
+    <Property Name="modelVersion" Type="nvarchar" MaxLength="50" />
+    <Property Name="editTime" Type="datetime" />
+    <Property Name="editUser" Type="nvarchar" MaxLength="100" />
+    <Property Name="yujiPutTime" Type="datetime" />
+    <Property Name="modelImage" Type="nvarchar" MaxLength="500" />
+    <Property Name="modelForOutfit" Type="nvarchar" MaxLength="100" />
+    <Property Name="modeltype" Type="nvarchar" MaxLength="100" />
+    <Property Name="modelurl" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="a_3d_scene">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="scenenid" Type="nvarchar" MaxLength="50" />
+    <Property Name="scenename" Type="nvarchar" MaxLength="10" />
+    <Property Name="scenenote" Type="nvarchar" MaxLength="300" />
+    <Property Name="scenetype" Type="nvarchar" MaxLength="100" />
+    <Property Name="scenecfg" Type="nvarchar(max)" />
+    <Property Name="createtime" Type="datetime" />
+    <Property Name="edittime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="a_flowchart">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="flowchart_name" Type="nvarchar" MaxLength="50" />
+    <Property Name="flowchart_version" Type="nvarchar" MaxLength="50" />
+    <Property Name="note" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="a_flowchart_instance">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="flowchart_version" Type="nvarchar" MaxLength="50" />
+    <Property Name="instance_id" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="cre_date" Type="datetime" />
+    <Property Name="cre_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="instance_status" Type="nvarchar" MaxLength="50" />
+    <Property Name="instance_message" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="a_flowchart_instance_pars">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="instance_id" Type="nvarchar" MaxLength="255" />
+    <Property Name="funid" Type="nvarchar" MaxLength="50" />
+    <Property Name="keyvalue" Type="nvarchar" MaxLength="50" />
+    <Property Name="pars" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="a_flowchart_line">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="line_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="node_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="sourcepoint" Type="nvarchar" MaxLength="255" />
+    <Property Name="targetpoint" Type="nvarchar" MaxLength="255" />
+    <Property Name="label" Type="nvarchar" MaxLength="255" />
+    <Property Name="next_node_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="node_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="nodetype" Type="nvarchar" MaxLength="50" />
+    <Property Name="remark" Type="nvarchar" MaxLength="255" />
+    <Property Name="sourcepoints" Type="nvarchar" MaxLength="255" />
+    <Property Name="targetpoints" Type="nvarchar" MaxLength="255" />
+    <Property Name="label" Type="nvarchar" MaxLength="255" />
+    <Property Name="style" Type="nvarchar" MaxLength="255" />
+    <Property Name="x" Type="int" />
+    <Property Name="y" Type="int" />
+    <Property Name="operatorscript" Type="nvarchar(max)" />
+    <Property Name="switchscript" Type="nvarchar(max)" />
+    <Property Name="flowscript" Type="nvarchar(max)" />
+    <Property Name="processscript" Type="nvarchar(max)" />
+    <Property Name="approvalnotescript" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node_approveitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="node_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="approveid" Type="nvarchar" MaxLength="50" />
+    <Property Name="approvename" Type="nvarchar" MaxLength="50" />
+    <Property Name="approvetype" Type="nvarchar" MaxLength="50" />
+    <Property Name="approvenote" Type="nvarchar" MaxLength="255" />
+    <Property Name="approvescript" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="a_flowchart_node_switchitem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="flowchart_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="node_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="switchid" Type="nvarchar" MaxLength="50" />
+    <Property Name="switchname" Type="nvarchar" MaxLength="50" />
+    <Property Name="switchnote" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="a_system_article">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="istop" Type="int" />
+    <Property Name="title" Type="nvarchar" MaxLength="50" />
+    <Property Name="subtitle" Type="nvarchar" MaxLength="50" />
+    <Property Name="perviewimage" Type="nvarchar" MaxLength="500" />
+    <Property Name="articlecontent" Type="nvarchar(max)" />
+    <Property Name="author" Type="nvarchar" MaxLength="50" />
+    <Property Name="source" Type="nvarchar" MaxLength="50" />
+    <Property Name="putime" Type="datetime" />
+  </EntityType>
+  <EntityType Name="a_system_updatefile">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="filename" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="versionno" Type="varchar" MaxLength="50" />
+    <Property Name="filesize" Type="int" />
+    <Property Name="savedir" Type="varchar" MaxLength="50" />
+    <Property Name="uptime" Type="datetime" Nullable="false" />
+    <Property Name="filenote" Type="nvarchar" MaxLength="200" />
+    <Property Name="fileurl" Type="nvarchar" MaxLength="500" />
+  </EntityType>
+  <EntityType Name="a_systeminfo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="system_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="system_name" Type="nvarchar" MaxLength="50" />
+    <Property Name="system_worksitename" Type="nvarchar" MaxLength="50" />
+    <Property Name="company_name" Type="nvarchar" MaxLength="50" />
+    <Property Name="company_address" Type="nvarchar" MaxLength="200" />
+    <Property Name="company_tel" Type="nvarchar" MaxLength="50" />
+    <Property Name="company_linkman" Type="nvarchar" MaxLength="50" />
+    <Property Name="system_licenseno" Type="nvarchar" MaxLength="50" />
+    <Property Name="system_effdate_s" Type="nvarchar" MaxLength="50" />
+    <Property Name="system_effdate_e" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="api_databoard">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="boardno" Type="nvarchar" MaxLength="60" />
+    <Property Name="pubno" Type="nvarchar" MaxLength="60" />
+    <Property Name="mainoption" Type="nvarchar(max)" />
+    <Property Name="perviewimage" Type="nvarchar" MaxLength="200" />
+    <Property Name="boardnote" Type="nvarchar" MaxLength="500" />
+    <Property Name="gridsize" Type="int" />
+    <Property Name="cre_date" Type="datetime" />
+    <Property Name="cre_man" Type="nvarchar" MaxLength="60" />
+    <Property Name="mod_date" Type="datetime" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="60" />
+  </EntityType>
+  <EntityType Name="api_databoard_items">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="boardno" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemno" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemindex" Type="int" />
+    <Property Name="itemx" Type="int" />
+    <Property Name="itemy" Type="int" />
+    <Property Name="itemw" Type="int" />
+    <Property Name="itemh" Type="int" />
+    <Property Name="itemtype" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemversion" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemoption" Type="nvarchar(max)" />
+    <Property Name="itemdata" Type="nvarchar(max)" />
+    <Property Name="Intervalloading" Type="nvarchar" MaxLength="50" />
+    <Property Name="intervalsecond" Type="int" />
+    <Property Name="cre_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_databoard_items_pub">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pubno" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemno" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemindex" Type="int" />
+    <Property Name="itemx" Type="int" />
+    <Property Name="itemy" Type="int" />
+    <Property Name="itemw" Type="int" />
+    <Property Name="itemh" Type="int" />
+    <Property Name="itemtype" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemversion" Type="nvarchar" MaxLength="50" />
+    <Property Name="itemoption" Type="nvarchar(max)" />
+    <Property Name="itemdata" Type="nvarchar(max)" />
+    <Property Name="Intervalloading" Type="nvarchar" MaxLength="50" />
+    <Property Name="intervalsecond" Type="int" />
+    <Property Name="cre_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_databoard_pub">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pubno" Type="nvarchar" MaxLength="60" />
+    <Property Name="mainoption" Type="nvarchar(max)" />
+    <Property Name="perviewimage" Type="nvarchar" MaxLength="200" />
+    <Property Name="boardnote" Type="nvarchar" MaxLength="500" />
+    <Property Name="gridsize" Type="int" />
+    <Property Name="cre_date" Type="datetime" />
+    <Property Name="cre_man" Type="nvarchar" MaxLength="60" />
+    <Property Name="mod_date" Type="datetime" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="60" />
+  </EntityType>
+  <EntityType Name="api_items">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="apiname" Type="nvarchar" MaxLength="50" />
+    <Property Name="apitype" Type="nvarchar" MaxLength="50" />
+    <Property Name="apistatus" Type="nvarchar" MaxLength="50" />
+    <Property Name="linkid" Type="nvarchar" MaxLength="50" />
+    <Property Name="apinote" Type="nvarchar" MaxLength="500" />
+    <Property Name="apipars" Type="nvarchar" MaxLength="500" />
+    <Property Name="apiscript" Type="nvarchar(max)" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+  </EntityType>
+  <!--生成过程中发现错误:
+警告 6002: 表/视图“kailifon.dbo.api_items_on”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+  <EntityType Name="api_items_on">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="apiname" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_links">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="linktype" Type="nvarchar" MaxLength="50" />
+    <Property Name="linkname" Type="nvarchar" MaxLength="50" />
+    <Property Name="linkstring" Type="nvarchar" MaxLength="200" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+  </EntityType>
+  <EntityType Name="api_menu">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pid" Type="int" />
+    <Property Name="text" Type="nvarchar" MaxLength="200" />
+    <Property Name="state" Type="nvarchar" MaxLength="200" />
+    <Property Name="iconCls" Type="nvarchar" MaxLength="500" />
+    <Property Name="url" Type="nvarchar" MaxLength="500" />
+    <Property Name="guid" Type="nvarchar" MaxLength="50" />
+    <Property Name="pguid" Type="nvarchar" MaxLength="50" />
+    <Property Name="isChildNode" Type="bit" />
+  </EntityType>
+  <EntityType Name="api_quartz">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="quartzname" Type="nvarchar" MaxLength="50" />
+    <Property Name="quartznote" Type="nvarchar" MaxLength="500" />
+    <Property Name="quartzstatus" Type="nvarchar" MaxLength="50" />
+    <Property Name="crontrigger" Type="nvarchar" MaxLength="50" />
+    <Property Name="jobtype" Type="nvarchar" MaxLength="50" />
+    <Property Name="jobpars" Type="nvarchar(max)" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+  </EntityType>
+  <EntityType Name="api_role">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="role_guid" Type="nvarchar" MaxLength="50" />
+    <Property Name="role_name" Type="nvarchar" MaxLength="200" />
+    <Property Name="remark" Type="nvarchar(max)" />
+    <Property Name="role_allow" Type="int" />
+    <Property Name="create_time" Type="datetime" />
+  </EntityType>
+  <EntityType Name="api_role_menu">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="role_guid" Type="nvarchar" MaxLength="50" />
+    <Property Name="menu_guid" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_type_htmlhelp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TypeId" Type="int" />
+    <Property Name="HtmlStr" Type="nvarchar(max)" />
+    <Property Name="Remarks" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_user">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="user_id" Type="nvarchar" MaxLength="50" />
+    <Property Name="user_name" Type="nvarchar" MaxLength="100" />
+    <Property Name="user_password" Type="nvarchar" MaxLength="50" />
+    <Property Name="user_allow" Type="int" />
+    <Property Name="remark" Type="nvarchar(max)" />
+    <Property Name="user_roles" Type="nvarchar" MaxLength="500" />
+    <Property Name="create_time" Type="datetime" />
+  </EntityType>
+  <EntityType Name="api_user_role">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="role_guid" Type="nvarchar" MaxLength="50" />
+    <Property Name="user_guid" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="api_webapp">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="webappname" Type="nvarchar" MaxLength="50" />
+    <Property Name="webappnote" Type="nvarchar" MaxLength="500" />
+    <Property Name="webapphtml" Type="nvarchar(max)" />
+    <Property Name="webappscript" Type="nvarchar(max)" />
+    <Property Name="mod_man" Type="nvarchar" MaxLength="50" />
+    <Property Name="mod_date" Type="datetime" />
+  </EntityType>
+  <Function Name="pr_app_databoard_pub" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="boardno" Type="nvarchar" Mode="In" />
+    <Parameter Name="userid" Type="nvarchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="apiModelStoreContainer">
+    <EntitySet Name="a_3d_model_files" EntityType="Self.a_3d_model_files" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_3d_models" EntityType="Self.a_3d_models" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_3d_scene" EntityType="Self.a_3d_scene" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart" EntityType="Self.a_flowchart" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_instance" EntityType="Self.a_flowchart_instance" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_instance_pars" EntityType="Self.a_flowchart_instance_pars" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_line" EntityType="Self.a_flowchart_line" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_node" EntityType="Self.a_flowchart_node" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_node_approveitem" EntityType="Self.a_flowchart_node_approveitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_flowchart_node_switchitem" EntityType="Self.a_flowchart_node_switchitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_system_article" EntityType="Self.a_system_article" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_system_updatefile" EntityType="Self.a_system_updatefile" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="a_systeminfo" EntityType="Self.a_systeminfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_databoard" EntityType="Self.api_databoard" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_databoard_items" EntityType="Self.api_databoard_items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_databoard_items_pub" EntityType="Self.api_databoard_items_pub" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_databoard_pub" EntityType="Self.api_databoard_pub" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_items" EntityType="Self.api_items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_links" EntityType="Self.api_links" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_menu" EntityType="Self.api_menu" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_quartz" EntityType="Self.api_quartz" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_role" EntityType="Self.api_role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_role_menu" EntityType="Self.api_role_menu" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_type_htmlhelp" EntityType="Self.api_type_htmlhelp" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_user" EntityType="Self.api_user" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_user_role" EntityType="Self.api_user_role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_webapp" EntityType="Self.api_webapp" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="api_items_on" EntityType="Self.api_items_on" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+[api_items_on].[id] AS [id], 
+[api_items_on].[apiname] AS [apiname]
+FROM [dbo].[api_items_on] AS [api_items_on]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

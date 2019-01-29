@@ -1,0 +1,427 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>优海数据看板编辑</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/bootstrap.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/font-awesome.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/screen.css")">
+    <link rel="stylesheet" href="@Url.Content("~/databoard/css/liMarquee.css")">
+    <style type="text/css">
+         .itembase {
+            cursor: move;
+            position: absolute;
+        }
+         .item {
+            width: 400px;
+            height: 260px;
+            cursor: move;
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+        .item1 {
+            width: 405px;
+            height: 291px;
+            cursor: move;
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+        .item2 {
+            width: 200px;
+            height: 100px;
+            cursor: move;
+            position: absolute;
+            top: 400px;
+            left: 100px;
+        }
+         .item7 {
+            width: 200px;
+            height: 100px;
+            cursor: move;
+            position: absolute;
+            top: 300px;
+            left: 300px;
+        }
+
+        body {
+            background-color: #F3F3F3;
+        }
+    </style>
+    <style type="text/css" mod="go">
+        .button-tip{position:absolute;background:#00c1de;padding:0;height:30px;margin-top:0;width:60px}
+        .button-tip a{display:inline-block;text-align:center;width:30px;line-height:30px;font-size:14px;color:#000}
+        .button-tip a:hover{background:#419bf9}
+    </style>
+</head>
+
+<body>
+
+    <div id="o" style="width:920px; height:30px;position:relative;">
+
+        <a href="javascript:void(0);" onclick="load()">加载</a>
+        <a href="javascript:void(0);" onclick="save()">保存</a>
+
+        <a href="javascript:void(0);" onclick="add('chart.line')">添加折线图</a>
+        <a href="javascript:void(0);" onclick="add('chart.pie')">添加饼图</a>
+        <a href="javascript:void(0);" onclick="add('chart.liquidfill')">添加水滴图</a>
+        <a href="javascript:void(0);" onclick="add('text')">添加文本</a>
+        <a href="javascript:void(0);" onclick="add('marquee')">添加滚动文本</a>
+        <a href="javascript:void(0);" onclick="add('image')">添加图片</a>
+        <a href="javascript:void(0);" onclick="add('imageborder')">添加边框图</a>
+    </div>
+
+    <div id="mydiv" style="width:1920px; height:1080px; background:url('../../databoard/image/bg.png');position:absolute;top:30px;">
+        <!--
+        <div id="div1" class="resize-item item1">
+        </div>
+        <div class="resize-item item2" id="div2">
+        </div>
+
+         <div class="resize-item item2" id="div3">
+        </div>
+
+         <div class="resize-item item2" id="div4">
+        </div>
+         <div class="resize-item item2" id="div5">
+        </div>
+          <div class="resize-item item2" id="div6">
+        </div>
+           <div class="resize-item item7" id="div7">
+        </div>
+         <div class="resize-item item7" id="div8">
+        </div>
+        -->
+    </div>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery-2.1.1.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/vitemdefoption/vitemsdefoption.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/echarts.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/theme/chalk.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/echarts-liquidfill.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/jquery.liMarquee.js")"></script>
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VText.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VClock.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VMarquee.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImage.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/VImageborder.js")"></script>
+    <script src="@Url.Content("~/Databoard/js/VMarqueed.js")"></script>
+
+
+
+
+    <script type="text/javascript" src="@Url.Content("~/databoard/js/ZResize.js")"></script>
+    <script type="text/javascript">
+
+    //设计编号
+    //var boardno = "000";
+    var boardno = "@ViewBag.boardno";
+    if (boardno == "" || boardno == undefined) {
+        alert("无效的设计编号!");
+    }
+
+    var zResizeArray = [];
+
+	//监听鼠标事件
+    $(document).keydown(function(event){
+        var e = event || window.event;
+        var k = e.keyCode || e.which;
+        if(k == 37){
+　　　　　  alert('左键');
+　　　　}else if (event.keyCode == 38){
+            alert('上键');
+        }else if (event.keyCode == 39){
+            alert('右键');
+        }else if (event.keyCode == 40){
+            alert('下键');
+        }
+    });
+    /*
+    * 添加新对象
+    */
+    function add(vtype) {
+
+        var id = newGuid();
+        //var vtype = "chart.line";
+
+        var defoption = findvtype(vtype);
+        if (defoption == undefined) {
+            //
+            alert('未支持的类型:' + vtype)
+            return;
+        }
+
+        var left = defoption.left;
+        var top = defoption.top;
+        var width = defoption.width;
+        var height = defoption.height;
+
+
+       var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+       $("#mydiv").append(divhtml);
+       var div = $("#" + id);
+       div.css({
+           width: width,
+           height: height,
+           left: left,
+           top:top
+       });
+
+       var itemindex = 0;
+        //取最大值;
+
+       var optionstr = JSON.stringify(defoption.viewoption);
+        //保存到数据库l
+       $.ajax({
+           url: "@Url.Content("~/Admin/DataBoardDesigner/itemSave")",
+            type: "post",
+            async: false,
+            data: {
+                boardno: boardno,
+                itemno: id,
+                itemindex: 0,
+                itemx: $('#' + id).offset().left,
+                itemy: $('#' + id).offset().top,
+                itemw: $('#' + id).width(),
+                itemh: $('#' + id).height(),
+                itemtype: vtype,
+                itemversion: '',
+                itemoption: optionstr,
+                itemdata: '',
+                Intervalloading: 'N',
+                intervalsecond: 1
+            },
+            success: function (data) {
+                if (data.access) {
+                    //delaccess = true;
+                    var item = new ZResize({
+                        stage: "#mydiv", //
+                        item: '#' + id,  //
+                        itemno: id,
+                        viewtype: defoption.viewtype, //类型;
+                        viewoption: defoption.viewoption
+                    });
+
+                    zResizeArray.push({ id: id, item: item });
+                }
+                else {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            },
+            error: function (e) {
+                layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                    icon: 1,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    //history.go(0);
+                });
+            }
+        });
+    }
+
+    load();
+    function load() {
+
+        //读取
+        $.ajax({
+            url: "@Url.Content("~/Admin/DataBoardDesigner/itemList")",
+           type: "post",
+           async: false,
+           data: {
+               boardno: boardno
+           },
+           success: function (data) {
+               if (data.access) {
+                   //delaccess = true;
+                   for (a = 0; a < data.data.length; a++) {
+                       //
+                       var id = data.data[a].itemno;
+                       var vtype = data.data[a].itemtype;
+                       var defoption = findvtype(vtype);
+                       if (defoption == undefined) {
+                           //
+                           alert('未支持的类型:' + vtype)
+                           return;
+                       }
+
+                       var left =  data.data[a].itemx;
+                       var top =  data.data[a].itemy;
+                       var width =  data.data[a].itemw;
+                       var height = data.data[a].itemh;
+                       var itemindex = data.data[a].itemindex;
+
+
+                       var divhtml = ' <div class="resize-item itembase" id="' + id + '"> </div>';
+                       $("#mydiv").append(divhtml);
+                       var div = $("#" + id);
+                       div.css({
+                           width: width,
+                           height: height,
+                           left: left,
+                           top: top
+                       });
+
+                       var option = JSON.parse(data.data[a].itemoption);
+
+
+                       var item = new ZResize({
+                           stage: "#mydiv", //
+                           item: '#' + id,  //
+                           itemno: id,
+                           itemindex:itemindex,
+                           viewtype: defoption.viewtype, //类型;
+                           viewoption: option
+                       });
+
+                       zResizeArray.push({ id: id, item: item });
+
+                   }
+
+               }
+               else {
+                   layer.msg(data.msg, {
+                       icon: 1,
+                       time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                   }, function () {
+                       //history.go(0);
+                   });
+               }
+           },
+           error: function (e) {
+               layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                   icon: 1,
+                   time: 2000 //2秒关闭（如果不配置，默认是3秒）
+               }, function () {
+                   //history.go(0);
+               });
+           }
+       });
+    }
+
+    function save() {
+        for (a = 0; a < zResizeArray.length; a++) {
+            //更新位置信息;
+            var id = zResizeArray[a].id;
+            var itemx = $('#' + id)[0].offsetLeft;
+            var itemy = $('#' + id)[0].offsetTop;
+            var width = $('#' + id).width();
+            var height = $('#' + id).height();
+            //
+            $.ajax({
+                url: "@Url.Content("~/Admin/DataBoardDesigner/itemLocationSave")",
+                type: "post",
+                async: false,
+                data: {
+                    itemno: id,
+                    left: itemx,
+                    top: itemy,
+                    width: width,
+                    height: height
+                },
+                success: function (data) {
+                    if (data.access) {
+                        //debugger;
+                        //delaccess = true;
+                    }
+                    else {
+                        alert(data.msg);
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //history.go(0);
+                        });
+                    }
+                },
+                error: function (e) {
+                    layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            });
+        }
+    }
+
+    function delitem(itemno) {
+        //alert(itemno)
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg) != true) {
+            return ;
+        }
+
+        $.ajax({
+            url: "@Url.Content("~/Admin/DataBoardDesigner/itemDelete")",
+            type: "post",
+            async: false,
+            data: {
+                itemno: itemno
+            },
+            success: function (data) {
+                if (data.access) {
+
+                    //删除元素对象;
+                    $('#' + itemno).remove();
+
+                }
+                else {
+                    alert(data.msg);
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            },
+            error: function (e) {
+                layer.msg("错误！[" + e.status + "][" + e.statusText + "]", {
+                    icon: 1,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    //history.go(0);
+                });
+            }
+        });
+    }
+
+    function newGuid()
+    {
+        var guid = "";
+        for (var i = 1; i <= 32; i++){
+            var n = Math.floor(Math.random()*16.0).toString(16);
+            guid +=   n;
+            if((i==8)||(i==12)||(i==16)||(i==20))
+                guid += "-";
+        }
+        return guid;
+    }
+
+    //找到类型;
+    function findvtype(vtype, seriestype) {
+        for (i = 0; i < vitemstype.length; i++) {
+            if (vitemstype[i].vtype == vtype) {
+                //
+                return vitemstype[i].defoption;
+            }
+        }
+        return undefined;
+    }
+
+    </script>
+</body>
+
+</html>

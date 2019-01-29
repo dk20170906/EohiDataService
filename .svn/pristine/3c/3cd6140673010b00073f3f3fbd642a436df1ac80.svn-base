@@ -1,0 +1,381 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace EohiDataServerApi.Areas.ThreeD.Controllers
+{
+    public class SystemInfoController : Controller
+    {
+        EFDBHelper<Models.a_systeminfo> dbhelper = new EFDBHelper<Models.a_systeminfo>();
+        EFDBHelper<Models.a_system_updatefile> dbupdate = new EFDBHelper<Models.a_system_updatefile>();
+        EFDBHelper<Models.a_system_article> dbarticle = new EFDBHelper<Models.a_system_article>();
+        //系统信息
+        public JsonResult SystemInfoData()
+        {
+            var item = new Models.a_systeminfo();
+            var list = dbhelper.GetAll(u => u.id);
+            if (list.Count > 0)
+            {
+                item = list.FirstOrDefault();
+            }
+            else
+            {
+                item = new Models.a_systeminfo();
+                item.system_id = Guid.NewGuid().ToString().ToUpper();
+
+                item.system_name = "";
+                item.system_worksitename = "";
+
+                item.company_name = "";
+                item.company_linkman = "";
+                item.company_tel = "";
+                item.company_address = "";
+
+                item.system_licenseno = "未授权";
+                item.system_effdate_e = "未授权";
+                item.system_effdate_s = "未授权";
+
+
+            }
+
+            string directoryPath = Server.MapPath("~/LicenseFile/");
+            string filepath = directoryPath + "/" + "License.lic";
+            MyLicense license = MyLicenseHelper.Get(filepath);
+
+            if (license.licenseno == "")
+            {
+                item.system_licenseno = "未授权";
+                item.system_effdate_e = "未授权";
+                item.system_effdate_s = "未授权";
+            }
+            else
+            {
+                item.system_licenseno = license.licenseno;
+                item.system_effdate_s = license.licensedatestart.ToString("yyyy-MM-dd");
+                item.system_effdate_e = license.licensedateend.ToString("yyyy-MM-dd");
+            }
+            return Json(item, JsonRequestBehavior.AllowGet);
+        }
+
+        //保存系统信息
+        [HttpPost]
+        public JsonResult SystemInfoSave(Models.a_systeminfo entity)
+        {
+            int m = 0;
+            if (entity.id <= 0)
+            {
+                dbhelper.Insert(entity);
+                m = dbhelper.SaveChanges();
+            }
+            else
+            {
+                var olditem = dbhelper.FindById(entity.id);
+                if (olditem != null)
+                {
+                    //olditem. = System.Data.EntityState.Detached; 
+                    //这个是在同一个上下文能修改的关键
+                    dbhelper.GetDbContext().Entry<Models.a_systeminfo>(olditem).State = System.Data.EntityState.Detached;
+
+                    entity.system_effdate_e = olditem.system_effdate_e;
+                    entity.system_effdate_s = olditem.system_effdate_s;
+                    entity.system_licenseno = olditem.system_licenseno;
+                }
+                dbhelper.Update(entity);
+                m = dbhelper.SaveChanges();
+            }
+            return Json(m, JsonRequestBehavior.AllowGet);
+        }
+
+        //得到上传文件列表
+        public JsonResult GetUpdateFileList(int page, int rows, string order, string sort)
+        {
+            int total = 0;
+            bool isAsc = true;
+            if (sort == "dasc")
+            {
+                isAsc = false;
+            }
+            var list = dbupdate.LoadPageItems(rows, page, out total,u=>u.id>=0, u => order, isAsc);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+
+        private int? filesize = 0;
+        private string fileUrl = null;
+               /// <summary>
+               /// 保存文件信息
+               /// </summary>
+               /// <param name="a_System_Updatefile"></param>
+               /// <returns></returns>
+              [HttpPost]
+        public JsonResult UpdateFileSave(Models.a_system_updatefile a_System_Updatefile)
+        {
+            //Models.a_system_updatefile a_System_Updatefile = new Models.a_system_updatefile();
+            //a_System_Updatefile.filename = filename;
+            //a_System_Updatefile.filesize =Convert.ToInt32( filesize);
+            //a_System_Updatefile.savedir = savedir;
+            //a_System_Updatefile.versionno = versionno;
+            //a_System_Updatefile.fileurl = fileinputidhib;
+            a_System_Updatefile.uptime = DateTime.Now;
+            if (a_System_Updatefile.id>0)
+            {
+                dbupdate.Update(a_System_Updatefile);
+            }
+            else
+            {
+                dbupdate.Insert(a_System_Updatefile);
+
+            }
+            var m = dbupdate.SaveChanges();
+            if (m>0)
+            {
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    message = "恭喜你，保存成功！"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                statusCode = 300,
+                title = "操作提示",
+                message = "恭喜你，保存失败！"
+            }, JsonRequestBehavior.AllowGet);
+         //   return Json(m, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 通过id获取文件信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public JsonResult SelectFileById(int id)
+        {
+            var file = dbupdate.FindById(id);
+            fileUrl = file.fileurl;
+            filesize = file.filesize;
+            return Json(file, JsonRequestBehavior.AllowGet);
+        }
+
+        //文件更新上传文件
+
+        [ValidateInput(false)]
+        public JsonResult UpdateFileUp()
+        {
+            bool isSavedSuccessfully = true;
+            string fName = "";
+            int fileSize = 0;
+            string path = null;
+            try
+            {
+                foreach (string fileName in Request.Files)
+                {
+                    HttpPostedFileBase file = Request.Files[fileName];
+                    //Save file content goes here
+                    fName = file.FileName;
+                    string exName = System.IO.Path.GetExtension(file.FileName); //得到扩展名
+
+                   
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        fileSize = file.ContentLength/1024;
+                        filesize = fileSize;
+                        var originalDirectory = new DirectoryInfo(string.Format("{0}NewAdmin\\update", Server.MapPath(@"\")));
+
+                        string pathString = System.IO.Path.Combine(originalDirectory.ToString(), DateTime.Now.ToString("yyyy-MM-dd")  );             
+                        // var fileName1 = Path.GetFileName(file.FileName);
+                        var fileName1 = Guid.NewGuid().ToString() + exName;
+                        fName = fileName1;
+                        bool isExists = System.IO.Directory.Exists(pathString);
+
+                        if (!isExists)
+                            System.IO.Directory.CreateDirectory(pathString);
+
+                         path = string.Format("{0}\\{1}", pathString, fileName1);
+
+
+
+                        if (System.IO.File.Exists(path))
+                            System.IO.File.Delete(path);
+                        //保存
+                        file.SaveAs(path);
+
+                        fileUrl = "update/" + DateTime.Now.ToString("yyyy-MM-dd") + "/" + fName;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                isSavedSuccessfully = false;
+            }
+
+
+            if (isSavedSuccessfully)
+            {
+             //   Dictionary<string, object> dic = new Dictionary<string, object>();
+             //   dic.Add("filename", fName);
+             //   dic.Add("filesize", fileSize + "k");
+             //var str=   JsonConvert.SerializeObject(dic);
+
+                return Json(new
+                {
+                    statusCode = 200,
+                    title = "操作提示",
+                    filename = fName,
+                    filesize = fileSize + "k",
+                    message ="上传成功！",
+                 //   filePath=path
+
+
+                   filePath = "update/" + DateTime.Now.ToString("yyyy-MM-dd")+"/" + fName ,
+                 
+                },JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new {
+                    Message = "Error in saving file" });
+            }
+        }
+            //通过id删除文件更新中的文件
+        public JsonResult DeleteFileUpById(int id)
+        {
+        var file=    dbupdate.FindById(id);
+            if (file!=null)
+            {
+                dbupdate.Delete(file);
+            }
+            int mint = dbupdate.SaveChanges();
+            if (mint>0)
+            {
+                return Json(new
+                {
+                    success = true,
+                    title = "操作提示",
+                    message = "恭喜你，删除成功！"
+                },JsonRequestBehavior.AllowGet);
+            }
+            return Json(new
+            {
+                success = false,
+                title = "操作提示",
+                message = "恭喜你，删除失败！"
+            },JsonRequestBehavior.AllowGet);
+        }
+
+            //许可证
+        public JsonResult LicenseGet()
+        {
+           var item = dbhelper.GetAll(u => u.id).FirstOrDefault();
+            if (item!=null)
+            {
+            }
+            else
+            {
+                item = new Models.a_systeminfo();
+                item.system_id = Guid.NewGuid().ToString().ToUpper();
+                item.system_name = "";
+                item.system_worksitename = "";
+                item.company_name = "";
+                item.company_linkman = "";
+                item.company_tel = "";
+                item.company_address = "";
+
+                item.system_licenseno = "未授权";
+                item.system_effdate_e = "未授权";
+                item.system_effdate_s = "未授权";
+            }
+
+            string directoryPath = Server.MapPath("~/LicenseFile/");
+            string filepath = directoryPath + "License.lic";
+            MyLicense license = MyLicenseHelper.Get(filepath);
+
+            if (license.licenseno == "")
+            {
+                item.system_licenseno = "未授权";
+                item.system_effdate_e = "未授权";
+                item.system_effdate_s = "未授权";
+            }
+            else
+            {
+                item.system_licenseno = license.licenseno;
+                item.system_effdate_s = license.licensedatestart.ToString("yyyy-MM-dd");
+                item.system_effdate_e = license.licensedateend.ToString("yyyy-MM-dd");
+            }
+            LinenceMap linenceMap = new LinenceMap();
+            linenceMap.system_licenseno = item.system_licenseno;
+            linenceMap.system_effdate_s = item.system_effdate_s;
+            linenceMap.system_effdate_e = item.system_effdate_e;
+  
+
+            string hardcode = Computer.GetBIOSInfo().ToUpper();
+            hardcode = DESEncrypt.md5(hardcode, 32).ToUpper();
+            linenceMap.system_hardwarecode = hardcode;
+
+            return Json(linenceMap, JsonRequestBehavior.AllowGet);
+        }
+            //企业动态列表
+        public JsonResult EntDynamics(int page,int rows)
+        {
+            int total = 0;
+            var list = dbarticle.Page(page, rows, out total, u => u.id, null);
+            //Models.api_items
+            return Json(list,
+            JsonRequestBehavior.AllowGet);
+        }  
+        //通过id获取企业动态
+        public JsonResult EntDynamicsById(int id)
+        {
+            Models.a_system_article item = dbarticle.FindById(id);
+            return Json(item, JsonRequestBehavior.AllowGet);
+        }
+        //通过id删除企业动态
+        public JsonResult EntDynamicsDel(int id)
+        {
+            var art = dbarticle.FindById(id);
+            dbarticle.Delete(art);
+          int m=  dbarticle.SaveChanges();
+            return Json(m, JsonRequestBehavior.AllowGet);
+        }
+        //新增或编辑修改企业动态
+        [HttpPost]
+        [ValidateInput(false)]
+        public JsonResult EntDynamicsyAdd(Models. a_system_article a_System_Article)
+        {
+            if (a_System_Article.id>0)
+            {
+                dbarticle.Update(a_System_Article);
+            }
+            else
+            {
+                dbarticle.Insert(a_System_Article);
+            }
+         int m=   dbarticle.SaveChanges();
+            return Json(m,JsonRequestBehavior.AllowGet);
+        }
+
+
+    }
+
+
+    //许可证数据类
+    class LinenceMap
+    {
+        public string system_hardwarecode { get; set; }
+        public string system_licenseno { get; set; }
+        public string system_effdate_s { get; set; }
+        public string system_effdate_e { get; set; }
+
+        public string fileUrl { get; set; }
+    }
+
+    
+
+}

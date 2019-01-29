@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using WFServerWeb;
+
+namespace EohiDataServerApi.Areas.WF.Controllers
+{
+    public class WFServiceController : Controller
+    {
+        private WSWF wSWF = new WSWF();
+        // GET: /WF/WFService/
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public JsonResult WFServiceStart()
+        {
+
+            wSWF.StartServer();
+            return Json(new
+            {
+                statuCode = 0,
+                success = true,
+                msg = "WF服务启动成功"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult WFServiceStop()
+        {
+            wSWF.StopServer();
+            return Json(new
+            {
+                statuCode = 0,
+                success = true,
+                msg = "WF服务已停止"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+      // public JsonResult 
+
+    }
+}

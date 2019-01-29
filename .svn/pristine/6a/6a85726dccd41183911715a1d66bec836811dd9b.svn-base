@@ -1,0 +1,150 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Collections;
+using System.Net;
+using System.Net.Sockets;
+using System.Configuration;
+
+public static class WFGlobal
+{
+    public static string UserID = "user_id";
+
+    public static EDataType DataTypeUse = EDataType.SQLSERVER;
+    public static string BaseDir;
+
+    public static string SqlConnStr
+    {
+        get
+        {
+            return ConfigurationManager.ConnectionStrings["ConnString"].ConnectionString;
+        }
+    }
+
+    //public static string SqlConnStr = "server=115.28.5.204,13533;uid=sa;pwd=abbABB123!@#;database=kailifon";
+    public static string IP;
+    public static string server;
+    public static string userid;
+    public static string password;
+    public static string database;
+    public static string dbport;
+    public static Queue StartWFCmdArr = new Queue();
+    public static Queue WFTransmitCmdArr = new Queue();
+
+    public static bool ServerStarted = false;
+
+    public static string GetLocalIP()
+    {
+        try
+        {
+            string HostName = Dns.GetHostName(); //得到主机名
+            IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
+            for (int i = 0; i < IpEntry.AddressList.Length; i++)
+            {
+                if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return IpEntry.AddressList[i].ToString();
+                }
+            }
+            return "";
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
+    }
+}
+
+public static class CNodeType
+{
+    public static string StartType = "start";
+    public static string ApproveType = "approve";
+    public static string SwitchType = "switch";
+    public static string ProcessType = "process";
+    public static string EndType = "end";
+}
+
+public enum EDataType
+{
+    SQLSERVER,
+    ORACLE,
+    MYSQL,
+    TXT,
+    XML
+}
+
+public enum EInstanceStatus
+{
+    Active,
+    Complete,
+    Error,
+    Terminate
+}
+
+public enum EApprovalStatus
+{
+    Active,
+    Complete,
+    Terminate,
+    Invalid
+}
+
+public enum ENodeStatus
+{
+    Active,
+    Complete,
+    Terminate,
+    Invalid
+}
+public struct struCmdStartWF
+{
+    public struCmdStartWF(string wfname, string wfdataid, string opemanid)
+    {
+        WFName = wfname;
+        WFDataID = wfdataid;
+        OpeManID = opemanid;
+    }
+    public string WFName;
+    public string WFDataID;
+    public string OpeManID;
+}
+
+
+public struct struCmdWFTransmit
+{
+    public struCmdWFTransmit(string instanceid, string nodeid, EApprovalOpinion approvalopinion, string opemanid,string approvalreason)
+    {
+        InstanceID = instanceid;
+        NodeID = nodeid;
+        ApprovalOpinion = approvalopinion;
+        OpeManID = opemanid;
+        ApprovalReason=approvalreason;
+    }
+    public string InstanceID;
+    public string NodeID;
+    public EApprovalOpinion ApprovalOpinion;
+    public string OpeManID;
+    public string ApprovalReason;
+}
+
+/// <summary>
+/// 审批意见枚举
+/// </summary>
+public enum EApprovalOpinion
+{
+    同意,
+    不同意,
+    驳回上级,
+    驳回至发起人
+}
+
+public enum EScriptType
+{
+    OperatorScript,
+    SwitchScript,
+    FlowScript,
+    ProcessScript
+}

@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "连接管理";
+}
+
+
+<div class="demoTable">
+  搜索ID：
+  <div class="layui-inline">
+    <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+  </div>
+  <button class="layui-btn"  data-method="setTop" data-type="reload">搜索</button>
+  <button class="layui-btn"  data-method="setTop" onclick="dataedit(0);" data-type="reload">添加</button>
+</div>
+
+<table class="layui-hide" id="table1" lay-filter="demo"></table>
+ 
+<script type="text/html" id="gridbar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs"   lay-event="detail">查看</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<input id="iframe_handle_status" value="" hidden="hidden">
+
+@section scripts{
+
+
+<script>
+
+    var layer;
+    var table;
+    layui.use('table', function () {
+        var $ = layui.jquery,
+            layer = layui.layer; //独立版的layer无需执行这一句
+            table = layui.table;
+
+        var popFormDiv = $("#popupFormDiv");
+
+        //执行一个 table 实例
+        table.render({
+            elem: '#table1'
+          , height: 500
+          , url: '@Url.Content("~/Admin/ApiLink/getlist")' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+              { field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left' }
+              , { field: 'linkname', title: '连接名称', width: 160 }
+              , { field: 'linktype', title: '类型', width: 120 }
+              , { field: 'linkstring', title: '连接字符串', width: 300 }
+              , {
+                  field: 'mod_date', title: '发布时间', width: 120
+                 , templet: function (d) {
+                     return dateRender(d.mod_date, "yyyy-MM-dd hh:mm:ss");
+                  }
+              }
+              , { fixed: 'right', width: 165, align: 'center', toolbar: '#gridbar' }
+            ]]
+          });
+       
+
+        //监听工具条
+        //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(demo)', function (obj) {
+        
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.msg('无相关操作.');
+            } else if (obj.event === 'del') {
+                layer.confirm('是否确认删除？', function (index) {
+                    //删除这一行
+                    if (datadel(obj.data.id)) {
+                        obj.del();
+                    }
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                var id = obj.data.id;
+                //layer.alert('编辑行：<br>' + JSON.stringify(data))
+                dataedit(id);
+            }
+        });
+    });
+
+    function dataedit(id) {
+        $("#iframe_handle_status").val("0");
+        if (id == undefined || id == null)
+            id = 0;
+        layer.open({
+            type: 2 //此处以iframe举例
+              , title: '编辑'
+              , area: ['900px', '600px']
+              , shade: 0.5
+              , maxmin: true
+              //content: ['test/guodu.html', 'no'], //iframe的url，no代表不显示滚动条
+              , content: '@Url.Content("~/Admin/ApiLink/edit")?id=' + id
+            , btn: ['保存', '关闭'] //只是为了演示
+            , yes: function () {
+                //$(that).click();
+                //执行保存;
+                //layer.DataSave();
+                // var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+
+                //找到编辑对应的frameWindow,执行当前子frame页面的方法;
+                var frameWindow = parent.window['layui-layer-iframe' + layer.index].window;
+                frameWindow.DataSave();
+            }
+            , btn2: function () {
+                layer.closeAll();
+            }
+              , zIndex: layer.zIndex //重点1
+              , success: function (layero) {
+                  layer.setTop(layero); //重点2
+              }
+              , end: function () {
+                  // 判断iframe是否操作成功;  
+                  if ($("#iframe_handle_status").val() == "1") {
+                      layer.msg('保存成功！', {
+                          icon: 1,
+                          time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                      }, function () {
+                          //history.go(0);
+                      });
+
+                      //成功;刷新网格;
+                      //执行重载
+                      table.reload('table1', {
+                          page: {
+                              curr: 1 //重新从第 1 页开始
+                          }
+                        , where: {
+                            //keyworldTest  : demoReload.val()
+                        }
+                      });
+                  }
+              }
+        });
+
+
+    }
+
+    //del
+    function datadel(id) {
+        var delaccess = false;
+        if (id == undefined || id == null)
+            delaccess = false;
+        //
+        $.ajax({
+            url: "@Url.Content("~/Admin/ApiLink/del")?id="+id,
+            type: "post",
+            async: false,
+            data: {},
+            success: function (data) {
+
+                if (data.access) {
+                    delaccess= true;
+                }
+                else {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //history.go(0);
+                    });
+                }
+            },
+            error: function (e) {
+                layer.msg("错误！[" + e.status + "]["+e.statusText+"]", {
+                    icon: 1,
+                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                }, function () {
+                    //history.go(0);
+                });
+            }
+        });
+
+        return delaccess;
+    }
+
+
+
+
+</script>
+   }

@@ -1,0 +1,58 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="工作流新增/编辑" data-options="iconCls:'fa fa-th'">
+                <div class="topjui-fluid">
+                    <div class="topjui-row">
+                    </div>
+                    <div class="topjui-row" id="APIidhide">
+                        <input type="hidden" id="flowid" name="id" value="" data-toggle="topjui-textbox" />
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">工作流ID</label>
+                            <div class="topjui-input-block">
+                                <input type="text" id="flowchart_id" name="flowchart_id" data-toggle="topjui-textbox" value=""
+                                       data-options="readonly:true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">工作流名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" id="flowchart_name" name="flowchart_name" data-toggle="topjui-textbox" value=""
+                                     >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">工作流版本号</label>
+                            <div class="topjui-input-block">
+                                <input type="text" id="flowchart_version" name="flowchart_version" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">备注</label>
+                            <div class="topjui-input-block">
+                                <input type="text" id="flownote" name="note" data-toggle="topjui-textbox" data-options="formatter:function(){alert(123);}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+                $('#APIidhide').css('display', 'none');
+</script>
+
+
+
+

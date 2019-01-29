@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <!-- TopJUI框架样式 -->
+    <link type="text/css" href="../../topjui/css/topjui.core.min.css" rel="stylesheet">
+    <link type="text/css" href="../../topjui/themes/default/topjui.blue.css" rel="stylesheet" id="dynamicTheme" />
+    <!-- FontAwesome字体图标 -->
+    <link type="text/css" href="../../static/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- layui框架样式 -->
+    <link type="text/css" href="../../static/plugins/layui/css/layui.css" rel="stylesheet" />
+    <!-- jQuery相关引用 -->
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/plugins/jquery/jquery.cookie.js"></script>
+    <!-- TopJUI框架配置 -->
+    <script type="text/javascript" src="../../static/public/js/topjui.config.js"></script>
+    <!-- TopJUI框架核心-->
+    <script type="text/javascript" src="../../topjui/js/topjui.core.min.js"></script>
+    <!-- TopJUI中文支持 -->
+    <script type="text/javascript" src="../../topjui/js/locale/topjui.lang.zh_CN.js"></script>
+    <!-- layui框架js -->
+    <script type="text/javascript" src="../../static/plugins/layui/layui.js" charset="utf-8"></script>
+
+
+</head>
+
+<body>
+    <table id="productDg"></table>
+
+    <!-- 表格工具栏开始 -->
+    <div id="productDg-toolbar" class="topjui-toolbar"
+         data-options="grid:{
+           type:'datagrid',
+           id:'productDg'
+       }">
+        <a id="add" href="javascript:void(0)">新增</a>
+       
+    </div>
+    <!-- 表格工具栏结束 -->
+
+    <script>
+
+        function operateFormatter(value, row, index) {
+            var htmlstr = '<button class="layui-btn layui-btn-xs layui-btn-primary" onclick="showOpenEditDiag(\'' + row.pubno + '\')">浏览</button>';
+            htmlstr += '<button class="layui-btn layui-btn-xs" id="test" onclick="openEditDiag(\'' + row.id + '\')">编辑</button>';
+            htmlstr += '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteRow(\'' + row.id + '\')">删除</button>';
+            htmlstr += '<button class="layui-btn layui-btn-xs layui-btn-warm" onclick="disApiRow(\'' + row.boardno + '\')">设计</button>';
+            htmlstr += '<button class="layui-btn layui-btn-xs layui-btn-normal" onclick="datacopy(\'' + row.boardno + '\')">复制</button>';
+            return htmlstr;
+        }
+
+
+        function showOpenEditDiag(pubno) {
+            window.open("../../../DataView/Index?pn=" + pubno);
+        }
+
+
+            function datacopy(boardno) {
+                $.ajax({
+                    url: _ctx + "../Admin/DataBoardDesigner/boardcopy?boardno=" + boardno,
+                    type: "post",
+                    async: false,
+                    data: {},
+                    success: function (data) {
+                        if (data.access) {
+                            //关闭当前窗体
+                            reloadtable("productDg", _ctx + '../Data/DataReadingBoard/DRBList?page=1&rows=20');
+                            slide("温馨提示", data.msg, 3000);
+                        } else {
+                            slide("温馨提示", data.msg, 3000);
+                        }
+                    },
+                    error: function (e) {
+                        $.iMessager.alert('复制失败', '错误！[' + e.status + ']['+ e.statusText + ']', 'messager-error');
+                    }
+        });
+
+        }
+           
+
+        function disApiRow(boardno) {
+            window.open(_ctx+"../Admin/DataBoardDesigner/Design2?boardno=" + boardno);
+        }
+
+        function openEditDiag(id) {
+            var ops = {
+                id: 'editDialogmm',
+                title: '编辑数据',
+                width: 950,
+                height: 500,
+                closed: false,
+                cache: false,
+                href: _ctx + '/html/DataKanBan/kanbandefinition_add.html?id=' + id,
+                modal: true,
+                buttons: [{
+                    text: '保存',
+                    iconCls: 'fa fa-save',
+                    btnCls: 'topjui-btn-blue',
+                    handler: function (data) {
+                        $("#editDialogmm").form("submit", {
+                            url: _ctx + '../Data/DataReadingBoard/DRBAdd',
+                            onSubmit: function () {
+                                return true;
+                            },
+                            success: function (result) {
+                                //服务器端会烦字符串转为json对象
+                                var data = JSON.parse(result);
+                                if (data.success) {
+                                    //关闭当前窗体
+                                    $('#editDialogmm').iDialog('close');
+                                    reloadtable("productDg", _ctx + '../Data/DataReadingBoard/DRBList?page=1&rows=20');
+                                    slide("温馨提示", data.message, 3000);
+                                } else {
+                                    slide("温馨提示", data.message, 3000);
+                                }
+                            }
+                        });
+                        //window.location.reload();
+
+                        // 提示信息
+                        // $.iMessager.alert('操作提示', '请根据具体情况编写代码，如ajax更新请求，请求失败提示，请求成功提示，请求成功后关闭窗口并刷新表格等！', 'messager-info');
+                    }
+                }, {
+                    text: '关闭',
+                    iconCls: 'fa fa-close',
+                    btnCls: 'topjui-btn-red',
+                    handler: function () {
+                        $('#editDialogmm').iDialog('close');
+                        window.location.reload();
+                    }
+                }],
+                onLoad: function () {
+                    //加载表单数据
+                    $.getJSON(_ctx + '../Data/DataReadingBoard/SelectDRBById?id=' + id, function (data) {
+                        $("#editDialogmm").form('load', data);
+
+
+                    });
+                }
+
+            };
+            $('#editDialogmm').iDialog('openDialog', ops);
+
+     
+        }
+
+
+        //日期转换
+        function dateConversion(value, row, index) {
+            var data = row.mod_date;
+            if (data != null && data != "") {
+                //取字符串中的数字
+                var regexp = /[0-9]*/g;
+                var time = data.match(regexp)
+                //实现将时间戳转换为日期 （东8区）
+                var date = new Date(parseInt(time[6]));
+                Y = date.getFullYear() + '-';
+                M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                D = date.getDate() + ' ';
+                h = date.getHours() + ':';
+                m = date.getMinutes() + ':';
+                s = date.getSeconds();
+                return Y + M + D + h + m + s;
+            }
+            else {
+                return "无";
+            }
+        }
+        //删除
+        function deleteRow(id) {
+
+            $.messager.confirm('提示框', '你确定要删除吗?', function (data) {
+                if (data) {
+                    $.ajax({
+                        type: 'get',
+                        url: _ctx + '../Data/DataReadingBoard/DeleteDRB',
+                        data: {
+                            id: id
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                //加载表单数据
+                                reloadtable("productDg", _ctx + '../Data/DataReadingBoard/DRBList?page=1&rows=20');
+                                slide("温馨提示", data.message, 3000);
+                            } else {
+                                slide("温馨提示", data.message, 3000);
+                            }
+                        },
+                        error: function (data) {
+                            slide("温馨提示", data.message, 3000);
+                        }
+
+                    })
+                }
+
+            })
+
+
+
+
+            //$.iMessager.alert('操作提示', '请根据具体情况编写代码，如ajax删除请求，请求失败提示，请求成功提示，请求成功后刷新表格等！', 'messager-info');
+        }
+
+
+
+        function openTestWin(data) {
+            var url = _ctx + 'html/DataKanBan/webapptest.html';
+            window.open(url);
+        }
+
+
+        //测试
+        function testApiRow(id, webappname) {
+
+            $.ajax({
+                type: 'get',
+                url: _ctx + '../Data/DataInteraction/TestWebApp',
+                //  url: _ctx + '../api/do/get?method=', //")" + obj.data.apiname
+                data: {
+                    id: id,
+                    webappname: webappname
+                },
+                success: function (data) {
+                    if (data != null) {
+                        openTestWin(data);
+                        //$('#webapptestbody').load(data.webapphtml);
+
+                        //$('#webappscript').load(data.webappscript);
+                    }
+                },
+                error: function (data) { }
+            });
+
+
+        }
+
+        $(function () {
+            var productDg = {
+                type: 'datagrid',
+                id: 'productDg'
+            };
+
+            $("#productDg").iDatagrid({
+                // method:'get',
+                url: _ctx + '../Data/DataReadingBoard/DRBList',
+                // url: '../../json/product/list.json',
+                columns: [[
+                    { field: 'id', title: 'ID', checkbox: false, width: 50 },
+                    { field: 'boardno', title: '看板编号', sortable: true },
+                    { field: 'pubno', title: '发布编号', sortable: true },
+                    { field: 'boardnote', title: '看板说明', sortable: true },
+                    { field: 'mod_man', title: '修改人', sortable: true },
+                    { field: 'mod_date', title: '发布时间', sortable: true, formatter: dateConversion },
+                    { field: 'operate', title: '操作', sortable: true, formatter: operateFormatter, width: 230 }
+                ]],
+                filter: [{
+                    field: 'boardno',
+                    type: 'textbox',
+                    op: ['contains', 'equal', 'notequal', 'less', 'greater']
+                }, {
+                        field: 'pubno',
+                    type: 'textbox',
+
+                    op: ['contains', 'equal', 'notequal', 'less', 'greater']
+                    },
+                {
+                    field: 'boardnote',
+                    type: 'textbox',
+                    op: ['contains', 'equal', 'notequal', 'less', 'greater']
+                }, {
+                    field: 'mod_man',
+                    type: 'textbox',
+
+                    op: ['contains', 'equal', 'notequal', 'less', 'greater']
+                },
+                {
+                    field: 'mod_date',
+                    type: 'textbox',
+                    op: ['contains', 'equal', 'notequal', 'less', 'greater']
+                }
+                ]
+            });
+
+
+
+            $("#add").iMenubutton({
+                method: 'openDialog',
+                extend: '#productDg-toolbar',
+                iconCls: 'fa fa-plus',
+                btnCls: 'topjui-btn-green',
+                dialog: {
+                    id: 'userAddDialog',
+                    title: '新增/编辑',
+                    href: _ctx + '/html/DataKanBan/kanbandefinition_add.html',
+                    buttonsGroup: [
+                        {
+                            text: '保存',
+                            iconCls: 'fa fa-plus',
+                            handler: function () {
+                                $("#userAddDialog").iForm("submit", {
+                                    url: _ctx + '../Data/DataReadingBoard/DRBAdd',
+                                    dataType: "json",
+                                    onSubmit: function () {
+                                        return true;
+                                    },
+                                    success: function (result) {
+                                        var data = JSON.parse(result);
+                                        if (data.success) {
+                                            $('#userAddDialog').iDialog('close');
+                                            reloadtable("productDg", _ctx + '../Data/DataReadingBoard/DRBList?page=1&rows=20');
+                                            slide("温馨提示", data.message, 3000);
+                                        }
+                                    }
+                                });
+
+                            },
+                            btnCls: 'topjui-btn-brown'
+                        }
+                    ],
+                    onLoad: function () {
+                        $('#APIidhide').css("display", "none");
+                        //新增时看板编号默认值
+                        var guid = NewGuid();
+                        $('#boardno').textbox('setValue', guid);
+                    }
+                }
+            });
+
+        });
+
+
+        //局部刷新数据
+        function reloadtable(el, url) {
+            //加载表单数据
+            $.ajax({
+                type: 'get',
+                url: url,
+                success: function (result) {
+                    $("#" + el).datagrid('reload', result);
+                }
+            });
+        }
+
+        //右下脚弹出框
+        function slide(title, msg, time) {
+            $.iMessager.show({
+                title: title,
+                msg: msg,
+                timeout: time,
+                showType: 'slide'
+            });
+        }
+
+
+
+    </script>
+   
+
+
+    <script >
+  
+
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    function NewGuid() {
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+
+
+</script>
+
+</body>
+</html>

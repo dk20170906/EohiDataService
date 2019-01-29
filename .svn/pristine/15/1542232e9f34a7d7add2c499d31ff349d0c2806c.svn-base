@@ -1,0 +1,78 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="定时任务新增/编辑" data-options="iconCls:'fa fa-th'">
+
+                <div class="topjui-fluid">
+                    <div class="topjui-row">
+                    </div>
+                    <div class="topjui-row" id="APIidhide">
+                        <input type="hidden" name="id" value="" data-toggle="topjui-textbox" style="display:none" />
+                        <input type="hidden" name="mod_date" value="" data-toggle="topjui-textbox" style="display:none" />
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm8">
+                            <label class="topjui-form-label">任务名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="quartzname" data-toggle="topjui-textbox"
+                                       data-options="required:true,prompt:'页面名称'">
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm4">
+                            <label class="topjui-form-label">任务状态</label>
+                            <div class="topjui-input-block">
+                                <div data-toggle="topjui-radio">
+                                    <input type="radio" name="quartzstatus" label="启动" value="启动">
+                                    <input type="radio" name="quartzstatus" label="停止" value="停止" checked="checked">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm8">
+                            <label class="topjui-form-label">触发表达式</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="crontrigger" data-toggle="topjui-textbox"      value="/10 * * ? * *"
+                                       data-options="required:true,prompt:'触发表达式'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">备注说明</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="quartznote"  value="10秒执行一次" data-toggle="topjui-textbox">
+                                <input type="button" name="name" value="帮助" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">任务类型</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="jobtype" data-toggle="topjui-textbox" value="Http">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">参数</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="jobpars" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+  <script>
+        $("#APIidhide").css("display", "none");
+
+    </script>
+

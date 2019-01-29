@@ -1,0 +1,8 @@
+F:\项目\EohiDataServer\EohiData.Lib\bin\Debug\EohiData.Lib.dll
+F:\项目\EohiDataServer\EohiData.Lib\bin\Debug\EohiData.Lib.pdb
+F:\项目\EohiDataServer\EohiData.Lib\bin\Debug\Newtonsoft.Json.dll
+F:\项目\EohiDataServer\EohiData.Lib\obj\Debug\EohiData.Lib.FrmLoading.resources
+F:\项目\EohiDataServer\EohiData.Lib\obj\Debug\EohiData.Lib.csproj.GenerateResource.Cache
+F:\项目\EohiDataServer\EohiData.Lib\obj\Debug\EohiData.Lib.dll
+F:\项目\EohiDataServer\EohiData.Lib\obj\Debug\EohiData.Lib.pdb
+F:\项目\EohiDataServer\EohiData.Lib\obj\Debug\EohiData.Lib.csprojResolveAssemblyReference.cache

@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="font-size:36px">
+        WFSERVEICE START/STOP:
+        <label id="statuslab"></label>
+    </div>
+    <input id="startWFId" class="button" type="button" value="启动WF服务" onclick="startWF(this);" />
+    <input id="stopWFId"  class="button disabled" type="button" value="停止WF服务" onclick="stopWF(this);" />
+
+</body>
+</html>
+<script src="../../../Scripts/jquery-1.7.1.min.js"></script>
+<script src="../../../Scripts/jquery.min.js"></script>
+<script>
+    var mysetinter = null;
+
+    function startWF() {
+        mysetinter = setInterval(function () {
+            var myDate = new Date();
+            $('#statuslab').html("正在启动WF服务...." + myDate.toLocaleTimeString());
+        }, 1000);
+        $.ajax({
+            type: 'get',
+            url: '../../../../WF/WFService/WFServiceStart',
+            success: function (data) {
+                if (data.success) {
+                    clearInterval(mysetinter);
+                    $('#statuslab').html(data.msg);
+                    this.className = "button disabled";
+                    $('#stopWFId').className = "button";
+                } else {
+                    $('#statuslab').html(data.msg);
+                    this.className = "button disabled";
+                }
+            },
+            error: function (data) {
+                $('#statuslab').html(data.msg);
+                this.className = "button disabled";
+            }
+        });
+    }
+
+
+
+    function stopWF() {
+        mysetinter = setInterval(function () {
+            var myDate = new Date();
+            $('#statuslab').html("正在停止WF服务...." + myDate.toLocaleTimeString());
+        }, 1000);
+        $.ajax({
+            type: 'get',
+            url: '../../../../WF/WFService/WFServiceStop',
+            success: function (data) {
+                if (data.success) {
+                    clearInterval(mysetinter);
+                    $('#statuslab').html(data.msg);
+                    this.className = "button disabled";
+                    $('#startWFId').className = "button";
+                } else {
+                    $('#statuslab').html(data.msg);
+                    this.className = "button disabled";
+                    this.className = "button disabled";
+                }
+            },
+            error: function (data) {
+                $('#statuslab').html(data.msg);
+                this.className = "button disabled";
+            }
+        });
+    }
+
+
+
+
+    //$('#statuslab').html("正在启动WF服务....")
+    //    $.ajax({
+    //        type: 'get',
+    //        url: '../../../../WF/WFService/StartWFService',
+    //        success: function (data) {
+    //            debugger;
+    //            if (data.success) {
+    //                clearInterval(mysetinter);
+    //                $('#statuslab').html(data.msg);
+    //                 window.location.href = "../../../../Areas/WF/WSWF.asmx";
+    //            } else {
+    //                clearInterval(mysetinter);
+    //                $('#statuslab').html(data.msg);
+    //            }
+    //        },
+    //        error: function (data) {
+
+    //        }
+
+    //});
+   
+
+
+</script>

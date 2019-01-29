@@ -1,0 +1,9 @@
+E:\dk\EohiDataService\EohiDataServerLicenseTool\bin\Debug\EohiDataServerLicenseTool.exe
+E:\dk\EohiDataService\EohiDataServerLicenseTool\bin\Debug\EohiDataServerLicenseTool.pdb
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.csprojAssemblyReference.cache
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.Form1.resources
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.Properties.Resources.resources
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.csproj.GenerateResource.cache
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.csproj.CoreCompileInputs.cache
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.exe
+E:\dk\EohiDataService\EohiDataServerLicenseTool\obj\Debug\EohiDataServerLicenseTool.pdb

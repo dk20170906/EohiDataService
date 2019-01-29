@@ -1,0 +1,352 @@
+[2018-10-11 17:39:54,268]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173954- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:54,283]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173954- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:54,283]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173954- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:54,269]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173954- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:56,154]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173956- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:56,155]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173956- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:56,155]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173956- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:56,156]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173956- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:56,438]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011173956-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:39:56,438]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011173956-》》》》》》》》》》》当前Quartz服务正在执行的任务总有5条任务
+[2018-10-11 17:39:57,006]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173957- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:39:58,080]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173958- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:58,080]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173958- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:58,080]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173958- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:58,081]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011173958- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:39:59,439]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011173959-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:00,398]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174000- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:00,398]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174000- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:00,398]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174000- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:00,399]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174000- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:02,150]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174002- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:02,151]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174002- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:02,152]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174002- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:02,153]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174002- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:02,236]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174002- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:02,445]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174002-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:02,445]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174002-》》》》》》》》》》》当前Quartz服务正在执行的任务总有3条任务
+[2018-10-11 17:40:04,076]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174004- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:04,076]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174004- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:04,077]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174004- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:04,077]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174004- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:05,446]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174005-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:05,446]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174005-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:40:06,312]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174006- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:06,314]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174006- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:06,314]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174006- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:06,315]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174006- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:07,011]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174007- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:08,090]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174008- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:08,090]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174008- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:08,091]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174008- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:08,091]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174008- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:08,446]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174008-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:08,446]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174008-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:40:10,199]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174010- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:10,200]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174010- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:10,200]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174010- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:10,201]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174010- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:11,447]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174011-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:11,447]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174011-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:40:12,116]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174012- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:12,259]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174012- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:12,260]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174012- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:12,260]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174012- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:12,261]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174012- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:14,088]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174014- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:14,089]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174014- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:14,090]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174014- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:14,092]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174014- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:14,447]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174014-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:14,447]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174014-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:40:16,150]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174016- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:16,151]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174016- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:16,152]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174016- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:16,152]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174016- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:17,018]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174017- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:17,449]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174017-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:18,255]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174018- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:18,255]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174018- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:18,256]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174018- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:18,256]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174018- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:20,207]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174020- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:20,208]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174020- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:20,208]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174020- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:20,209]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174020- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:20,450]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174020-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:20,450]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174020-》》》》》》》》》》》当前Quartz服务正在执行的任务总有5条任务
+[2018-10-11 17:40:22,111]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174022- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:22,139]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174022- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:22,140]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174022- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:22,140]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174022- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:22,141]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174022- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:23,451]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174023-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:24,252]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174024- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:24,252]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174024- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:24,253]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174024- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:24,253]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174024- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:26,144]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174026- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:26,145]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174026- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:26,146]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174026- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:26,147]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174026- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:26,458]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174026-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:26,458]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174026-》》》》》》》》》》》当前Quartz服务正在执行的任务总有3条任务
+[2018-10-11 17:40:27,005]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174027- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:28,104]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174028- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:28,105]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174028- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:28,106]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174028- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:28,108]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174028- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:29,452]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174029-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:30,390]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174030- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:30,392]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174030- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:30,393]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174030- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:30,395]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174030- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:32,150]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174032- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:32,151]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174032- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:32,152]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174032- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:32,153]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174032- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:32,235]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174032- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:32,460]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174032-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:32,460]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174032-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:40:34,100]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174034- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:34,101]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174034- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:34,101]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174034- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:34,102]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174034- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:35,461]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174035-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:35,461]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174035-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:40:36,300]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174036- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:36,300]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174036- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:36,301]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174036- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:36,301]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174036- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:37,004]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174037- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:38,094]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174038- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:38,095]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174038- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:38,096]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174038- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:38,096]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174038- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:38,462]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174038-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:38,462]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174038-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:40:40,206]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174040- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:40,207]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174040- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:40,207]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174040- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:40,207]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174040- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:41,462]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174041-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:41,462]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174041-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:40:42,115]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174042- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:42,249]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174042- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:42,249]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174042- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:42,249]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174042- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:42,250]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174042- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:44,070]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174044- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:44,071]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174044- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:44,071]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174044- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:44,071]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174044- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:44,462]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174044-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:44,462]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174044-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:40:46,139]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174046- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:46,140]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174046- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:46,140]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174046- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:46,141]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174046- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:47,008]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174047- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:47,463]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174047-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:48,262]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174048- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:48,263]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174048- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:48,263]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174048- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:48,264]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174048- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:50,195]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174050- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:50,195]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174050- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:50,196]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174050- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:50,196]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174050- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:50,464]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174050-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:50,464]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174050-》》》》》》》》》》》当前Quartz服务正在执行的任务总有5条任务
+[2018-10-11 17:40:52,119]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174052- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:52,138]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174052- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:52,139]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174052- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:52,140]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174052- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:52,140]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174052- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:53,465]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174053-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:54,260]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174054- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:54,261]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174054- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:54,262]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174054- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:54,263]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174054- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:56,138]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174056- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:56,139]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174056- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:56,139]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174056- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:56,140]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174056- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:56,466]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174056-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:40:56,466]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174056-》》》》》》》》》》》当前Quartz服务正在执行的任务总有3条任务
+[2018-10-11 17:40:57,006]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174057- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:40:58,071]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174058- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:58,072]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174058- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:58,072]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174058- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:58,072]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174058- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:40:59,467]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174059-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:00,795]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174100- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:00,795]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174100- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:00,796]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174100- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:00,796]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174100- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:02,303]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174102- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:02,304]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174102- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:02,305]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174102- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:02,305]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174102- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:02,397]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174102- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:02,467]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174102-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:02,467]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174102-》》》》》》》》》》》当前Quartz服务正在执行的任务总有6条任务
+[2018-10-11 17:41:04,124]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174104- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:04,125]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174104- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:04,126]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174104- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:04,126]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174104- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:05,468]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174105-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:05,468]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174105-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:41:06,314]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174106- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:06,315]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174106- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:06,316]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174106- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:06,317]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174106- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:07,007]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174107- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:08,087]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174108- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:08,088]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174108- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:08,089]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174108- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:08,089]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174108- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:08,468]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174108-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:08,468]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174108-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:41:10,200]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174110- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:10,200]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174110- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:10,201]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174110- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:10,201]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174110- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:11,468]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174111-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:11,468]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174111-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:41:12,110]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174112- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:12,265]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174112- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:12,265]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174112- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:12,266]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174112- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:12,267]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174112- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:14,090]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174114- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:14,091]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174114- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:14,093]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174114- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:14,094]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174114- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:14,469]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174114-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:14,469]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174114-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:41:16,160]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174116- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:16,162]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174116- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:16,163]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174116- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:16,163]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174116- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:17,004]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174117- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:17,470]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174117-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:18,246]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174118- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:18,246]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174118- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:18,247]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174118- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:18,247]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174118- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:20,197]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174120- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:20,197]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174120- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:20,197]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174120- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:20,198]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174120- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:20,471]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174120-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:20,471]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174120-》》》》》》》》》》》当前Quartz服务正在执行的任务总有5条任务
+[2018-10-11 17:41:22,111]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174122- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:22,132]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174122- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:22,132]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174122- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:22,133]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174122- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:22,133]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174122- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:23,482]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174123-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:24,264]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174124- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:24,264]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174124- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:24,264]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174124- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:24,264]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174124- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:26,139]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174126- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:26,155]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174126- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:26,155]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174126- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:26,155]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174126- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:26,483]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174126-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:26,483]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174126-》》》》》》》》》》》当前Quartz服务正在执行的任务总有3条任务
+[2018-10-11 17:41:27,061]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174127- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:28,092]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174128- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:28,092]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174128- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:28,092]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174128- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:28,092]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174128- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:29,483]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174129-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:30,374]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174130- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:30,374]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174130- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:30,374]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174130- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:30,374]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174130- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:32,155]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174132- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:32,155]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174132- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:32,155]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174132- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:32,155]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174132- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:32,280]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174132- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:32,483]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174132-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:32,483]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174132-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:41:34,077]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174134- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:34,077]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174134- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:34,077]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174134- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:34,093]  QuartzScheduler_Worker-6 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174134- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:35,484]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174135-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:35,484]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174135-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:41:36,546]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174136- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:36,546]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174136- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:36,546]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174136- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:36,546]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174136- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:37,281]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174137- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:38,078]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174138- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:38,078]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174138- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:38,078]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174138- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:38,078]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174138- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:38,484]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174138-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:38,484]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174138-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:41:40,172]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174140- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:40,187]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174140- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:40,187]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174140- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:40,187]  QuartzScheduler_Worker-1 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174140- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:41,484]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174141-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:41,484]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174141-》》》》》》》》》》》当前Quartz服务正在执行的任务总有1条任务
+[2018-10-11 17:41:42,156]  QuartzScheduler_Worker-3 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174142- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:42,234]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174142- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:42,234]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174142- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:42,234]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174142- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:42,234]  QuartzScheduler_Worker-4 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174142- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:44,063]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174144- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:44,063]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174144- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:44,063]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174144- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:44,063]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174144- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:44,485]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174144-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:44,485]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174144-》》》》》》》》》》》当前Quartz服务正在执行的任务总有2条任务
+[2018-10-11 17:41:46,141]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174146- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:46,141]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174146- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:46,141]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174146- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:46,141]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174146- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:47,063]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174147- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:47,485]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174147-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:48,251]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174148- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:48,251]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174148- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:48,251]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174148- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:48,251]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174148- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:50,188]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174150- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:50,188]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174150- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:50,188]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174150- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:50,188]  QuartzScheduler_Worker-7 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174150- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:50,485]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174150-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:50,485]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174150-》》》》》》》》》》》当前Quartz服务正在执行的任务总有5条任务
+[2018-10-11 17:41:52,126]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174152- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:52,126]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174152- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:52,126]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174152- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:52,126]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174152- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:52,126]  QuartzScheduler_Worker-10 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174152- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:53,486]  17 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174153-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:54,251]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174154- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:54,251]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174154- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:54,251]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174154- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:54,251]  QuartzScheduler_Worker-8 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174154- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:56,142]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174156- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:56,142]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174156- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:56,142]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174156- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:56,142]  QuartzScheduler_Worker-9 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174156- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:56,486]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174156-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:41:56,486]  18 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174156-》》》》》》》》》》》当前Quartz服务正在执行的任务总有3条任务
+[2018-10-11 17:41:57,017]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174157- HttpRequestJob+ Execute:无法连接到远程服务器
+[2018-10-11 17:41:58,064]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174158- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:58,064]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174158- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:58,064]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174158- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:58,064]  QuartzScheduler_Worker-5 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174158- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:41:59,486]  19 -- INFO  -- EohiQuartzService.Service1 [TimerUp] -- 20181011174159-》》》》》》》》》》》当前Quartz服务正在执行的任务总有---------------------------------------条任务
+[2018-10-11 17:42:00,361]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174200- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:42:00,361]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174200- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:42:00,361]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174200- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。
+[2018-10-11 17:42:00,361]  QuartzScheduler_Worker-2 -- INFO  -- EohiQuartzService.HttpRequestJob [Execute] -- 20181011174200- HttpRequestJob+ Execute:无效的 URI: 未能分析主机名。

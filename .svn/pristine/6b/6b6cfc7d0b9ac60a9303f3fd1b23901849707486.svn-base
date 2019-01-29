@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+using System.Data;
+namespace WFServerWeb
+{
+    public class CApprovalManager
+    {
+        public static void UpdateInstanceApprovalStatus(string InstanceID,EApprovalStatus ApprStu)
+        {
+            CDataHelper.ExecuteNonQuery("update " + CTableName.FlowChartReceiver + " set [approval_status]='" + ApprStu.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + EApprovalStatus.Active.ToString() + "'");
+        }
+
+        /// <summary>
+        /// 更新审批意见
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="ApprovalOpinion"></param>
+        /// <param name="OpeManID"></param>
+        /// <param name="ApprovalReason"></param>
+        public static void UpdateApprovalOpinion(string InstanceID, string NodeID, EApprovalOpinion ApprovalOpinion, string OpeManID, string ApprovalReason)
+        {
+            CDataHelper.ExecuteNonQuery("update " + CTableName.FlowChartReceiver + " set [approval_opinion]='" + ApprovalOpinion + "',operate_time='" + DateTime.Now.ToString() + "',approval_status='" + EApprovalStatus.Complete.ToString() + "',approval_reason='" + ApprovalReason + "' where [instance_id]='" + InstanceID + "' and [node_id]='" + NodeID + "' and [user_id]='" + OpeManID + "' and [approval_status]='" + EApprovalStatus.Active.ToString() + "'");
+        }
+
+        /// <summary>
+        /// 更新节点所有审批人的审批状态
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="AppStu">审批状态</param>
+        public static void UpdateNodeApprovalStatus(string InstanceID,string NodeID,EApprovalStatus AppStu)
+        {
+            CDataHelper.ExecuteNonQuery("update " + CTableName.FlowChartReceiver + " set [approval_status]='" + AppStu.ToString() + "' where instance_id='" + InstanceID + "' and node_id='" + NodeID + "'");
+        }
+
+        /// <summary>
+        /// 更新审批人的审批状态
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="AppStu">审批状态</param>
+        public static void UpdateApprovalStatus(string InstanceID, string NodeID,string ApproverID, EApprovalStatus AppStu)
+        {
+            CDataHelper.ExecuteNonQuery("update " + CTableName.FlowChartReceiver + " set [approval_status]='" + AppStu.ToString() + "' where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' and user_id='"+ApproverID+"'");
+        }
+
+        /// <summary>
+        /// 记录节点的审批人
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <param name="OpeManID"></param>
+        /// <param name="ApprovalNum">表示该节点第几次审批</param>
+        public static void PutDownApprover(string InstanceID,string NodeID,string OpeManID,int ApprovalNum)
+        {
+            CDataHelper.ExecuteNonQuery("insert into " + CTableName.FlowChartReceiver + "(instance_id,node_id,user_id,operate_time,approval_status,approval_num) values('" + InstanceID + "','" + NodeID + "','" + OpeManID + "','" + DateTime.Now.ToString() + "','" + EApprovalStatus.Active.ToString() + "','"+ApprovalNum.ToString()+"')");
+        }
+
+        /// <summary>
+        /// 获取该节点最后一次审批是第几次审批
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static int GetLastApprovalNum(string InstanceID, string NodeID)
+        {
+            string strApprovalNum = CDataHelper.GetData("select top 1 approval_num from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' order by approval_num desc");
+            int ApprovalNum = 0;
+            if (strApprovalNum != null && strApprovalNum != "")
+            {
+                ApprovalNum = Convert.ToInt32(strApprovalNum);
+            }
+            return ApprovalNum;
+        }
+
+        /// <summary>
+        /// 获取审批人
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static DataTable GetApprover(string InstanceID, string NodeID)
+        {
+            string ReceiverScript = CDataHelper.GetData("select [operatorscript] from " + CTableName.FlowChartNode + " where [node_id]='" + NodeID + "'");
+            DataTable dtReceiver = (DataTable)CScriptOpe.ScriptExec(ReceiverScript, InstanceID);
+            return dtReceiver;
+        }
+    }
+}

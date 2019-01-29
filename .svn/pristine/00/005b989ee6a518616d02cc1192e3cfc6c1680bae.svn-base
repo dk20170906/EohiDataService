@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace WFServerWeb
+{
+    public class CReturnToStart
+    {
+        /// <summary>
+        /// 将工作流流转到开始节点
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="CurrentNodeID">当前节点ID</param>
+        public static void ReturnToStart(string InstanceID, string CurrentNodeID, string StartNodeID)
+        {
+            //将当前所有节点的审批状态设置为完成状态
+            SetInstanceApprovalComplete(InstanceID);
+
+            //流程流转到开始节点
+            CGoNextNode.NodeTransfer(InstanceID, CurrentNodeID, StartNodeID);
+        }
+
+        public static void SetInstanceApprovalComplete(string InstanceID)
+        {
+            CDataHelper.ExecuteNonQuery("update " + CTableName.FlowChartReceiver + " set [approval_status]='" + EApprovalStatus.Complete.ToString() + "' where instance_id='" + InstanceID + "' and [approval_status]='" + EApprovalStatus.Active.ToString() + "'");
+        }
+
+    }
+}

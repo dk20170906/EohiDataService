@@ -1,0 +1,55 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="连接管理新增/编辑" data-options="iconCls:'fa fa-th'">
+                <div class="topjui-fluid">
+                    <div class="topjui-row">
+                    </div>
+                    <div class="topjui-row" id="APIidhide">
+                        <input type="hidden" name="id" value="" data-toggle="topjui-textbox" />
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">连接名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="linkname" data-toggle="topjui-textbox"
+                                       data-options="required:true,prompt:'连接名称'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">连接类型</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="linktype" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">连接字符串</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="linkstring" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script >
+    $('#APIidhide').css("display", "none");
+
+
+</script>
+
+
+
+
+
+
+
+

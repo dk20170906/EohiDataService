@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.Data;
+namespace WFServerWeb
+{
+    public static class CPutDownReceiver
+    {
+        public static void PutDownReceiver(string InstanceID,string NodeID)
+        {
+            string nodetype = CCommonFunc.GetNodeType(NodeID);
+            if(nodetype==null)
+            {
+                CCommonFunc.SetInstanceError(InstanceID, "获取节点" + NodeID + "的节点类型失败");
+                return;
+            }
+
+            int ApprovalNum = GetLastApprovalNum(InstanceID, NodeID);
+            //判断是否开始流程
+            if (nodetype == CNodeType.StartType)
+            {
+                string StartManID = CDataHelper.GetData("select cre_man from " + CTableName.FlowChartInstance + " where instance_id='" + InstanceID + "'");
+                if (StartManID == null)
+                {
+                    CCommonFunc.SetInstanceError(InstanceID, "获取流程实例的发起人失败");
+                    return;
+                }
+                CDataHelper.ExecuteNonQuery("insert into "+CTableName.FlowChartReceiver+"([instance_id],[node_id],[user_id],[approval_status],approval_num) values('" + InstanceID + "','" + NodeID + "','" + StartManID + "','" + EApprovalStatus.Active.ToString() + "','"+(ApprovalNum+1).ToString()+"')");
+            }
+            //判断流程是否结束
+            else if (nodetype != CNodeType.EndType)
+            {
+                DataTable dtReceiver = GetReceiver(InstanceID, NodeID);
+                if (dtReceiver != null)
+                {
+                    if (dtReceiver.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dtReceiver.Rows.Count; i++)
+                        {
+                            string ReceiverID = dtReceiver.Rows[i][WFGlobal.UserID].ToString();
+                            CDataHelper.ExecuteNonQuery("insert into " + CTableName.FlowChartReceiver + "([instance_id],[node_id],[user_id],[approval_status],approval_num) values('" + InstanceID + "','" + NodeID + "','" + ReceiverID + "','" + EApprovalStatus.Active.ToString() + "','" + (ApprovalNum + 1).ToString() + "')");
+                        }
+                    }
+                }
+            }
+        }
+
+        public static int GetLastApprovalNum(string InstanceID, string NodeID)
+        {
+            string strApprovalNum = CDataHelper.GetData("select top 1 approval_num from " + CTableName.FlowChartReceiver + " where instance_id='" + InstanceID + "' and node_id='" + NodeID + "' order by approval_num desc");
+            int ApprovalNum = 0;
+            if (strApprovalNum != null && strApprovalNum != "")
+            {
+                ApprovalNum=Convert.ToInt32(strApprovalNum);
+            }
+            return ApprovalNum;
+        }
+
+        /// <summary>
+        /// 获取接收人
+        /// </summary>
+        /// <param name="InstanceID"></param>
+        /// <param name="NodeID"></param>
+        /// <returns></returns>
+        public static DataTable GetReceiver(string InstanceID, string NodeID)
+        {
+            string ReceiverScript = CDataHelper.GetData("select [operatorscript] from " + CTableName.FlowChartNode + " where [node_id]='" + NodeID + "'");
+            DataTable dtReceiver = (DataTable)CScriptOpe.ScriptExec(ReceiverScript, InstanceID);
+            return dtReceiver;
+        }
+    }
+}

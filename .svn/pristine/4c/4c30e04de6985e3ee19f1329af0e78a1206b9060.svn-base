@@ -1,0 +1,208 @@
+﻿<div data-toggle="topjui-layout" data-options="fit:true">
+    <div data-options="region:'center',title:'',fit:true,border:false,bodyCls:'border_right_bottom'">
+        <div data-toggle="topjui-tabs" data-options="fit:true,border:false">
+            <div title="必填信息" data-options="iconCls:'fa fa-th'">
+                <input type="hidden" name="id" value="" />
+                <input id="modelguidid" type="hidden" name="modelIdentity" value="" />
+                <input type="hidden" name="createTime" value="" />
+                <div class="topjui-fluid">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                    </fieldset>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">上传模型文件提示</label>
+                            <label style="color:red">单个模型有且只可以有一个.gltf文件，当前模型的所有文件建议同一批次上传，不必关心已上传文件（覆盖原文件），</label>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">模型名称</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modelName" id="modelName" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">创建人</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="createUser" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">修改人</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="editUser" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">版本号</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modelVersion" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="topjui-row">
+
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">模型类型</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modeltype" data-toggle="topjui-textbox"
+                                       data-options="required:true">
+                            </div>
+                        </div>
+
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">上传模型文件</label>
+
+                            <a id="setacountModelName" data-toggle="topjui-menubutton" class="fa fa-cloud-upload topjui-btn-green" href="javascript:void(0)" onclick="setacountModelName();">批量上传</a>
+
+                            <div style="display:none">
+                                <a href="javascript:void(0)" id="setmodelnamea"
+                                   data-toggle="topjui-menubutton"
+                                   data-options="method:'upload',
+       extend:'#productDg-toolbar',
+       accept:'file',
+       dialog:{
+           title:'附件批量上传'
+       },
+       uploadUrl:_ctx + '../Data/ThreeDUploadFiles/WebTreeDUploadModelFiles'"></a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">模型说明</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modeDescription" data-toggle="topjui-textarea">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div title="选填信息" data-options="iconCls:'fa fa-th'">
+                <div class="topjui-fluid">
+                    <fieldset>
+                        <legend>扩展信息</legend>
+                    </fieldset>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">模型所属机构</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modelForOutfit" data-toggle="topjui-textbox">
+                            </div>
+                        </div>
+                        <div class="topjui-col-sm6">
+                            <label class="topjui-form-label">模型预计发布日期</label>
+                            <div class="topjui-input-block">
+                                <input type="datetime" name="yujiPutTime" data-toggle="topjui-datebox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">产品缩略图</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modelImage" data-toggle="topjui-uploadbox"
+                                       data-options="editable:false,
+                                       buttonText:'上传图片',
+                                       accept:'images',
+                                       uploadUrl:_ctx + '../Data/ThreeDUploadFiles/UploadModelFiles'">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="topjui-row">
+                        <div class="topjui-col-sm12">
+                            <label class="topjui-form-label">备注信息</label>
+                            <div class="topjui-input-block">
+                                <input type="text" name="modelRemark" data-toggle="topjui-textarea">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+
+
+    function setacountModelName() {
+        var modename = $('#modelName').iTextbox('getValue');
+        if (modename == undefined || modename == "") {
+            $.iMessager.alert('操作提示', '请先填写必填项模块名称', '请先填写必填项模块名称！');
+            return;
+        }
+        debugger;
+        $.ajax({
+            type: 'get',
+            url: _ctx + '../Data/ThreeDUploadFiles/SetAcountModeName',
+            data: {
+                modelName: modename,
+            },
+            success: function (data) {
+                debugger;
+                if (data.statusCode == 200) {
+                    $("#setmodelnamea").trigger('click');
+                }
+                else {
+                    $('modelName').iTextbox('setValue', "");
+                }
+            }, error: function (data) {
+                $('modelName').iTextbox('setValue', "");
+            }
+        })
+    }
+
+
+
+    function upLoadModelFiles() {
+        var $editDialog = $('<from><from>');
+        $editDialog.iDialog({
+            title: '编辑数据',
+            width: 950,
+            height: 500,
+            closed: false,
+            cache: false,
+            href: _ctx + '/html/extend/uploaderindex.html?uuid=' + uuid,
+            modal: true,
+            buttons: [{
+                text: '保存',
+                iconCls: 'fa fa-save',
+                btnCls: 'topjui-btn-blue',
+                handler: function () {
+
+
+                    // 提示信息
+                    $.iMessager.alert('操作提示', '请根据具体情况编写代码，如ajax更新请求，请求失败提示，请求成功提示，请求成功后关闭窗口并刷新表格等！', 'messager-info');
+                }
+            }, {
+                text: '关闭',
+                iconCls: 'fa fa-close',
+                btnCls: 'topjui-btn-red',
+                handler: function () {
+                    $editDialog.iDialog('close');
+                }
+            }],
+            onLoad: function () {
+                //加载表单数据
+                $.getJSON(_ctx + '../Data/ThreeDUploadFiles/GetModelById?uuid=' + uuid, function (data) {
+                    $editDialog.form('load', data);
+                });
+            }
+        });
+    }
+</script>
+
